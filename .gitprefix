@@ -1,0 +1,20 @@
+:tada: Initial commit
+:sparkles: New feature
+:+1: Fix feature
+:shirt:	Fix lint warning
+:space_invader:	Bug fix
+:shower: Delete function
+:pencil: Refactoring
+:art: Accessibility
+:police_car: Security related improvements
+:straight_ruler: Fix memory leak
+:wrench: Changing configuration files
+:rotating_light: Test implementation
+:poop: Deprecation
+:books:	Add Library
+:chart_with_upwards_trend: Library upgrade
+:chart_with_downwards_trend: Library downgrade
+:lock: Restriction of disclosure range
+:bookmark: Version Tag
+:construction: Work in progress
+:construction_worker: Add CI build system
