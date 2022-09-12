@@ -21,7 +21,8 @@ public class MainTab implements ITab {
   private final JComponent component;
 
   public MainTab(final CrawlController crawlController) {
-    final var logPanel = new JScrollPane(new LogTable());
+    final var logTable = new LogTable(crawlController);
+    final var logPanel = new JScrollPane(logTable);
     final var logDetailPanel = new LogDetailPanel(crawlController.getLogDetailController());
 
     final var splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);

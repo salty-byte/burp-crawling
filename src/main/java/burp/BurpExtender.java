@@ -1,5 +1,6 @@
 package burp;
 
+import controllers.CrawlContextMenu;
 import controllers.CrawlController;
 import views.MainTab;
 
@@ -13,7 +14,9 @@ public class BurpExtender implements IBurpExtender {
   @Override
   public void registerExtenderCallbacks(IBurpExtenderCallbacks callbacks) {
     callbacks.setExtensionName(EXTENSION_NAME);
+
     final var crawlController = new CrawlController(callbacks);
     callbacks.addSuiteTab(new MainTab(crawlController));
+    callbacks.registerContextMenuFactory(new CrawlContextMenu(crawlController));
   }
 }

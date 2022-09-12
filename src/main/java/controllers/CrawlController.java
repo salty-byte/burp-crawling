@@ -1,15 +1,18 @@
 package controllers;
 
 import burp.IBurpExtenderCallbacks;
+import views.LogTableModel;
 
 public class CrawlController {
 
   private final IBurpExtenderCallbacks callbacks;
   private final LogDetailController logDetailController;
+  private final LogTableModel logTableModel;
 
   public CrawlController(final IBurpExtenderCallbacks callbacks) {
     this.callbacks = callbacks;
-    this.logDetailController = new LogDetailController(callbacks);
+    logDetailController = new LogDetailController(callbacks);
+    logTableModel = new LogTableModel();
   }
 
   public IBurpExtenderCallbacks getBurpExtenderCallbacks() {
@@ -18,5 +21,9 @@ public class CrawlController {
 
   public LogDetailController getLogDetailController() {
     return logDetailController;
+  }
+
+  public LogTableModel getLogTableModel() {
+    return logTableModel;
   }
 }
