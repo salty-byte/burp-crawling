@@ -10,12 +10,16 @@ public class MessageEditorController implements IMessageEditorController {
   private byte[] response;
 
   public MessageEditorController() {
+    clear();
+  }
+
+  public void clear() {
     service = null;
     request = new byte[0];
     response = new byte[0];
   }
 
-  public void update(IHttpService service, byte[] request, byte[] response) {
+  public void setMessages(IHttpService service, byte[] request, byte[] response) {
     this.service = service;
     this.request = request;
     this.response = response;

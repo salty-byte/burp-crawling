@@ -62,6 +62,10 @@ public class LogTableModel extends AbstractTableModel {
     fireTableCellUpdated(rowIndex, columnIndex);
   }
 
+  public LogEntry getLogEntryAt(final int rowIndex) {
+    return entries.get(rowIndex);
+  }
+
   public synchronized void addLogEntry(final LogEntry logEntry) {
     int index = entries.size();
     entries.add(logEntry);

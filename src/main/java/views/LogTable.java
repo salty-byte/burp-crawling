@@ -1,6 +1,7 @@
 package views;
 
 import controllers.CrawlController;
+import controllers.LogDetailController;
 import java.awt.Component;
 import java.util.Arrays;
 import javax.swing.JTable;
@@ -17,6 +18,7 @@ public class LogTable extends JTable {
     setRowHeight(20);
     Arrays.stream(LogEntryKey.values())
         .forEach(v -> this.getColumn(v.getDisplayName()).setPreferredWidth(v.getWidth()));
+    setSelectionListener(crawlController.getLogDetailController());
   }
 
   @Override
@@ -33,5 +35,23 @@ public class LogTable extends JTable {
     component.setForeground(getForeground());
     component.setBackground(getBackground());
     return component;
+  }
+
+  private void setSelectionListener(final LogDetailController logDetailController) {
+    getSelectionModel().addListSelectionListener(e -> {
+      if (e.getValueIsAdjusting()) {
+        return;
+      }
+
+      final var selectedRow = getSelectedRow();
+      if (selectedRow == -1) {
+        logDetailController.clear();
+        return;
+      }
+
+      final var modelRow = convertRowIndexToModel(selectedRow);
+      final var logEntry = ((LogTableModel) getModel()).getLogEntryAt(modelRow);
+      logDetailController.setMessages(logEntry);
+    });
   }
 }
