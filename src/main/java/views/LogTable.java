@@ -19,6 +19,7 @@ public class LogTable extends JTable {
     Arrays.stream(LogEntryKey.values())
         .forEach(v -> this.getColumn(v.getDisplayName()).setPreferredWidth(v.getWidth()));
     setSelectionListener(crawlController.getLogDetailController());
+    setRowSorter(new LogTableRowSorter<>(getModel()));
   }
 
   @Override
