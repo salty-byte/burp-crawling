@@ -1,6 +1,5 @@
 package views.logtable;
 
-import controllers.CrawlController;
 import controllers.LogDetailController;
 import java.awt.Component;
 import java.util.Arrays;
@@ -14,13 +13,14 @@ public class LogTable extends JTable {
 
   public static final int DEFAULT_HEIGHT = 600;
 
-  public LogTable(final CrawlController crawlController) {
-    super(crawlController.getLogTableModel());
+  public LogTable(final LogTableModel logTableModel,
+      final LogDetailController logDetailController) {
+    super(logTableModel);
     setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     setRowHeight(20);
     Arrays.stream(LogEntryKey.values())
         .forEach(v -> this.getColumn(v.getDisplayName()).setPreferredWidth(v.getWidth()));
-    setSelectionListener(crawlController.getLogDetailController());
+    setSelectionListener(logDetailController);
     setRowSorter(new LogTableRowSorter<>(getModel()));
 
     // settings to drag and drop some rows

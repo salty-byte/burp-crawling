@@ -4,7 +4,7 @@ import burp.IHttpRequestResponse;
 
 public class LogEntry {
 
-  private String number;
+  private int number;
   private String requestName;
   private String url;
   private String method;
@@ -12,11 +12,11 @@ public class LogEntry {
   private String remark;
   private IHttpRequestResponse requestResponse;
 
-  public LogEntry() {
-    this("1", "", "https://", "GET", false, "", null);
+  public LogEntry(final int number) {
+    this(number, "", "https://", "GET", false, "", null);
   }
 
-  public LogEntry(final String number, final String requestName, final String url,
+  public LogEntry(final int number, final String requestName, final String url,
       final String method, final boolean hasParameter, final String remark,
       final IHttpRequestResponse requestResponse) {
     this.number = number;
@@ -51,7 +51,7 @@ public class LogEntry {
     try {
       switch (key) {
         case NUMBER:
-          setNumber((String) value);
+          setNumber((int) value);
           break;
         case REQUEST_NAME:
           setRequestName((String) value);
@@ -75,7 +75,7 @@ public class LogEntry {
     }
   }
 
-  public void setNumber(String number) {
+  public void setNumber(int number) {
     this.number = number;
   }
 

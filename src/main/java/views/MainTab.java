@@ -22,8 +22,7 @@ public class MainTab implements ITab {
   private final JComponent component;
 
   public MainTab(final CrawlController crawlController) {
-    final var logTable = new LogTable(crawlController);
-    final var logPanel = new JScrollPane(logTable);
+    final var logPanel = new JScrollPane(crawlController.getLogTable());
     final var logDetailPanel = new LogDetailPanel(crawlController.getLogDetailController());
 
     final var splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -36,7 +35,7 @@ public class MainTab implements ITab {
     leftPane.add(new HeaderPanel(), BorderLayout.NORTH);
     leftPane.add(splitPane, BorderLayout.CENTER);
 
-    final var rightPane = new ControlPanel();
+    final var rightPane = new ControlPanel(crawlController.getHelper());
 
     // FIXME デバッグ用の枠線を表示する：後で消す
     leftPane.setBorder(new LineBorder(Color.GRAY, 1, true));
