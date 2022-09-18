@@ -95,4 +95,16 @@ public class LogTableModel extends AbstractTableModel {
     entries.remove(index);
     fireTableRowsDeleted(index, index);
   }
+
+  public void renumber() {
+    if (entries.isEmpty()) {
+      return;
+    }
+    
+    int count = 0;
+    for (final var entry : entries) {
+      entry.setNumber(++count);
+    }
+    fireTableRowsUpdated(0, entries.size() - 1);
+  }
 }

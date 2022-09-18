@@ -1,7 +1,7 @@
 package models;
 
 public enum LogEntryKey {
-  NUMBER(Integer.class, "No.", 50),
+  NUMBER(Integer.class, "No", 50),
   REQUEST_NAME(String.class, "リクエスト名", 300),
   METHOD(String.class, "メソッド", 100),
   URL(String.class, "URL", 300),

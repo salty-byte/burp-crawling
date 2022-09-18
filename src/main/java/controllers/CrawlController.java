@@ -49,5 +49,9 @@ public class CrawlController {
       final var insertIndex = row == -1 ? rowCount : logTable.convertRowIndexToModel(row) + 1;
       logTable.getModel().addLogEntryAt(new LogEntry(rowCount + 1), insertIndex);
     }
+
+    public void renumber() {
+      logTableModel.renumber();
+    }
   }
 }
