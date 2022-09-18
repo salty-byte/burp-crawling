@@ -4,7 +4,9 @@ import controllers.CrawlController;
 import controllers.LogDetailController;
 import java.awt.Component;
 import java.util.Arrays;
+import javax.swing.DropMode;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
 import models.LogEntryKey;
 
@@ -20,6 +22,13 @@ public class LogTable extends JTable {
         .forEach(v -> this.getColumn(v.getDisplayName()).setPreferredWidth(v.getWidth()));
     setSelectionListener(crawlController.getLogDetailController());
     setRowSorter(new LogTableRowSorter<>(getModel()));
+
+    // settings to drag and drop some rows
+    setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    setTransferHandler(new LogTableRowTransferHandler());
+    setDropMode(DropMode.INSERT_ROWS);
+    setDragEnabled(true);
+    setFillsViewportHeight(true);
   }
 
   @Override
@@ -51,8 +60,13 @@ public class LogTable extends JTable {
       }
 
       final var modelRow = convertRowIndexToModel(selectedRow);
-      final var logEntry = ((LogTableModel) getModel()).getLogEntryAt(modelRow);
+      final var logEntry = getModel().getLogEntryAt(modelRow);
       logDetailController.setMessages(logEntry);
     });
+  }
+
+  @Override
+  public LogTableModel getModel() {
+    return (LogTableModel) super.getModel();
   }
 }

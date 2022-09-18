@@ -62,22 +62,37 @@ public class LogTableModel extends AbstractTableModel {
     fireTableCellUpdated(rowIndex, columnIndex);
   }
 
-  public LogEntry getLogEntryAt(final int rowIndex) {
-    return entries.get(rowIndex);
+  public LogEntry getLogEntryAt(final int index) {
+    return entries.get(index);
   }
 
-  public synchronized void addLogEntry(final LogEntry logEntry) {
-    int index = entries.size();
-    entries.add(logEntry);
+  public List<LogEntry> getLogEntriesAt(final int[] indices) {
+    return Arrays.stream(indices)
+        .distinct()
+        .mapToObj(this::getLogEntryAt)
+        .collect(Collectors.toList());
+  }
+
+  public void addLogEntry(final LogEntry logEntry) {
+    addLogEntryAt(logEntry, entries.size());
+  }
+
+  public synchronized void addLogEntryAt(final LogEntry logEntry, final int index) {
+    entries.add(index, logEntry);
     fireTableRowsInserted(index, index);
   }
 
   public void addLogEntries(final List<LogEntry> logEntries) {
-    logEntries.forEach(this::addLogEntry);
+    addLogEntriesAt(logEntries, entries.size());
   }
 
-  public synchronized void removeLogEntryAt(final int rowIndex) {
-    entries.remove(rowIndex);
-    this.fireTableRowsDeleted(rowIndex, rowIndex);
+  public synchronized void addLogEntriesAt(final List<LogEntry> logEntries, final int index) {
+    entries.addAll(index, logEntries);
+    fireTableRowsInserted(index, index + logEntries.size() - 1);
+  }
+
+  public synchronized void removeLogEntryAt(final int index) {
+    entries.remove(index);
+    fireTableRowsDeleted(index, index);
   }
 }
