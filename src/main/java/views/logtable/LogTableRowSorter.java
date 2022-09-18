@@ -1,4 +1,4 @@
-package views;
+package views.logtable;
 
 import javax.swing.SortOrder;
 import javax.swing.table.TableModel;
@@ -6,7 +6,7 @@ import javax.swing.table.TableRowSorter;
 
 public class LogTableRowSorter<M extends TableModel> extends TableRowSorter<M> {
 
-  public LogTableRowSorter(final M model) {
+  LogTableRowSorter(final M model) {
     super(model);
   }
 

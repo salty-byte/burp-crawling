@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.border.LineBorder;
+import views.logtable.LogTable;
 
 /**
  * クローリング機能のメインとなるタブ

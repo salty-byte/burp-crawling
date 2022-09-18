@@ -1,4 +1,4 @@
-package views;
+package views.logtable;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package views;
+package views.logtable;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

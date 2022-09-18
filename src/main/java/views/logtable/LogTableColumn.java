@@ -1,11 +1,11 @@
-package views;
+package views.logtable;
 
 import javax.swing.table.TableColumn;
 import models.LogEntryKey;
 
 public class LogTableColumn extends TableColumn {
 
-  public LogTableColumn(final LogEntryKey key) {
+  LogTableColumn(final LogEntryKey key) {
     super();
     setIdentifier(key);
   }

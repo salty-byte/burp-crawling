@@ -1,7 +1,7 @@
 package controllers;
 
 import burp.IBurpExtenderCallbacks;
-import views.LogTableModel;
+import views.logtable.LogTableModel;
 
 public class CrawlController {
 

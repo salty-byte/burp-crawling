@@ -1,4 +1,4 @@
-package views;
+package views.logtable;
 
 import controllers.CrawlController;
 import controllers.LogDetailController;
@@ -14,7 +14,7 @@ public class LogTable extends JTable {
 
   public static final int DEFAULT_HEIGHT = 600;
 
-  LogTable(final CrawlController crawlController) {
+  public LogTable(final CrawlController crawlController) {
     super(crawlController.getLogTableModel());
     setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     setRowHeight(20);
