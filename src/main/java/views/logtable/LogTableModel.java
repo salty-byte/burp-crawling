@@ -62,6 +62,10 @@ public class LogTableModel extends AbstractTableModel {
     fireTableCellUpdated(rowIndex, columnIndex);
   }
 
+  public List<LogEntry> getLogEntryAll() {
+    return entries;
+  }
+
   public LogEntry getLogEntryAt(final int index) {
     return entries.get(index);
   }
@@ -100,7 +104,7 @@ public class LogTableModel extends AbstractTableModel {
     if (entries.isEmpty()) {
       return;
     }
-    
+
     int count = 0;
     for (final var entry : entries) {
       entry.setNumber(++count);

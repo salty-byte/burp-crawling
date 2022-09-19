@@ -75,24 +75,48 @@ public class LogEntry {
     }
   }
 
+  public int getNumber() {
+    return number;
+  }
+
   public void setNumber(int number) {
     this.number = number;
+  }
+
+  public String getRequestName() {
+    return requestName;
   }
 
   public void setRequestName(String requestName) {
     this.requestName = requestName;
   }
 
+  public String getUrl() {
+    return url;
+  }
+
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  public String getMethod() {
+    return method;
   }
 
   public void setMethod(String method) {
     this.method = method;
   }
 
+  public boolean hasParameter() {
+    return hasParameter;
+  }
+
   public void setHasParameter(boolean hasParameter) {
     this.hasParameter = hasParameter;
+  }
+
+  public String getRemark() {
+    return remark;
   }
 
   public void setRemark(String remark) {

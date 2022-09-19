@@ -1,7 +1,13 @@
 package controllers;
 
 import burp.IBurpExtenderCallbacks;
+import com.google.gson.Gson;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import models.LogEntry;
+import models.json.CrawledData;
 import views.logtable.LogTable;
 import views.logtable.LogTableModel;
 
@@ -52,6 +58,51 @@ public class CrawlController {
 
     public void renumber() {
       logTableModel.renumber();
+    }
+
+    public void exportCrawledData() {
+      final var fileChooser = new JFileChooser();
+      int selected = fileChooser.showOpenDialog(logTable);
+      if (selected != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      final var file = fileChooser.getSelectedFile();
+      if (file.exists()) {
+        int result = JOptionPane.showConfirmDialog(
+            logTable,
+            "ファイルが既に存在します。上書きしますか?",
+            "警告",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+        if (result != JOptionPane.YES_OPTION) {
+          return;
+        }
+      }
+
+      final var logEntries = logTableModel.getLogEntryAll();
+      final var jsonStr = new Gson().toJson(new CrawledData(logEntries));
+      try (final var writer = new FileWriter(file)) {
+        writer.write(jsonStr);
+      } catch (IOException e) {
+        JOptionPane.showConfirmDialog(
+            logTable,
+            "JSON出力時にエラーが発生しました。",
+            "エラー",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.ERROR_MESSAGE
+        );
+        e.printStackTrace();
+        return;
+      }
+
+      JOptionPane.showConfirmDialog(
+          logTable,
+          "JSON出力が完了しました。",
+          "完了",
+          JOptionPane.DEFAULT_OPTION,
+          JOptionPane.INFORMATION_MESSAGE
+      );
     }
   }
 }

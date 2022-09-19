@@ -33,6 +33,11 @@ public class ControlPanel extends JPanel {
     renumberButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(renumberButton);
 
+    final var exportCrawledDataButton = new JButton("JSON出力");
+    exportCrawledDataButton.addActionListener(e -> crawlHelper.exportCrawledData());
+    exportCrawledDataButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(exportCrawledDataButton);
+
     setPreferredSize(new Dimension(WIDTH, Integer.MAX_VALUE));
   }
 }
