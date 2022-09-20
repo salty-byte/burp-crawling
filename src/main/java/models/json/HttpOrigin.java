@@ -2,7 +2,7 @@ package models.json;
 
 import burp.IHttpService;
 
-public class HttpOrigin {
+public class HttpOrigin implements IHttpService {
 
   private final String host;
   private final int port;

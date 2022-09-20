@@ -23,4 +23,10 @@ public class CrawledData {
   public List<LogEntryForJson> getEntries() {
     return entries;
   }
+
+  public List<LogEntry> toLogEntries() {
+    return entries.stream()
+        .map(LogEntryForJson::toLogEntry)
+        .collect(Collectors.toList());
+  }
 }

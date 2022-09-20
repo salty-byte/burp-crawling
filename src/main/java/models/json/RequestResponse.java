@@ -1,6 +1,7 @@
 package models.json;
 
 import burp.IHttpRequestResponse;
+import burp.IHttpService;
 
 public class RequestResponse {
 
@@ -25,5 +26,59 @@ public class RequestResponse {
 
   public HttpOrigin getOrigin() {
     return origin;
+  }
+
+  public IHttpRequestResponse toIHttpRequestResponse() {
+    return new IHttpRequestResponse() {
+      @Override
+      public byte[] getRequest() {
+        return request;
+      }
+
+      @Override
+      public void setRequest(byte[] message) {
+        // do nothing
+      }
+
+      @Override
+      public byte[] getResponse() {
+        return response;
+      }
+
+      @Override
+      public void setResponse(byte[] message) {
+        // do nothing
+      }
+
+      @Override
+      public String getComment() {
+        return null;
+      }
+
+      @Override
+      public void setComment(String comment) {
+        // do nothing
+      }
+
+      @Override
+      public String getHighlight() {
+        return null;
+      }
+
+      @Override
+      public void setHighlight(String color) {
+        // do nothing
+      }
+
+      @Override
+      public IHttpService getHttpService() {
+        return origin;
+      }
+
+      @Override
+      public void setHttpService(IHttpService httpService) {
+        // do nothing
+      }
+    };
   }
 }

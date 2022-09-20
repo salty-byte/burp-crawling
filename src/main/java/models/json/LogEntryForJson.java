@@ -50,4 +50,16 @@ public class LogEntryForJson {
   public RequestResponse getRequestResponse() {
     return requestResponse;
   }
+
+  public LogEntry toLogEntry() {
+    return new LogEntry(
+        number,
+        requestName,
+        url,
+        method,
+        hasParameter,
+        remark,
+        requestResponse == null ? null : requestResponse.toIHttpRequestResponse()
+    );
+  }
 }

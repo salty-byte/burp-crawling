@@ -16,12 +16,6 @@ public class ControlPanel extends JPanel {
 
   public ControlPanel(final CrawlHelper crawlHelper) {
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-    final var dummyButton1 = new JButton("Dummy");
-    final var dummyButton2 = new JButton("Dummy");
-    dummyButton1.setAlignmentX(Component.CENTER_ALIGNMENT);
-    dummyButton2.setAlignmentX(Component.CENTER_ALIGNMENT);
-    add(dummyButton1);
-    add(dummyButton2);
 
     final var addEmptyLogEntryButton = new JButton("空行追加");
     addEmptyLogEntryButton.addActionListener(e -> crawlHelper.addEmptyLogEntry());
@@ -32,6 +26,11 @@ public class ControlPanel extends JPanel {
     renumberButton.addActionListener(e -> crawlHelper.renumber());
     renumberButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(renumberButton);
+
+    final var importCrawledDataButton = new JButton("JSON追加");
+    importCrawledDataButton.addActionListener(e -> crawlHelper.importCrawledData());
+    importCrawledDataButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(importCrawledDataButton);
 
     final var exportCrawledDataButton = new JButton("JSON出力");
     exportCrawledDataButton.addActionListener(e -> crawlHelper.exportCrawledData());
