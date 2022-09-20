@@ -81,7 +81,7 @@ public class LogTableModel extends AbstractTableModel {
     addLogEntryAt(logEntry, entries.size());
   }
 
-  public synchronized void addLogEntryAt(final LogEntry logEntry, final int index) {
+  public void addLogEntryAt(final LogEntry logEntry, final int index) {
     entries.add(index, logEntry);
     fireTableRowsInserted(index, index);
   }
@@ -90,12 +90,12 @@ public class LogTableModel extends AbstractTableModel {
     addLogEntriesAt(logEntries, entries.size());
   }
 
-  public synchronized void addLogEntriesAt(final List<LogEntry> logEntries, final int index) {
+  public void addLogEntriesAt(final List<LogEntry> logEntries, final int index) {
     entries.addAll(index, logEntries);
     fireTableRowsInserted(index, index + logEntries.size() - 1);
   }
 
-  public synchronized void removeLogEntryAt(final int index) {
+  public void removeLogEntryAt(final int index) {
     entries.remove(index);
     fireTableRowsDeleted(index, index);
   }
