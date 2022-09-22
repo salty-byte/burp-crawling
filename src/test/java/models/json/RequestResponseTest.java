@@ -1,7 +1,7 @@
 package models.json;
 
-import static models.json.DummyDataUtils.createEmptyIHttpRequestResponse;
-import static models.json.DummyDataUtils.createIHttpRequestResponse;
+import static mocks.DummyDataUtils.createEmptyIHttpRequestResponse;
+import static mocks.DummyDataUtils.createIHttpRequestResponse;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;

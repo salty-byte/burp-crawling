@@ -9,16 +9,19 @@ public class LogEntry {
   private String url;
   private String method;
   private boolean hasParameter;
+  private boolean duplicated;
+  private String duplicatedMessage;
   private String remark;
   private IHttpRequestResponse requestResponse;
 
   public LogEntry(final int number) {
-    this(number, "", "https://", "GET", false, "", null);
+    this(number, "", "https://", "GET", false, "", null, false, "");
   }
 
   public LogEntry(final int number, final String requestName, final String url,
       final String method, final boolean hasParameter, final String remark,
-      final IHttpRequestResponse requestResponse) {
+      final IHttpRequestResponse requestResponse, final boolean duplicated,
+      final String duplicatedMessage) {
     this.number = number;
     this.requestName = requestName;
     this.url = url;
@@ -26,22 +29,28 @@ public class LogEntry {
     this.hasParameter = hasParameter;
     this.remark = remark;
     this.requestResponse = requestResponse;
+    this.duplicated = duplicated;
+    this.duplicatedMessage = duplicatedMessage;
   }
 
   public Object getValueByKey(final LogEntryKey key) {
     switch (key) {
       case NUMBER:
-        return number;
+        return getNumber();
       case REQUEST_NAME:
-        return requestName;
+        return getRequestName();
       case URL:
-        return url;
+        return getUrl();
       case METHOD:
-        return method;
+        return getMethod();
       case HAS_PARAMETER:
-        return hasParameter;
+        return hasParameter();
+      case IS_DUPLICATED:
+        return isDuplicated();
+      case DUPLICATED_MESSAGE:
+        return getDuplicatedMessage();
       case REMARK:
-        return remark;
+        return getRemark();
       default:
         return "";
     }
@@ -63,7 +72,13 @@ public class LogEntry {
           setMethod((String) value);
           break;
         case HAS_PARAMETER:
-          setHasParameter((Boolean) value);
+          setHasParameter((boolean) value);
+          break;
+        case IS_DUPLICATED:
+          setDuplicated((boolean) value);
+          break;
+        case DUPLICATED_MESSAGE:
+          setDuplicatedMessage((String) value);
           break;
         case REMARK:
           setRemark((String) value);
@@ -113,6 +128,22 @@ public class LogEntry {
 
   public void setHasParameter(boolean hasParameter) {
     this.hasParameter = hasParameter;
+  }
+
+  public boolean isDuplicated() {
+    return duplicated;
+  }
+
+  public void setDuplicated(boolean duplicated) {
+    this.duplicated = duplicated;
+  }
+
+  public String getDuplicatedMessage() {
+    return duplicatedMessage;
+  }
+
+  public void setDuplicatedMessage(String duplicatedMessage) {
+    this.duplicatedMessage = duplicatedMessage;
   }
 
   public String getRemark() {

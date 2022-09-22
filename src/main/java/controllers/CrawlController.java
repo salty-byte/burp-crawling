@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import models.LogEntry;
 import models.json.CrawledData;
+import utils.CrawlingUtils;
 import utils.DialogUtils;
 import views.logtable.LogTable;
 import views.logtable.LogTableModel;
@@ -60,6 +61,12 @@ public class CrawlController {
 
     public void renumber() {
       logTableModel.renumber();
+    }
+
+    public void applyDuplicatedRequest() {
+      final var logEntries = logTableModel.getLogEntryAll();
+      CrawlingUtils.applyDuplicatedRequest(logEntries, callbacks.getHelpers());
+      logTableModel.updateAllRows();
     }
 
     public void exportCrawledData() {

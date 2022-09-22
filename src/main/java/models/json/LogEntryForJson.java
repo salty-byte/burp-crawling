@@ -9,6 +9,8 @@ public class LogEntryForJson {
   private final String url;
   private final String method;
   private final boolean hasParameter;
+  private final boolean duplicated;
+  private final String duplicatedMessage;
   private final String remark;
   private final RequestResponse requestResponse;
 
@@ -18,6 +20,8 @@ public class LogEntryForJson {
     this.url = entry.getUrl();
     this.method = entry.getMethod();
     this.hasParameter = entry.hasParameter();
+    this.duplicated = entry.isDuplicated();
+    this.duplicatedMessage = entry.getDuplicatedMessage();
     this.remark = entry.getRemark();
     final var iReqRes = entry.getRequestResponse();
     requestResponse = iReqRes == null ? null : new RequestResponse(iReqRes);
@@ -43,6 +47,14 @@ public class LogEntryForJson {
     return hasParameter;
   }
 
+  public boolean isDuplicated() {
+    return duplicated;
+  }
+
+  public String getDuplicatedMessage() {
+    return duplicatedMessage;
+  }
+
   public String getRemark() {
     return remark;
   }
@@ -59,7 +71,9 @@ public class LogEntryForJson {
         method,
         hasParameter,
         remark,
-        requestResponse == null ? null : requestResponse.toIHttpRequestResponse()
+        requestResponse == null ? null : requestResponse.toIHttpRequestResponse(),
+        duplicated,
+        duplicatedMessage
     );
   }
 }

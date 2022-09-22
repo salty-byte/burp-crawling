@@ -54,7 +54,9 @@ public class CrawlContextMenu implements IContextMenuFactory {
         requestInfo.getMethod(),
         !requestInfo.getParameters().isEmpty(),
         requestResponse.getComment(),
-        requestResponse
+        requestResponse,
+        false,
+        ""
     );
     logEntry.setRequestResponse(requestResponse);
     return logEntry;

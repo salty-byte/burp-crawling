@@ -1,7 +1,7 @@
 package models.json;
 
-import static models.json.DummyDataUtils.createEmptyLogEntry;
-import static models.json.DummyDataUtils.createLogEntry;
+import static mocks.DummyDataUtils.createEmptyLogEntry;
+import static mocks.DummyDataUtils.createLogEntry;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,6 +43,14 @@ class LogEntryForJsonTest {
         jsonStr.contains("\"hasParameter\":false"),
         String.format("%s has hasParameter", jsonStr)
     );
+    assertTrue(
+        jsonStr.contains("\"duplicated\":false"),
+        String.format("%s has duplicated", jsonStr)
+    );
+    assertTrue(
+        jsonStr.contains("\"duplicatedMessage\":\"\""),
+        String.format("%s has duplicatedMessage", jsonStr)
+    );
     assertTrue(jsonStr.contains("\"remark\":\"test\""), String.format("%s has remark", jsonStr));
 
     final var reqResBlock = jsonStr.split("requestResponse")[1];
@@ -70,7 +78,7 @@ class LogEntryForJsonTest {
   @Test
   void testFromJson() {
     final var jsonStr =
-        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"hasParameter\":true,\"remark\":\"test\","
+        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"remark\":\"test\","
             + "\"requestResponse\":{\"request\":[114,101,113,117,101,115,116],\"response\":[114,101,115,112,111,110,115,101],"
             + "\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}"
             + "}}";
@@ -80,6 +88,8 @@ class LogEntryForJsonTest {
     assertEquals("https://example.com", logEntryForJson.getUrl());
     assertEquals("GET", logEntryForJson.getMethod());
     assertTrue(logEntryForJson.hasParameter());
+    assertTrue(logEntryForJson.isDuplicated());
+    assertEquals("", logEntryForJson.getDuplicatedMessage());
     assertEquals("test", logEntryForJson.getRemark());
 
     final var requestResponse = logEntryForJson.getRequestResponse();

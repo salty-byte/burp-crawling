@@ -27,6 +27,11 @@ public class ControlPanel extends JPanel {
     renumberButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(renumberButton);
 
+    final var applyDuplicatedRequestButton = new JButton("重複判定");
+    applyDuplicatedRequestButton.addActionListener(e -> crawlHelper.applyDuplicatedRequest());
+    applyDuplicatedRequestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(applyDuplicatedRequestButton);
+
     final var importCrawledDataButton = new JButton("JSON追加");
     importCrawledDataButton.addActionListener(e -> crawlHelper.importCrawledData());
     importCrawledDataButton.setAlignmentX(Component.CENTER_ALIGNMENT);

@@ -109,6 +109,10 @@ public class LogTableModel extends AbstractTableModel {
     for (final var entry : entries) {
       entry.setNumber(++count);
     }
+    updateAllRows();
+  }
+
+  public void updateAllRows() {
     fireTableRowsUpdated(0, entries.size() - 1);
   }
 }
