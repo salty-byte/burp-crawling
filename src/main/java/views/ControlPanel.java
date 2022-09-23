@@ -32,6 +32,12 @@ public class ControlPanel extends JPanel {
     renumberButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(renumberButton);
 
+    final var applyRequestNameHashButton = new JButton("リクエスト名ハッシュ付与");
+    applyRequestNameHashButton.setToolTipText("リクエスト名ハッシュ付与");
+    applyRequestNameHashButton.addActionListener(e -> crawlHelper.applyRequestNameHash());
+    applyRequestNameHashButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(applyRequestNameHashButton);
+
     final var applyDuplicatedRequestButton = new JButton("重複判定");
     applyDuplicatedRequestButton.addActionListener(e -> crawlHelper.applyDuplicatedRequest());
     applyDuplicatedRequestButton.setAlignmentX(Component.CENTER_ALIGNMENT);

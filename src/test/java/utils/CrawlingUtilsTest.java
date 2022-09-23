@@ -101,6 +101,41 @@ class CrawlingUtilsTest {
     assertFalse(logEntries.get(9).isDuplicated());
   }
 
+  @Test
+  void testApplyRequestNameHash() {
+    final var logEntries = List.of(
+        createLogEntry(1, "TOP"),
+        createLogEntry(2, "TOP>ログイン"),
+        createLogEntry(3, "TOP>ログイン>ログイン"),
+        createLogEntry(4, "TOP>ログイン>ログイン"),
+        createLogEntry(5, "ログイン>マイページ"),
+        createLogEntry(6, "ログイン>マイページ>パスワード変更#2"),
+        createLogEntry(7, "ログイン>マイページ>パスワード変更>変更"),
+        createLogEntry(8, "TOP#a"),
+        createLogEntry(9, "TOP>ログイン"),
+        createLogEntry(10, "TOP>ログイン>SNSログイン"),
+        createLogEntry(11, "TOP>ログイン>SNSログイン#2"),
+        createLogEntry(12, "TOP>ログイン>SNSログイン#4"),
+        createLogEntry(13, ""),
+        createLogEntry(14, "#12")
+    );
+    CrawlingUtils.applyRequestNameHash(logEntries);
+    assertEquals("TOP", logEntries.get(0).getRequestName());
+    assertEquals("TOP>ログイン", logEntries.get(1).getRequestName());
+    assertEquals("TOP>ログイン>ログイン", logEntries.get(2).getRequestName());
+    assertEquals("TOP>ログイン>ログイン#2", logEntries.get(3).getRequestName());
+    assertEquals("ログイン>マイページ", logEntries.get(4).getRequestName());
+    assertEquals("ログイン>マイページ>パスワード変更", logEntries.get(5).getRequestName());
+    assertEquals("ログイン>マイページ>パスワード変更>変更", logEntries.get(6).getRequestName());
+    assertEquals("TOP", logEntries.get(7).getRequestName());
+    assertEquals("TOP>ログイン", logEntries.get(8).getRequestName());
+    assertEquals("TOP>ログイン>SNSログイン", logEntries.get(9).getRequestName());
+    assertEquals("TOP>ログイン>SNSログイン#2", logEntries.get(10).getRequestName());
+    assertEquals("TOP>ログイン>SNSログイン#3", logEntries.get(11).getRequestName());
+    assertEquals("", logEntries.get(12).getRequestName());
+    assertEquals("", logEntries.get(13).getRequestName());
+  }
+
   @ParameterizedTest
   @CsvSource({
       "https://example.com/test, https://example.com:443/test",

@@ -102,6 +102,11 @@ public class DummyDataUtils {
     return createLogEntry(1, createIHttpRequestResponse());
   }
 
+  public static LogEntry createLogEntry(final int number, final String requestName) {
+    return new LogEntry(number, requestName, "https://example.com", "GET", false, "test", null,
+        false, "");
+  }
+
   public static LogEntry createLogEntry(final int number, final byte[] request) {
     return createLogEntry(number, createIHttpRequestResponse(request, null, null));
   }

@@ -72,6 +72,12 @@ public class CrawlController {
       logTableModel.renumber();
     }
 
+    public void applyRequestNameHash() {
+      final var logEntries = logTableModel.getLogEntryAll();
+      CrawlingUtils.applyRequestNameHash(logEntries);
+      logTableModel.updateAllRows();
+    }
+
     public void applyDuplicatedRequest() {
       final var logEntries = logTableModel.getLogEntryAll();
       CrawlingUtils.applyDuplicatedRequest(logEntries, callbacks.getHelpers());

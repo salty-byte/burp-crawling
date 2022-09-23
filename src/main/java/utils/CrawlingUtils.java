@@ -64,4 +64,28 @@ public class CrawlingUtils {
       }
     }
   }
+
+  public static void applyRequestNameHash(final List<LogEntry> entries) {
+    final var mark = "#";
+    int count = 0;
+    String checkName = "";
+    for (final var entry : entries) {
+      final var currentRequestName = entry.getRequestName();
+      if (currentRequestName == null) {
+        count = 0;
+        checkName = "";
+        continue;
+      }
+
+      final var requestName = currentRequestName.split(mark)[0];
+      if (!requestName.isEmpty() && requestName.equals(checkName)) {
+        count++;
+        entry.setRequestName(String.format("%s%s%s", requestName, mark, count));
+      } else {
+        count = 1;
+        checkName = requestName;
+        entry.setRequestName(requestName);
+      }
+    }
+  }
 }
