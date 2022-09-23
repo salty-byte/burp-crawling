@@ -43,24 +43,29 @@ public class LogTableModel extends AbstractTableModel {
 
   @Override
   public Class<?> getColumnClass(int columnIndex) {
-    return columns.get(columnIndex).getKey().getClassification();
+    return getLogEntryKey(columnIndex).getClassification();
   }
 
   @Override
   public String getColumnName(int columnIndex) {
-    return columns.get(columnIndex).getKey().getDisplayName();
+    return getLogEntryKey(columnIndex).getDisplayName();
   }
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    return entries.get(rowIndex).getValueByKey(columns.get(columnIndex).getKey());
+    final var key = getLogEntryKey(columnIndex);
+    return entries.get(rowIndex).getValueByKey(key);
   }
 
   @Override
   public void setValueAt(Object value, int rowIndex, int columnIndex) {
-    final var key = columns.get(columnIndex).getKey();
+    final var key = getLogEntryKey(columnIndex);
     entries.get(rowIndex).setValueByKey(key, value);
     fireTableCellUpdated(rowIndex, columnIndex);
+  }
+
+  public LogEntryKey getLogEntryKey(final int columnIndex) {
+    return columns.get(columnIndex).getKey();
   }
 
   public List<LogEntry> getLogEntryAll() {
