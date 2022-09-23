@@ -3,6 +3,7 @@ package views.logtable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.table.AbstractTableModel;
@@ -98,6 +99,14 @@ public class LogTableModel extends AbstractTableModel {
   public void removeLogEntryAt(final int index) {
     entries.remove(index);
     fireTableRowsDeleted(index, index);
+  }
+
+  public void removeLogEntriesAt(final int[] indices) {
+    Arrays.stream(indices)
+        .distinct()
+        .boxed()
+        .sorted(Comparator.reverseOrder())
+        .forEachOrdered(this::removeLogEntryAt);
   }
 
   public void renumber() {

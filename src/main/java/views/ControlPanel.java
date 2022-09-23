@@ -22,6 +22,11 @@ public class ControlPanel extends JPanel {
     addEmptyLogEntryButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(addEmptyLogEntryButton);
 
+    final var removeLogEntriesButton = new JButton("行削除");
+    removeLogEntriesButton.addActionListener(e -> crawlHelper.removeLogEntries());
+    removeLogEntriesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(removeLogEntriesButton);
+
     final var renumberButton = new JButton("No振り直し");
     renumberButton.addActionListener(e -> crawlHelper.renumber());
     renumberButton.setAlignmentX(Component.CENTER_ALIGNMENT);

@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import models.LogEntry;
@@ -53,10 +54,18 @@ public class CrawlController {
   public class CrawlHelper {
 
     public void addEmptyLogEntry() {
-      final int rowCount = logTableModel.getRowCount();
+      final var rowCount = logTableModel.getRowCount();
       final var row = logTable.getSelectedRow();
       final var insertIndex = row == -1 ? rowCount : logTable.convertRowIndexToModel(row) + 1;
       logTableModel.addLogEntryAt(new LogEntry(rowCount + 1), insertIndex);
+    }
+
+    public void removeLogEntries() {
+      final var rows = logTable.getSelectedRows();
+      final var indices = Arrays.stream(rows)
+          .map(logTable::convertRowIndexToModel)
+          .toArray();
+      logTableModel.removeLogEntriesAt(indices);
     }
 
     public void renumber() {
