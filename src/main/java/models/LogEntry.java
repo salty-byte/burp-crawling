@@ -12,16 +12,17 @@ public class LogEntry {
   private boolean duplicated;
   private String duplicatedMessage;
   private String remark;
+  private TargetType targetType;
   private IHttpRequestResponse requestResponse;
 
   public LogEntry(final int number) {
-    this(number, "", "https://", "GET", false, "", null, false, "");
+    this(number, "", "https://", "GET", false, "", null, false, "", TargetType.NONE);
   }
 
   public LogEntry(final int number, final String requestName, final String url,
       final String method, final boolean hasParameter, final String remark,
       final IHttpRequestResponse requestResponse, final boolean duplicated,
-      final String duplicatedMessage) {
+      final String duplicatedMessage, final TargetType targetType) {
     this.number = number;
     this.requestName = requestName;
     this.url = url;
@@ -31,6 +32,7 @@ public class LogEntry {
     this.requestResponse = requestResponse;
     this.duplicated = duplicated;
     this.duplicatedMessage = duplicatedMessage;
+    this.targetType = targetType;
   }
 
   public Object getValueByKey(final LogEntryKey key) {
@@ -49,6 +51,10 @@ public class LogEntry {
         return isDuplicated();
       case DUPLICATED_MESSAGE:
         return getDuplicatedMessage();
+      case TARGET_AUTO:
+        return targetType.hasAuto();
+      case TARGET_MANUAL:
+        return targetType.hasManual();
       case REMARK:
         return getRemark();
       default:
@@ -79,6 +85,12 @@ public class LogEntry {
           break;
         case DUPLICATED_MESSAGE:
           setDuplicatedMessage((String) value);
+          break;
+        case TARGET_AUTO:
+          setAutoTarget((boolean) value);
+          break;
+        case TARGET_MANUAL:
+          setManualTarget((boolean) value);
           break;
         case REMARK:
           setRemark((String) value);
@@ -144,6 +156,22 @@ public class LogEntry {
 
   public void setDuplicatedMessage(String duplicatedMessage) {
     this.duplicatedMessage = duplicatedMessage;
+  }
+
+  public TargetType getTargetType() {
+    return targetType;
+  }
+
+  public void setTargetType(TargetType targetType) {
+    this.targetType = targetType;
+  }
+
+  public void setAutoTarget(boolean hasAuto) {
+    targetType = targetType.setAuto(hasAuto);
+  }
+
+  public void setManualTarget(boolean hasManual) {
+    targetType = targetType.setManual(hasManual);
   }
 
   public String getRemark() {

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JMenuItem;
 import models.LogEntry;
+import models.TargetType;
 import views.logtable.LogTableModel;
 
 public class CrawlContextMenu implements IContextMenuFactory {
@@ -56,7 +57,8 @@ public class CrawlContextMenu implements IContextMenuFactory {
         requestResponse.getComment(),
         requestResponse,
         false,
-        ""
+        "",
+        TargetType.NONE
     );
     logEntry.setRequestResponse(requestResponse);
     return logEntry;

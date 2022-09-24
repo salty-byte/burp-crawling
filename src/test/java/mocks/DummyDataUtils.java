@@ -8,6 +8,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import models.LogEntry;
+import models.TargetType;
 
 public class DummyDataUtils {
 
@@ -104,7 +105,7 @@ public class DummyDataUtils {
 
   public static LogEntry createLogEntry(final int number, final String requestName) {
     return new LogEntry(number, requestName, "https://example.com", "GET", false, "test", null,
-        false, "");
+        false, "", TargetType.NONE);
   }
 
   public static LogEntry createLogEntry(final int number, final byte[] request) {
@@ -114,7 +115,7 @@ public class DummyDataUtils {
   public static LogEntry createLogEntry(final int number,
       final IHttpRequestResponse requestResponse) {
     return new LogEntry(number, "top", "https://example.com", "GET", false, "test", requestResponse,
-        false, "");
+        false, "", TargetType.NONE);
   }
 
   public static LogEntry createEmptyLogEntry() {

@@ -8,6 +8,8 @@ public enum LogEntryKey {
   HAS_PARAMETER(Boolean.class, "パラメータ有無", 100, false),
   IS_DUPLICATED(Boolean.class, "重複", 100, false),
   DUPLICATED_MESSAGE(String.class, "重複箇所", 100, false),
+  TARGET_AUTO(Boolean.class, "自動対象", 60, false),
+  TARGET_MANUAL(Boolean.class, "手動対象", 60, false),
   REMARK(String.class, "備考", 300, true),
   ;
 
