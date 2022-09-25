@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import models.LogEntry;
@@ -14,6 +14,7 @@ import utils.CrawlingUtils;
 import utils.DialogUtils;
 import views.logtable.LogTable;
 import views.logtable.LogTableModel;
+import views.logtable.LogTableMouseListener;
 
 public class CrawlController {
 
@@ -29,6 +30,9 @@ public class CrawlController {
     logTableModel = new LogTableModel();
     logTable = new LogTable(logTableModel, logDetailController);
     helper = new CrawlHelper();
+
+    // later settings
+    logTable.addMouseListener(new LogTableMouseListener(helper, logTable));
   }
 
   public CrawlHelper getHelper() {
@@ -61,11 +65,12 @@ public class CrawlController {
     }
 
     public void removeLogEntries() {
-      final var rows = logTable.getSelectedRows();
-      final var indices = Arrays.stream(rows)
-          .map(logTable::convertRowIndexToModel)
-          .toArray();
+      final var indices = logTable.getSelectedModelIndices();
       logTableModel.removeLogEntriesAt(indices);
+    }
+
+    public void removeLogEntries(final List<LogEntry> logEntries) {
+      logTableModel.removeLogEntries(logEntries);
     }
 
     public void renumber() {

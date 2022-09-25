@@ -85,4 +85,11 @@ public class LogTable extends JTable {
     final var chunks = text.split("(?<=\\G.{100})");
     return String.join("\n", chunks);
   }
+
+  public int[] getSelectedModelIndices() {
+    return Arrays.stream(getSelectedRows())
+        .map(this::convertRowIndexToModel)
+        .sorted()
+        .toArray();
+  }
 }

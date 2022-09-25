@@ -3,7 +3,6 @@ package views.logtable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import models.LogEntry;
@@ -17,9 +16,7 @@ class LogTableTransferable implements Transferable {
   LogTableTransferable(final LogTable logTable, final DataFlavor dataFlavor) {
     this.dataFlavor = dataFlavor;
     logTableModel = logTable.getModel();
-    transferredIndices = Arrays.stream(logTable.getSelectedRows())
-        .map(logTable::convertRowIndexToModel)
-        .toArray();
+    transferredIndices = logTable.getSelectedModelIndices();
   }
 
   @Override

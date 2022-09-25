@@ -101,9 +101,21 @@ public class LogTableModel extends AbstractTableModel {
     fireTableRowsInserted(index, index + logEntries.size() - 1);
   }
 
+  public void removeLogEntry(final LogEntry logEntry) {
+    final var index = entries.indexOf(logEntry);
+    removeLogEntryAt(index);
+  }
+
   public void removeLogEntryAt(final int index) {
+    if (index < 0 || entries.size() <= index) {
+      return;
+    }
     entries.remove(index);
     fireTableRowsDeleted(index, index);
+  }
+
+  public void removeLogEntries(final List<LogEntry> logEntries) {
+    logEntries.forEach(this::removeLogEntry);
   }
 
   public void removeLogEntriesAt(final int[] indices) {
