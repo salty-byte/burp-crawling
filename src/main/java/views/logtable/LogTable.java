@@ -55,14 +55,14 @@ public class LogTable extends JTable {
         return;
       }
 
-      final var selectedRow = getSelectedRow();
-      if (selectedRow == -1) {
+      final var selectedRowIndex = getSelectedRow();
+      if (selectedRowIndex == -1) {
         logDetailController.clear();
         return;
       }
 
-      final var rowIndex = convertRowIndexToModel(selectedRow);
-      final var logEntry = getModel().getLogEntryAt(rowIndex);
+      final var modelRowIndex = convertRowIndexToModel(selectedRowIndex);
+      final var logEntry = getModel().getLogEntryAt(modelRowIndex);
       logDetailController.setMessages(logEntry);
     });
   }
@@ -75,13 +75,19 @@ public class LogTable extends JTable {
   @Override
   public String getToolTipText(final MouseEvent e) {
     final var point = e.getPoint();
-    final var rowIndex = convertRowIndexToModel(rowAtPoint(point));
-    final var columnIndex = convertColumnIndexToModel(columnAtPoint(point));
-    if (!getModel().getLogEntryKey(columnIndex).hasTooltip()) {
+    final var rowIndex = rowAtPoint(point);
+    final var columnIndex = columnAtPoint(point);
+    if (rowIndex == -1 || columnIndex == -1) {
       return null;
     }
 
-    final var text = getModel().getValueAt(rowIndex, columnIndex).toString();
+    final var modelRowIndex = convertRowIndexToModel(rowIndex);
+    final var modelColumnIndex = convertColumnIndexToModel(columnIndex);
+    if (!getModel().getLogEntryKey(modelColumnIndex).hasTooltip()) {
+      return null;
+    }
+
+    final var text = getModel().getValueAt(modelRowIndex, modelColumnIndex).toString();
     final var chunks = text.split("(?<=\\G.{100})");
     return String.join("\n", chunks);
   }
