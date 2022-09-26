@@ -1,6 +1,8 @@
 package views.logtable;
 
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -60,6 +62,19 @@ class LogTableRowTransferHandler extends TransferHandler {
       e.printStackTrace();
     }
     return false;
+  }
+
+  @Override
+  public void exportToClipboard(JComponent c, Clipboard clipboard, int action)
+      throws IllegalStateException {
+    if (!(c instanceof LogTable)) {
+      super.exportToClipboard(c, clipboard, action);
+      return;
+    }
+
+    final var logTable = (LogTable) c;
+    final var ss = new StringSelection(logTable.selectionsToString());
+    clipboard.setContents(ss, ss);
   }
 
   @Override

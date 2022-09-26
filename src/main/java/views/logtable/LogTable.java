@@ -4,6 +4,9 @@ import controllers.LogDetailController;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import javax.swing.DropMode;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -97,5 +100,22 @@ public class LogTable extends JTable {
         .map(this::convertRowIndexToModel)
         .sorted()
         .toArray();
+  }
+
+  public String selectionsToString() {
+    final var columns = Arrays.stream(getSelectedColumns())
+        .map(this::convertColumnIndexToModel)
+        .toArray();
+
+    final IntFunction<String> rowToString = i ->
+        Arrays.stream(columns).mapToObj(j -> getValueAt(i, j))
+            .filter(Objects::nonNull)
+            .map(Object::toString)
+            .collect(Collectors.joining("\t"));
+
+    return Arrays.stream(getSelectedRows())
+        .map(this::convertRowIndexToModel)
+        .mapToObj(rowToString)
+        .collect(Collectors.joining("\n"));
   }
 }
