@@ -1,6 +1,6 @@
 package views;
 
-import controllers.CrawlController.CrawlHelper;
+import controllers.CrawlHelper;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.BoxLayout;

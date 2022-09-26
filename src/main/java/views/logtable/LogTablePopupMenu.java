@@ -1,6 +1,6 @@
 package views.logtable;
 
-import controllers.CrawlController.CrawlHelper;
+import controllers.CrawlHelper;
 import java.awt.Component;
 import java.util.List;
 import javax.swing.JMenuItem;

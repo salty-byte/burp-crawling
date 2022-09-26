@@ -1,6 +1,6 @@
 package views.logtable;
 
-import controllers.CrawlController.CrawlHelper;
+import controllers.CrawlHelper;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;

@@ -20,7 +20,7 @@ public class CrawlingUtils {
   }
 
   public static void applyDuplicatedRequest(final List<LogEntry> entries,
-      final IExtensionHelpers helpers) {
+      final IExtensionHelpers helper) {
     // prepare checklist
     final var checkMap = new HashMap<Integer, String>();
     for (int i = 0; i < entries.size() - 1; i++) {
@@ -28,7 +28,7 @@ public class CrawlingUtils {
       if (reqRes == null) {
         continue;
       }
-      final var requestInfo = helpers.analyzeRequest(reqRes.getHttpService(), reqRes.getRequest());
+      final var requestInfo = helper.analyzeRequest(reqRes.getHttpService(), reqRes.getRequest());
       final var paramsStr = requestInfo.getParameters()
           .stream()
           .map(p -> p.getType() + p.getName())
