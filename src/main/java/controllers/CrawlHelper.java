@@ -103,9 +103,6 @@ public class CrawlHelper {
     } catch (IOException e) {
       DialogUtils.showError("JSON追加時にエラーが発生しました。", "エラー");
       e.printStackTrace();
-      return;
     }
-
-    DialogUtils.showInfo("JSON追加が完了しました。", "完了");
   }
 }
