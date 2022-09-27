@@ -84,13 +84,12 @@ public class LogTable extends JTable {
       return null;
     }
 
-    final var modelRowIndex = convertRowIndexToModel(rowIndex);
     final var modelColumnIndex = convertColumnIndexToModel(columnIndex);
     if (!getModel().getLogEntryKey(modelColumnIndex).hasTooltip()) {
       return null;
     }
 
-    final var text = getModel().getValueAt(modelRowIndex, modelColumnIndex).toString();
+    final var text = getValueAt(rowIndex, columnIndex).toString();
     final var chunks = text.split("(?<=\\G.{100})");
     return String.join("\n", chunks);
   }
@@ -103,9 +102,7 @@ public class LogTable extends JTable {
   }
 
   public String selectionsToString() {
-    final var columns = Arrays.stream(getSelectedColumns())
-        .map(this::convertColumnIndexToModel)
-        .toArray();
+    final var columns = getSelectedColumns();
 
     final IntFunction<String> rowToString = i ->
         Arrays.stream(columns).mapToObj(j -> getValueAt(i, j))
@@ -114,7 +111,6 @@ public class LogTable extends JTable {
             .collect(Collectors.joining("\t"));
 
     return Arrays.stream(getSelectedRows())
-        .map(this::convertRowIndexToModel)
         .mapToObj(rowToString)
         .collect(Collectors.joining("\n"));
   }
