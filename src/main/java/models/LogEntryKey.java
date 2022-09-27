@@ -41,4 +41,11 @@ public enum LogEntryKey {
   public boolean hasTooltip() {
     return hasTooltip;
   }
+
+  public Object parseFromString(final String str) {
+    if (classification == Boolean.class) {
+      return Boolean.parseBoolean(str);
+    }
+    return classification.cast(str);
+  }
 }

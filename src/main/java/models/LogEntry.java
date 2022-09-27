@@ -66,7 +66,7 @@ public class LogEntry {
     try {
       switch (key) {
         case NUMBER:
-          setNumber((int) value);
+          setNumber((Integer) value);
           break;
         case REQUEST_NAME:
           setRequestName((String) value);
@@ -78,19 +78,19 @@ public class LogEntry {
           setMethod((String) value);
           break;
         case HAS_PARAMETER:
-          setHasParameter((boolean) value);
+          setHasParameter((Boolean) value);
           break;
         case IS_DUPLICATED:
-          setDuplicated((boolean) value);
+          setDuplicated((Boolean) value);
           break;
         case DUPLICATED_MESSAGE:
           setDuplicatedMessage((String) value);
           break;
         case TARGET_AUTO:
-          setAutoTarget((boolean) value);
+          setAutoTarget((Boolean) value);
           break;
         case TARGET_MANUAL:
-          setManualTarget((boolean) value);
+          setManualTarget((Boolean) value);
           break;
         case REMARK:
           setRemark((String) value);

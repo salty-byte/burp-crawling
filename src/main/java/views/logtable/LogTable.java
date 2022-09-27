@@ -11,6 +11,7 @@ import javax.swing.DropMode;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
+import models.LogEntry;
 import models.LogEntryKey;
 
 public class LogTable extends JTable {
@@ -64,8 +65,7 @@ public class LogTable extends JTable {
         return;
       }
 
-      final var modelRowIndex = convertRowIndexToModel(selectedRowIndex);
-      final var logEntry = getModel().getLogEntryAt(modelRowIndex);
+      final var logEntry = getLogEntryAt(selectedRowIndex);
       logDetailController.setMessages(logEntry);
     });
   }
@@ -84,14 +84,23 @@ public class LogTable extends JTable {
       return null;
     }
 
-    final var modelColumnIndex = convertColumnIndexToModel(columnIndex);
-    if (!getModel().getLogEntryKey(modelColumnIndex).hasTooltip()) {
+    if (!getLogEntryKeyAt(columnIndex).hasTooltip()) {
       return null;
     }
 
     final var text = getValueAt(rowIndex, columnIndex).toString();
     final var chunks = text.split("(?<=\\G.{100})");
     return String.join("\n", chunks);
+  }
+
+  public LogEntry getLogEntryAt(final int rowIndex) {
+    final var modelRowIndex = convertRowIndexToModel(rowIndex);
+    return getModel().getLogEntryAt(modelRowIndex);
+  }
+
+  public LogEntryKey getLogEntryKeyAt(final int columnIndex) {
+    final var modelColumnIndex = convertColumnIndexToModel(columnIndex);
+    return getModel().getLogEntryKey(modelColumnIndex);
   }
 
   public int[] getSelectedModelIndices() {
@@ -106,12 +115,28 @@ public class LogTable extends JTable {
 
     final IntFunction<String> rowToString = i ->
         Arrays.stream(columns).mapToObj(j -> getValueAt(i, j))
-            .filter(Objects::nonNull)
-            .map(Object::toString)
+            .map(v -> Objects.toString(v, ""))
             .collect(Collectors.joining("\t"));
 
     return Arrays.stream(getSelectedRows())
         .mapToObj(rowToString)
         .collect(Collectors.joining("\n"));
+  }
+
+  public void pasteToSelectedCells(final String data) {
+    if (data == null || data.isEmpty()) {
+      return;
+    }
+
+    final var columns = getSelectedColumns();
+    final var rows = getSelectedRows();
+    final var lines = data.split("\n");
+    for (int i = 0; i < lines.length && i < rows.length; i++) {
+      final var values = lines[i].split("\t");
+      for (int j = 0; j < values.length && j < columns.length; j++) {
+        final var value = getLogEntryKeyAt(columns[j]).parseFromString(values[j]);
+        setValueAt(value, rows[i], columns[j]);
+      }
+    }
   }
 }

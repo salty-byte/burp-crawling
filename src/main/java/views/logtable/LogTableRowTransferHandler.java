@@ -4,6 +4,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -40,6 +42,30 @@ class LogTableRowTransferHandler extends TransferHandler {
 
   @Override
   public boolean importData(final TransferSupport support) {
+    if (!support.isDrop()) {
+      return pasteToTable(support);
+    }
+    return copyTableRows(support);
+  }
+
+  private boolean pasteToTable(final TransferSupport support) {
+    final var component = support.getComponent();
+    if (!(component instanceof LogTable)) {
+      return false;
+    }
+    
+    try {
+      final var data = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+      final var table = (LogTable) component;
+      table.pasteToSelectedCells(data);
+      return true;
+    } catch (UnsupportedFlavorException | IOException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  private boolean copyTableRows(final TransferSupport support) {
     if (!(support.getDropLocation() instanceof JTable.DropLocation)) {
       return false;
     }
