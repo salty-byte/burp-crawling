@@ -2,6 +2,7 @@ package controllers;
 
 import burp.IExtensionHelpers;
 import com.google.gson.Gson;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,6 +21,10 @@ public class CrawlHelper {
   private final IExtensionHelpers extensionHelper;
   private final LogTable logTable;
   private final LogTableModel logTableModel;
+
+  public CrawlHelper(final LogTable logTable) {
+    this(null, logTable);
+  }
 
   public CrawlHelper(final IExtensionHelpers extensionHelper, final LogTable logTable) {
     this.extensionHelper = extensionHelper;
@@ -93,13 +98,21 @@ public class CrawlHelper {
       return;
     }
     final var file = fileChooser.getSelectedFile();
+    importCrawledData(file);
+  }
+  
+  public void importCrawledData(final File file) {
+    importCrawledDataAt(file, logTable.getRowCount());
+  }
+
+  public void importCrawledDataAt(final File file, final int index) {
     if (!file.exists()) {
       DialogUtils.showError("ファイルが存在しません。", "エラー");
     }
 
     try (final var reader = new FileReader(file)) {
       final var crawledData = new Gson().fromJson(reader, CrawledData.class);
-      logTableModel.addLogEntries(crawledData.toLogEntries());
+      logTableModel.addLogEntriesAt(crawledData.toLogEntries(), index);
     } catch (IOException e) {
       DialogUtils.showError("JSON追加時にエラーが発生しました。", "エラー");
       e.printStackTrace();

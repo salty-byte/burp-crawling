@@ -1,10 +1,12 @@
 package views.logtable;
 
+import controllers.CrawlHelper;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -16,23 +18,35 @@ import models.LogEntry;
 
 class LogTableRowTransferHandler extends TransferHandler {
 
-  private final DataFlavor dataFlavor;
+  private final DataFlavor rowDataFlavor;
   private int insertIndex;
 
   LogTableRowTransferHandler() {
     super();
-    dataFlavor = new DataFlavor(List.class, "List of items");
+    rowDataFlavor = new DataFlavor(List.class, "List of table rows");
     insertIndex = -1;
   }
 
   @Override
   protected Transferable createTransferable(final JComponent c) {
-    return new LogTableTransferable((LogTable) c, dataFlavor);
+    return new LogTableTransferable((LogTable) c, rowDataFlavor);
   }
 
   @Override
   public boolean canImport(final TransferSupport support) {
-    return support.isDrop() && support.isDataFlavorSupported(dataFlavor);
+    return support.isDrop() && (canImportTableRows(support) || canImportLocalFile(support));
+  }
+
+  private boolean canImportString(final TransferSupport support) {
+    return support.isDataFlavorSupported(DataFlavor.stringFlavor);
+  }
+
+  private boolean canImportTableRows(final TransferSupport support) {
+    return support.isDataFlavorSupported(rowDataFlavor);
+  }
+
+  private boolean canImportLocalFile(final TransferSupport support) {
+    return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
   }
 
   @Override
@@ -42,52 +56,72 @@ class LogTableRowTransferHandler extends TransferHandler {
 
   @Override
   public boolean importData(final TransferSupport support) {
-    if (!support.isDrop()) {
+    try {
+      if (support.isDrop()) {
+        return importDataWithDrop(support);
+      } else {
+        return importDataWithoutDrop(support);
+      }
+    } catch (IOException | UnsupportedFlavorException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  private boolean importDataWithoutDrop(final TransferSupport support)
+      throws IOException, UnsupportedFlavorException {
+    if (canImportString(support)) {
       return pasteToTable(support);
     }
-    return copyTableRows(support);
+    return false;
   }
 
-  private boolean pasteToTable(final TransferSupport support) {
-    final var component = support.getComponent();
-    if (!(component instanceof LogTable)) {
-      return false;
+  private boolean importDataWithDrop(final TransferSupport support)
+      throws IOException, UnsupportedFlavorException {
+    if (canImportTableRows(support)) {
+      return copyTableRows(support);
     }
-    
-    try {
-      final var data = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
-      final var table = (LogTable) component;
-      table.pasteToSelectedCells(data);
-      return true;
-    } catch (UnsupportedFlavorException | IOException e) {
-      e.printStackTrace();
+    if (canImportLocalFile(support)) {
+      return importLocalFile(support);
     }
     return false;
   }
 
-  private boolean copyTableRows(final TransferSupport support) {
-    if (!(support.getDropLocation() instanceof JTable.DropLocation)) {
-      return false;
-    }
+  private boolean pasteToTable(final TransferSupport support)
+      throws IOException, UnsupportedFlavorException {
+    final var table = (LogTable) support.getComponent();
+    final var data = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+    table.pasteToSelectedCells(data);
+    return true;
+  }
 
-    try {
-      final var dropLocation = (JTable.DropLocation) support.getDropLocation();
-      final var table = (LogTable) support.getComponent();
-      final var tableModel = table.getModel();
-      final int maxIndex = table.getRowCount();
-      final int droppedIndex = dropLocation.getRow();
-      insertIndex = droppedIndex < 0 ? maxIndex : Math.min(droppedIndex, maxIndex);
+  private boolean copyTableRows(final TransferSupport support)
+      throws IOException, UnsupportedFlavorException {
+    final var dropLocation = (JTable.DropLocation) support.getDropLocation();
+    final var table = (LogTable) support.getComponent();
+    insertIndex = table.calcInsertIndex(dropLocation.getRow());
 
-      @SuppressWarnings("unchecked") final var logEntries = (List<LogEntry>) support
-          .getTransferable().getTransferData(dataFlavor);
-      tableModel.addLogEntriesAt(logEntries, insertIndex);
-      table.getSelectionModel()
-          .addSelectionInterval(insertIndex, insertIndex + logEntries.size() - 1);
-      return true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return false;
+    @SuppressWarnings("unchecked") final var logEntries = (List<LogEntry>) support.getTransferable()
+        .getTransferData(rowDataFlavor);
+    table.getModel().addLogEntriesAt(logEntries, insertIndex);
+    table.getSelectionModel()
+        .addSelectionInterval(insertIndex, insertIndex + logEntries.size() - 1);
+    return true;
+  }
+
+  private boolean importLocalFile(final TransferSupport support)
+      throws IOException, UnsupportedFlavorException {
+    final var dropLocation = (JTable.DropLocation) support.getDropLocation();
+    final var table = (LogTable) support.getComponent();
+    insertIndex = table.calcInsertIndex(dropLocation.getRow());
+
+    @SuppressWarnings("unchecked") final var files = (List<File>) support.getTransferable()
+        .getTransferData(DataFlavor.javaFileListFlavor);
+    final var crawlHelper = new CrawlHelper(table);
+    files.stream()
+        .sorted(Comparator.reverseOrder())
+        .forEach(f -> crawlHelper.importCrawledDataAt(f, insertIndex));
+    return true;
   }
 
   @Override

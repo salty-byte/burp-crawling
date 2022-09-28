@@ -139,4 +139,9 @@ public class LogTable extends JTable {
       }
     }
   }
+
+  public int calcInsertIndex(final int index) {
+    final int maxIndex = getRowCount();
+    return index < 0 ? maxIndex : Math.min(index, maxIndex);
+  }
 }
