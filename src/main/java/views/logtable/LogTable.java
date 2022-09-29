@@ -30,7 +30,7 @@ public class LogTable extends JTable {
 
     // settings to drag and drop some rows
     setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    setTransferHandler(new LogTableRowTransferHandler());
+    setTransferHandler(new LogTableTransferHandler());
     setDropMode(DropMode.INSERT_ROWS);
     setDragEnabled(true);
     setFillsViewportHeight(true);

@@ -16,12 +16,12 @@ import javax.swing.JTable;
 import javax.swing.TransferHandler;
 import models.LogEntry;
 
-class LogTableRowTransferHandler extends TransferHandler {
+class LogTableTransferHandler extends TransferHandler {
 
   private final DataFlavor rowDataFlavor;
   private int insertIndex;
 
-  LogTableRowTransferHandler() {
+  LogTableTransferHandler() {
     super();
     rowDataFlavor = new DataFlavor(List.class, "List of table rows");
     insertIndex = -1;
