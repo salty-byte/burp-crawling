@@ -40,7 +40,7 @@ class CrawledDataTest {
   @Test
   void testFromJson() {
     final var jsonStr = "{\"version\":\"1.0\",\"entries\":["
-        + "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"hasParameter\":false,\"duplicated\":false,\"duplicatedMessage\":\"\",\"remark\":\"test\",\"requestResponse\":{\"request\":[114,101,113,117,101,115,116],\"response\":[114,101,115,112,111,110,115,101],\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}}"
+        + "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"hasParameter\":false,\"duplicated\":false,\"duplicatedMessage\":\"\",\"remark\":\"test\",\"colorType\":1,\"requestResponse\":{\"request\":[114,101,113,117,101,115,116],\"response\":[114,101,115,112,111,110,115,101],\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}}"
         + "]}";
     final var crawledData = new Gson().fromJson(jsonStr, CrawledData.class);
     assertEquals("1.0", crawledData.getVersion());
@@ -53,6 +53,8 @@ class CrawledDataTest {
     assertFalse(logEntryForJson.hasParameter());
     assertFalse(logEntryForJson.isDuplicated());
     assertEquals("", logEntryForJson.getDuplicatedMessage());
+    assertEquals((byte) 0x0, logEntryForJson.getTargetType());
+    assertEquals((byte) 0x1, logEntryForJson.getColorType());
     assertEquals("test", logEntryForJson.getRemark());
 
     final var requestResponse = logEntryForJson.getRequestResponse();

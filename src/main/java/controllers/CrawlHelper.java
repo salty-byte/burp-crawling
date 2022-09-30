@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import models.ColorType;
 import models.LogEntry;
 import models.json.CrawledData;
 import utils.CrawlingUtils;
@@ -64,6 +65,11 @@ public class CrawlHelper {
     logTableModel.updateAllRows();
   }
 
+  public void setLogEntriesColor(final ColorType colorType, final List<LogEntry> logEntries) {
+    logEntries.forEach(e -> e.setColorType(colorType));
+    logTableModel.updateAllRows();
+  }
+
   public void exportCrawledData() {
     final var fileChooser = new JFileChooser();
     int selected = fileChooser.showOpenDialog(null);
@@ -100,7 +106,7 @@ public class CrawlHelper {
     final var file = fileChooser.getSelectedFile();
     importCrawledData(file);
   }
-  
+
   public void importCrawledData(final File file) {
     importCrawledDataAt(file, logTable.getRowCount());
   }

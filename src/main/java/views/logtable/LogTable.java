@@ -41,15 +41,20 @@ public class LogTable extends JTable {
       final int columnIndex) {
     final var component = super.prepareRenderer(renderer, rowIndex, columnIndex);
     final var selectedRows = getSelectedRows();
+    final var colorType = getLogEntryAt(rowIndex).getColorType();
 
     if (Arrays.stream(selectedRows).anyMatch(r -> r == rowIndex)) {
-      component.setBackground(getSelectionBackground());
-      component.setForeground(getSelectionForeground());
+      final var background = colorType.getSelectionBackground();
+      final var foreground = colorType.getSelectionForeground();
+      final var nextBackground = background == null ? getSelectionBackground() : background;
+      final var nextForeground = foreground == null ? getSelectionForeground() : foreground;
+      component.setBackground(nextBackground);
+      component.setForeground(nextForeground);
       return component;
     }
 
-    component.setForeground(getForeground());
-    component.setBackground(getBackground());
+    component.setBackground(colorType.getBackground());
+    component.setForeground(colorType.getForeground());
     return component;
   }
 

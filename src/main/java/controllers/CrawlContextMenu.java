@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JMenuItem;
+import models.ColorType;
 import models.LogEntry;
 import models.TargetType;
 import views.logtable.LogTableModel;
@@ -58,7 +59,8 @@ public class CrawlContextMenu implements IContextMenuFactory {
         requestResponse,
         false,
         "",
-        TargetType.NONE
+        TargetType.NONE,
+        ColorType.DEFAULT
     );
     logEntry.setRequestResponse(requestResponse);
     return logEntry;

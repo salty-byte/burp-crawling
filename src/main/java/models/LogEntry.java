@@ -13,16 +13,18 @@ public class LogEntry {
   private String duplicatedMessage;
   private String remark;
   private TargetType targetType;
+  private ColorType colorType;
   private IHttpRequestResponse requestResponse;
 
   public LogEntry(final int number) {
-    this(number, "", "https://", "GET", false, "", null, false, "", TargetType.NONE);
+    this(number, "", "https://", "GET", false, "", null, false, "", TargetType.NONE,
+        ColorType.DEFAULT);
   }
 
   public LogEntry(final int number, final String requestName, final String url,
       final String method, final boolean hasParameter, final String remark,
       final IHttpRequestResponse requestResponse, final boolean duplicated,
-      final String duplicatedMessage, final TargetType targetType) {
+      final String duplicatedMessage, final TargetType targetType, final ColorType colorType) {
     this.number = number;
     this.requestName = requestName;
     this.url = url;
@@ -33,6 +35,7 @@ public class LogEntry {
     this.duplicated = duplicated;
     this.duplicatedMessage = duplicatedMessage;
     this.targetType = targetType;
+    this.colorType = colorType;
   }
 
   public Object getValueByKey(final LogEntryKey key) {
@@ -164,6 +167,14 @@ public class LogEntry {
 
   public void setTargetType(TargetType targetType) {
     this.targetType = targetType;
+  }
+
+  public ColorType getColorType() {
+    return colorType;
+  }
+
+  public void setColorType(ColorType colorType) {
+    this.colorType = colorType;
   }
 
   public void setAutoTarget(boolean hasAuto) {

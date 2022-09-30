@@ -55,6 +55,10 @@ class LogEntryForJsonTest {
         jsonStr.contains("\"targetType\":0"),
         String.format("%s has targetType", jsonStr)
     );
+    assertTrue(
+        jsonStr.contains("\"colorType\":0"),
+        String.format("%s has colorType", jsonStr)
+    );
     assertTrue(jsonStr.contains("\"remark\":\"test\""), String.format("%s has remark", jsonStr));
 
     final var reqResBlock = jsonStr.split("requestResponse")[1];
@@ -82,7 +86,7 @@ class LogEntryForJsonTest {
   @Test
   void testFromJson() {
     final var jsonStr =
-        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"remark\":\"test\","
+        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"remark\":\"test\","
             + "\"requestResponse\":{\"request\":[114,101,113,117,101,115,116],\"response\":[114,101,115,112,111,110,115,101],"
             + "\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}"
             + "}}";
@@ -95,6 +99,7 @@ class LogEntryForJsonTest {
     assertTrue(logEntryForJson.isDuplicated());
     assertEquals("", logEntryForJson.getDuplicatedMessage());
     assertEquals((byte) 0x1, logEntryForJson.getTargetType());
+    assertEquals((byte) 0x3, logEntryForJson.getColorType());
     assertEquals("test", logEntryForJson.getRemark());
 
     final var requestResponse = logEntryForJson.getRequestResponse();

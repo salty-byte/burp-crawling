@@ -1,5 +1,6 @@
 package models.json;
 
+import models.ColorType;
 import models.LogEntry;
 import models.TargetType;
 
@@ -13,6 +14,7 @@ public class LogEntryForJson {
   private final boolean duplicated;
   private final String duplicatedMessage;
   private final byte targetType;
+  private final byte colorType;
   private final String remark;
   private final RequestResponse requestResponse;
 
@@ -25,6 +27,7 @@ public class LogEntryForJson {
     this.duplicated = entry.isDuplicated();
     this.duplicatedMessage = entry.getDuplicatedMessage();
     this.targetType = entry.getTargetType().getValue();
+    this.colorType = entry.getColorType().getValue();
     this.remark = entry.getRemark();
     final var iReqRes = entry.getRequestResponse();
     requestResponse = iReqRes == null ? null : new RequestResponse(iReqRes);
@@ -62,6 +65,10 @@ public class LogEntryForJson {
     return targetType;
   }
 
+  public byte getColorType() {
+    return colorType;
+  }
+
   public String getRemark() {
     return remark;
   }
@@ -81,7 +88,8 @@ public class LogEntryForJson {
         requestResponse == null ? null : requestResponse.toIHttpRequestResponse(),
         duplicated,
         duplicatedMessage,
-        TargetType.fromByte(targetType)
+        TargetType.fromByte(targetType),
+        ColorType.fromByte(colorType)
     );
   }
 }
