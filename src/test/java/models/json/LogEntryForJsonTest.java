@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
+import utils.JsonUtils;
 
 class LogEntryForJsonTest {
 
@@ -28,7 +28,7 @@ class LogEntryForJsonTest {
   @Test
   void testToJson() {
     final var logEntryForJson = new LogEntryForJson(createLogEntry());
-    final var jsonStr = new Gson().toJson(logEntryForJson, LogEntryForJson.class);
+    final var jsonStr = JsonUtils.toJson(logEntryForJson, LogEntryForJson.class);
     assertTrue(jsonStr.contains("\"number\":1"), String.format("%s has number", jsonStr));
     assertTrue(
         jsonStr.contains("\"requestName\":\"top\""),
@@ -53,23 +53,17 @@ class LogEntryForJsonTest {
         jsonStr.contains("\"duplicatedMessage\":\"\""),
         String.format("%s has duplicatedMessage", jsonStr)
     );
-    assertTrue(
-        jsonStr.contains("\"targetType\":0"),
-        String.format("%s has targetType", jsonStr)
-    );
-    assertTrue(
-        jsonStr.contains("\"colorType\":0"),
-        String.format("%s has colorType", jsonStr)
-    );
+    assertTrue(jsonStr.contains("\"targetType\":0"), String.format("%s has targetType", jsonStr));
+    assertTrue(jsonStr.contains("\"colorType\":0"), String.format("%s has colorType", jsonStr));
     assertTrue(jsonStr.contains("\"remark\":\"test\""), String.format("%s has remark", jsonStr));
 
     final var reqResBlock = jsonStr.split("requestResponse")[1];
     assertTrue(
-        reqResBlock.contains("\"request\":[114,101,113,117,101,115,116]"),
+        reqResBlock.contains("\"request\":\"cmVxdWVzdA\""),
         String.format("%s has request", reqResBlock)
     );
     assertTrue(
-        reqResBlock.contains("\"response\":[114,101,115,112,111,110,115,101]"),
+        reqResBlock.contains("\"response\":\"cmVzcG9uc2U\""),
         String.format("%s has response", reqResBlock)
     );
 
@@ -89,10 +83,10 @@ class LogEntryForJsonTest {
   void testFromJson() {
     final var jsonStr =
         "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"remark\":\"test\","
-            + "\"requestResponse\":{\"request\":[114,101,113,117,101,115,116],\"response\":[114,101,115,112,111,110,115,101],"
+            + "\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\","
             + "\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}"
             + "}}";
-    final var logEntryForJson = new Gson().fromJson(jsonStr, LogEntryForJson.class);
+    final var logEntryForJson = JsonUtils.fromJson(jsonStr, LogEntryForJson.class);
     assertEquals(1, logEntryForJson.getNumber());
     assertEquals("top", logEntryForJson.getRequestName());
     assertEquals("https://example.com", logEntryForJson.getUrl());

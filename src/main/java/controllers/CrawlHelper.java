@@ -1,7 +1,6 @@
 package controllers;
 
 import burp.IExtensionHelpers;
-import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -14,6 +13,7 @@ import models.LogEntry;
 import models.json.CrawledData;
 import utils.CrawlingUtils;
 import utils.DialogUtils;
+import utils.JsonUtils;
 import views.logtable.LogTable;
 import views.logtable.LogTableModel;
 
@@ -85,7 +85,7 @@ public class CrawlHelper {
     }
 
     final var logEntries = logTableModel.getLogEntryAll();
-    final var jsonStr = new Gson().toJson(new CrawledData(logEntries));
+    final var jsonStr = JsonUtils.toJson(new CrawledData(logEntries), CrawledData.class);
     try (final var writer = new FileWriter(file)) {
       writer.write(jsonStr);
     } catch (IOException e) {
@@ -117,7 +117,7 @@ public class CrawlHelper {
     }
 
     try (final var reader = new FileReader(file)) {
-      final var crawledData = new Gson().fromJson(reader, CrawledData.class);
+      final var crawledData = JsonUtils.fromJson(reader, CrawledData.class);
       logTableModel.addLogEntriesAt(crawledData.toLogEntries(), index);
     } catch (IOException e) {
       DialogUtils.showError("JSON追加時にエラーが発生しました。", "エラー");

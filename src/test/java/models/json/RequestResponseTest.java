@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
+import utils.JsonUtils;
 
 class RequestResponseTest {
 
@@ -28,13 +28,13 @@ class RequestResponseTest {
   @Test
   void testToJson() {
     final var requestResponse = new RequestResponse(createIHttpRequestResponse());
-    final var jsonStr = new Gson().toJson(requestResponse, RequestResponse.class);
+    final var jsonStr = JsonUtils.toJson(requestResponse, RequestResponse.class);
     assertTrue(
-        jsonStr.contains("\"request\":[114,101,113,117,101,115,116]"),
+        jsonStr.contains("\"request\":\"cmVxdWVzdA\""),
         String.format("%s has request", jsonStr)
     );
     assertTrue(
-        jsonStr.contains("\"response\":[114,101,115,112,111,110,115,101]"),
+        jsonStr.contains("\"response\":\"cmVzcG9uc2U\""),
         String.format("%s has response", jsonStr)
     );
 
@@ -52,8 +52,8 @@ class RequestResponseTest {
 
   @Test
   void testFromJson() {
-    final var jsonStr = "{\"request\":[114,101,113,117,101,115,116],\"response\":[114,101,115,112,111,110,115,101],\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}";
-    final var requestResponse = new Gson().fromJson(jsonStr, RequestResponse.class);
+    final var jsonStr = "{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\",\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}";
+    final var requestResponse = JsonUtils.fromJson(jsonStr, RequestResponse.class);
     assertArrayEquals("request".getBytes(StandardCharsets.UTF_8), requestResponse.getRequest());
     assertArrayEquals("response".getBytes(StandardCharsets.UTF_8), requestResponse.getResponse());
 
