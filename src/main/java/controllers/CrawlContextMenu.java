@@ -4,6 +4,7 @@ import burp.IContextMenuFactory;
 import burp.IContextMenuInvocation;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
+import burp.IResponseInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,11 +50,14 @@ public class CrawlContextMenu implements IContextMenuFactory {
         requestResponse.getHttpService(),
         requestResponse.getRequest()
     );
+    final var responseInfo = analyzeResponse(requestResponse.getResponse());
     final var logEntry = new LogEntry(
         0,
         "",
         requestInfo.getUrl().toString(),
         requestInfo.getMethod(),
+        responseInfo.getStatusCode(),
+        responseInfo.getStatedMimeType(),
         !requestInfo.getParameters().isEmpty(),
         requestResponse.getComment(),
         requestResponse,
@@ -64,5 +68,9 @@ public class CrawlContextMenu implements IContextMenuFactory {
     );
     logEntry.setRequestResponse(requestResponse);
     return logEntry;
+  }
+
+  private IResponseInfo analyzeResponse(final byte[] response) {
+    return helpers.analyzeResponse(response == null ? new byte[0] : response);
   }
 }

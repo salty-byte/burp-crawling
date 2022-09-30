@@ -39,6 +39,8 @@ class LogEntryForJsonTest {
         String.format("%s has url", jsonStr)
     );
     assertTrue(jsonStr.contains("\"method\":\"GET\""), String.format("%s has method", jsonStr));
+    assertTrue(jsonStr.contains("\"statusCode\":200"), String.format("%s has statusCode", jsonStr));
+    assertTrue(jsonStr.contains("\"mime\":\"HTML\""), String.format("%s has mime", jsonStr));
     assertTrue(
         jsonStr.contains("\"hasParameter\":false"),
         String.format("%s has hasParameter", jsonStr)
@@ -86,7 +88,7 @@ class LogEntryForJsonTest {
   @Test
   void testFromJson() {
     final var jsonStr =
-        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"remark\":\"test\","
+        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"remark\":\"test\","
             + "\"requestResponse\":{\"request\":[114,101,113,117,101,115,116],\"response\":[114,101,115,112,111,110,115,101],"
             + "\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}"
             + "}}";
@@ -95,6 +97,8 @@ class LogEntryForJsonTest {
     assertEquals("top", logEntryForJson.getRequestName());
     assertEquals("https://example.com", logEntryForJson.getUrl());
     assertEquals("GET", logEntryForJson.getMethod());
+    assertEquals((short) 200, logEntryForJson.getStatusCode());
+    assertEquals("text", logEntryForJson.getMime());
     assertTrue(logEntryForJson.hasParameter());
     assertTrue(logEntryForJson.isDuplicated());
     assertEquals("", logEntryForJson.getDuplicatedMessage());

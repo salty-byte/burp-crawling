@@ -105,8 +105,8 @@ public class DummyDataUtils {
   }
 
   public static LogEntry createLogEntry(final int number, final String requestName) {
-    return new LogEntry(number, requestName, "https://example.com", "GET", false, "test", null,
-        false, "", TargetType.NONE, ColorType.DEFAULT);
+    return new LogEntry(number, requestName, "https://example.com", "GET", (short) 200, "HTML",
+        false, "test", null, false, "", TargetType.NONE, ColorType.DEFAULT);
   }
 
   public static LogEntry createLogEntry(final int number, final byte[] request) {
@@ -115,8 +115,8 @@ public class DummyDataUtils {
 
   public static LogEntry createLogEntry(final int number,
       final IHttpRequestResponse requestResponse) {
-    return new LogEntry(number, "top", "https://example.com", "GET", false, "test", requestResponse,
-        false, "", TargetType.NONE, ColorType.DEFAULT);
+    return new LogEntry(number, "top", "https://example.com", "GET", (short) 200, "HTML", false,
+        "test", requestResponse, false, "", TargetType.NONE, ColorType.DEFAULT);
   }
 
   public static LogEntry createEmptyLogEntry() {

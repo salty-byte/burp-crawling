@@ -10,6 +10,8 @@ public class LogEntryForJson {
   private final String requestName;
   private final String url;
   private final String method;
+  private final short statusCode;
+  private final String mime;
   private final boolean hasParameter;
   private final boolean duplicated;
   private final String duplicatedMessage;
@@ -23,6 +25,8 @@ public class LogEntryForJson {
     this.requestName = entry.getRequestName();
     this.url = entry.getUrl();
     this.method = entry.getMethod();
+    this.statusCode = entry.getStatusCode();
+    this.mime = entry.getMime();
     this.hasParameter = entry.hasParameter();
     this.duplicated = entry.isDuplicated();
     this.duplicatedMessage = entry.getDuplicatedMessage();
@@ -47,6 +51,14 @@ public class LogEntryForJson {
 
   public String getMethod() {
     return method;
+  }
+
+  public short getStatusCode() {
+    return statusCode;
+  }
+
+  public String getMime() {
+    return mime;
   }
 
   public boolean hasParameter() {
@@ -83,6 +95,8 @@ public class LogEntryForJson {
         requestName,
         url,
         method,
+        statusCode,
+        mime,
         hasParameter,
         remark,
         requestResponse == null ? null : requestResponse.toIHttpRequestResponse(),

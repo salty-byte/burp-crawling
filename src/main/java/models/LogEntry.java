@@ -8,6 +8,8 @@ public class LogEntry {
   private String requestName;
   private String url;
   private String method;
+  private short statusCode;
+  private String mime;
   private boolean hasParameter;
   private boolean duplicated;
   private String duplicatedMessage;
@@ -17,18 +19,20 @@ public class LogEntry {
   private IHttpRequestResponse requestResponse;
 
   public LogEntry(final int number) {
-    this(number, "", "https://", "GET", false, "", null, false, "", TargetType.NONE,
+    this(number, "", "https://", "GET", (short) 0, "", false, "", null, false, "", TargetType.NONE,
         ColorType.DEFAULT);
   }
 
   public LogEntry(final int number, final String requestName, final String url,
-      final String method, final boolean hasParameter, final String remark,
-      final IHttpRequestResponse requestResponse, final boolean duplicated,
+      final String method, final short statusCode, final String mime, final boolean hasParameter,
+      final String remark, final IHttpRequestResponse requestResponse, final boolean duplicated,
       final String duplicatedMessage, final TargetType targetType, final ColorType colorType) {
     this.number = number;
     this.requestName = requestName;
     this.url = url;
     this.method = method;
+    this.statusCode = statusCode;
+    this.mime = mime;
     this.hasParameter = hasParameter;
     this.remark = remark;
     this.requestResponse = requestResponse;
@@ -50,6 +54,10 @@ public class LogEntry {
         return getMethod();
       case HAS_PARAMETER:
         return hasParameter();
+      case STATUS_CODE:
+        return getStatusCode();
+      case MIME:
+        return getMime();
       case IS_DUPLICATED:
         return isDuplicated();
       case DUPLICATED_MESSAGE:
@@ -82,6 +90,9 @@ public class LogEntry {
           break;
         case HAS_PARAMETER:
           setHasParameter((Boolean) value);
+          break;
+        case MIME:
+          setMime((String) value);
           break;
         case IS_DUPLICATED:
           setDuplicated((Boolean) value);
@@ -143,6 +154,22 @@ public class LogEntry {
 
   public void setHasParameter(boolean hasParameter) {
     this.hasParameter = hasParameter;
+  }
+
+  public short getStatusCode() {
+    return statusCode;
+  }
+
+  public void setStatusCode(short statusCode) {
+    this.statusCode = statusCode;
+  }
+
+  public String getMime() {
+    return mime;
+  }
+
+  public void setMime(String mime) {
+    this.mime = mime;
   }
 
   public boolean isDuplicated() {

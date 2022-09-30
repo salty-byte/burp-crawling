@@ -6,6 +6,8 @@ public enum LogEntryKey {
   METHOD(String.class, "メソッド", 100, false),
   URL(String.class, "URL", 300, true),
   HAS_PARAMETER(Boolean.class, "パラメータ有無", 100, false),
+  STATUS_CODE(Short.class, "ステータス", 60, false),
+  MIME(String.class, "MIME", 60, false),
   IS_DUPLICATED(Boolean.class, "重複", 100, false),
   DUPLICATED_MESSAGE(String.class, "重複箇所", 100, false),
   TARGET_AUTO(Boolean.class, "自動対象", 60, false),
