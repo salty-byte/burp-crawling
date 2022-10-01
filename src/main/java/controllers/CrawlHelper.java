@@ -1,15 +1,20 @@
 package controllers;
 
 import burp.IExtensionHelpers;
+import burp.IHttpRequestResponse;
+import burp.IResponseInfo;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import models.ColorType;
 import models.LogEntry;
+import models.TargetType;
 import models.json.CrawledData;
 import utils.CrawlingUtils;
 import utils.DialogUtils;
@@ -33,11 +38,56 @@ public class CrawlHelper {
     logTableModel = logTable.getModel();
   }
 
+  private LogEntry createLogEntry(final IHttpRequestResponse requestResponse) {
+    final var requestInfo = extensionHelper.analyzeRequest(
+        requestResponse.getHttpService(),
+        requestResponse.getRequest()
+    );
+    final var responseInfo = analyzeResponse(requestResponse.getResponse());
+
+    return new LogEntry(
+        0,
+        "",
+        requestInfo.getUrl().toString(),
+        requestInfo.getMethod(),
+        responseInfo.getStatusCode(),
+        responseInfo.getStatedMimeType(),
+        !requestInfo.getParameters().isEmpty(),
+        requestResponse.getComment(),
+        requestResponse,
+        false,
+        "",
+        TargetType.NONE,
+        ColorType.DEFAULT
+    );
+  }
+
+  private IResponseInfo analyzeResponse(final byte[] response) {
+    return extensionHelper.analyzeResponse(response == null ? new byte[0] : response);
+  }
+
   public void addEmptyLogEntry() {
     final var rowCount = logTableModel.getRowCount();
     final var row = logTable.getSelectedRow();
     final var insertIndex = row == -1 ? rowCount : logTable.convertRowIndexToModel(row) + 1;
     logTableModel.addLogEntryAt(new LogEntry(rowCount + 1), insertIndex);
+  }
+
+  public void addLogEntry(final IHttpRequestResponse requestResponse) {
+    final var logEntry = createLogEntry(requestResponse);
+    logEntry.setNumber(logTableModel.getRowCount() + 1);
+    logTableModel.addLogEntry(logEntry);
+  }
+
+  public void addLogEntries(final IHttpRequestResponse[] requestResponses) {
+    final var logEntries = Arrays.stream(requestResponses)
+        .map(this::createLogEntry)
+        .collect(Collectors.toList());
+    int count = logTableModel.getRowCount();
+    for (final var logEntry : logEntries) {
+      logEntry.setNumber(++count);
+    }
+    logTableModel.addLogEntries(logEntries);
   }
 
   public void removeLogEntries() {

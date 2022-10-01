@@ -35,7 +35,7 @@ public class MainTab implements ITab {
     leftPane.add(new HeaderPanel(), BorderLayout.NORTH);
     leftPane.add(splitPane, BorderLayout.CENTER);
 
-    final var rightPane = new ControlPanel(crawlController.getHelper());
+    final var rightPane = new ControlPanel(crawlController);
 
     // FIXME デバッグ用の枠線を表示する：後で消す
     leftPane.setBorder(new LineBorder(Color.GRAY, 1, true));

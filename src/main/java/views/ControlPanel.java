@@ -1,11 +1,13 @@
 package views;
 
-import controllers.CrawlHelper;
+import controllers.CrawlController;
 import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 
 /**
  * データのインポートやエクスポート等の操作ボタンを配置するコンポーネント。
@@ -14,7 +16,9 @@ public class ControlPanel extends JPanel {
 
   public static final int WIDTH = 100;
 
-  public ControlPanel(final CrawlHelper crawlHelper) {
+  public ControlPanel(final CrawlController crawlController) {
+    final var crawlHelper = crawlController.getHelper();
+    final var proxyController = crawlController.getProxyController();
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
     final var addEmptyLogEntryButton = new JButton("空行追加");
@@ -52,6 +56,22 @@ public class ControlPanel extends JPanel {
     exportCrawledDataButton.addActionListener(e -> crawlHelper.exportCrawledData());
     exportCrawledDataButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(exportCrawledDataButton);
+
+    add(Box.createRigidArea(new Dimension(0, 200)));
+
+    final var crawlProxyToggle = new JToggleButton("Proxy OFF");
+    crawlProxyToggle.addChangeListener(e -> {
+      final var toggle = (JToggleButton) e.getSource();
+      if (toggle.isSelected()) {
+        toggle.setText("Proxy ON");
+        proxyController.enable();
+      } else {
+        toggle.setText("Proxy OFF");
+        proxyController.disable();
+      }
+    });
+    crawlProxyToggle.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(crawlProxyToggle);
 
     setPreferredSize(new Dimension(WIDTH, Integer.MAX_VALUE));
   }

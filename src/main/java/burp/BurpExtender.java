@@ -16,7 +16,8 @@ public class BurpExtender implements IBurpExtender {
     callbacks.setExtensionName(EXTENSION_NAME);
 
     final var crawlController = new CrawlController(callbacks);
+    final var crawlHelper = crawlController.getHelper();
     callbacks.addSuiteTab(new MainTab(crawlController));
-    callbacks.registerContextMenuFactory(new CrawlContextMenu(crawlController));
+    callbacks.registerContextMenuFactory(new CrawlContextMenu(crawlHelper));
   }
 }

@@ -9,6 +9,7 @@ public class CrawlController {
 
   private final IBurpExtenderCallbacks callbacks;
   private final CrawlHelper helper;
+  private final CrawlProxyController proxyController;
   private final LogDetailController logDetailController;
   private final LogTable logTable;
   private final LogTableModel logTableModel;
@@ -19,6 +20,7 @@ public class CrawlController {
     logTableModel = new LogTableModel();
     logTable = new LogTable(logTableModel, logDetailController);
     helper = new CrawlHelper(callbacks.getHelpers(), logTable);
+    proxyController = new CrawlProxyController(callbacks, helper);
 
     // later settings
     logTable.addMouseListener(new LogTableMouseListener(helper, logTable));
@@ -26,6 +28,10 @@ public class CrawlController {
 
   public CrawlHelper getHelper() {
     return helper;
+  }
+
+  public CrawlProxyController getProxyController() {
+    return proxyController;
   }
 
   public IBurpExtenderCallbacks getBurpExtenderCallbacks() {
