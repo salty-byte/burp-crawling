@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
@@ -72,6 +73,14 @@ public class ControlPanel extends JPanel {
     });
     crawlProxyToggle.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(crawlProxyToggle);
+
+    final var scopeOnlyCheckBox = new JCheckBox("スコープ内のみ");
+    scopeOnlyCheckBox.addChangeListener(e -> {
+      final var checkBox = (JCheckBox) e.getSource();
+      proxyController.setOnlyInScope(checkBox.isSelected());
+    });
+    scopeOnlyCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(scopeOnlyCheckBox);
 
     setPreferredSize(new Dimension(WIDTH, Integer.MAX_VALUE));
   }

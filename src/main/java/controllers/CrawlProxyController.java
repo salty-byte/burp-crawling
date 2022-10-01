@@ -10,7 +10,7 @@ public class CrawlProxyController {
   public CrawlProxyController(final IBurpExtenderCallbacks burpCallbacks,
       final CrawlHelper crawlHelper) {
     this.burpCallbacks = burpCallbacks;
-    this.proxy = new CrawlProxy(crawlHelper);
+    this.proxy = new CrawlProxy(burpCallbacks, crawlHelper);
   }
 
   private boolean hasRegistered() {
@@ -28,5 +28,9 @@ public class CrawlProxyController {
 
   public void disable() {
     burpCallbacks.removeProxyListener(proxy);
+  }
+
+  public void setOnlyInScope(final boolean targetOnly) {
+    proxy.setOnlyInScope(targetOnly);
   }
 }
