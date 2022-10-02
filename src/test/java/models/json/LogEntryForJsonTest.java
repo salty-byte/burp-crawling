@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
+import models.ColorType;
+import models.TargetType;
 import org.junit.jupiter.api.Test;
 import utils.JsonUtils;
 
@@ -41,6 +43,10 @@ class LogEntryForJsonTest {
     assertTrue(jsonStr.contains("\"method\":\"GET\""), String.format("%s has method", jsonStr));
     assertTrue(jsonStr.contains("\"statusCode\":200"), String.format("%s has statusCode", jsonStr));
     assertTrue(jsonStr.contains("\"mime\":\"HTML\""), String.format("%s has mime", jsonStr));
+    assertTrue(
+        jsonStr.contains("\"extension\":\"html\""),
+        String.format("%s has extension", jsonStr)
+    );
     assertTrue(
         jsonStr.contains("\"hasParameter\":false"),
         String.format("%s has hasParameter", jsonStr)
@@ -82,7 +88,7 @@ class LogEntryForJsonTest {
   @Test
   void testFromJson() {
     final var jsonStr =
-        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"remark\":\"test\","
+        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"extension\":\"txt\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"remark\":\"test\","
             + "\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\","
             + "\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}"
             + "}}";
@@ -93,11 +99,12 @@ class LogEntryForJsonTest {
     assertEquals("GET", logEntryForJson.getMethod());
     assertEquals((short) 200, logEntryForJson.getStatusCode());
     assertEquals("text", logEntryForJson.getMime());
+    assertEquals("txt", logEntryForJson.getExtension());
     assertTrue(logEntryForJson.hasParameter());
     assertTrue(logEntryForJson.isDuplicated());
     assertEquals("", logEntryForJson.getDuplicatedMessage());
-    assertEquals((byte) 0x1, logEntryForJson.getTargetType());
-    assertEquals((byte) 0x3, logEntryForJson.getColorType());
+    assertEquals(TargetType.AUTO, logEntryForJson.getTargetType());
+    assertEquals(ColorType.YELLOW, logEntryForJson.getColorType());
     assertEquals("test", logEntryForJson.getRemark());
 
     final var requestResponse = logEntryForJson.getRequestResponse();

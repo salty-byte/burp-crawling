@@ -14,7 +14,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import models.ColorType;
 import models.LogEntry;
-import models.TargetType;
 import models.json.CrawledData;
 import utils.CrawlingUtils;
 import utils.DialogUtils;
@@ -44,22 +43,7 @@ public class CrawlHelper {
         requestResponse.getRequest()
     );
     final var responseInfo = analyzeResponse(requestResponse.getResponse());
-
-    return new LogEntry(
-        0,
-        "",
-        requestInfo.getUrl().toString(),
-        requestInfo.getMethod(),
-        responseInfo.getStatusCode(),
-        responseInfo.getStatedMimeType(),
-        !requestInfo.getParameters().isEmpty(),
-        requestResponse.getComment(),
-        requestResponse,
-        false,
-        "",
-        TargetType.NONE,
-        ColorType.DEFAULT
-    );
+    return new LogEntry(0, requestResponse, requestInfo, responseInfo);
   }
 
   private IResponseInfo analyzeResponse(final byte[] response) {

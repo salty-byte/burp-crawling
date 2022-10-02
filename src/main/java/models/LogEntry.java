@@ -1,6 +1,10 @@
 package models;
 
 import burp.IHttpRequestResponse;
+import burp.IRequestInfo;
+import burp.IResponseInfo;
+import models.json.LogEntryForJson;
+import utils.CrawlingUtils;
 
 public class LogEntry {
 
@@ -10,6 +14,7 @@ public class LogEntry {
   private String method;
   private short statusCode;
   private String mime;
+  private String extension;
   private boolean hasParameter;
   private boolean duplicated;
   private String duplicatedMessage;
@@ -19,27 +24,55 @@ public class LogEntry {
   private IHttpRequestResponse requestResponse;
 
   public LogEntry(final int number) {
-    this(number, "", "https://", "GET", (short) 0, "", false, "", null, false, "", TargetType.NONE,
-        ColorType.DEFAULT);
+    this.number = number;
+    this.requestName = "";
+    this.url = "https://";
+    this.method = "GET";
+    this.statusCode = (short) 0;
+    this.mime = "";
+    this.extension = "";
+    this.hasParameter = false;
+    this.remark = "";
+    this.requestResponse = null;
+    this.duplicated = false;
+    this.duplicatedMessage = "";
+    this.targetType = TargetType.NONE;
+    this.colorType = ColorType.DEFAULT;
   }
 
-  public LogEntry(final int number, final String requestName, final String url,
-      final String method, final short statusCode, final String mime, final boolean hasParameter,
-      final String remark, final IHttpRequestResponse requestResponse, final boolean duplicated,
-      final String duplicatedMessage, final TargetType targetType, final ColorType colorType) {
+  public LogEntry(final int number, final IHttpRequestResponse requestResponse,
+      final IRequestInfo requestInfo, final IResponseInfo responseInfo) {
     this.number = number;
-    this.requestName = requestName;
-    this.url = url;
-    this.method = method;
-    this.statusCode = statusCode;
-    this.mime = mime;
-    this.hasParameter = hasParameter;
-    this.remark = remark;
+    this.requestName = "";
+    this.url = requestInfo.getUrl().toString();
+    this.method = requestInfo.getMethod();
+    this.statusCode = responseInfo.getStatusCode();
+    this.mime = responseInfo.getStatedMimeType();
+    this.extension = CrawlingUtils.findExtension(requestInfo.getUrl());
+    this.hasParameter = !requestInfo.getParameters().isEmpty();
+    this.remark = requestResponse.getComment();
     this.requestResponse = requestResponse;
-    this.duplicated = duplicated;
-    this.duplicatedMessage = duplicatedMessage;
-    this.targetType = targetType;
-    this.colorType = colorType;
+    this.duplicated = false;
+    this.duplicatedMessage = "";
+    this.targetType = TargetType.NONE;
+    this.colorType = ColorType.DEFAULT;
+  }
+
+  public LogEntry(final LogEntryForJson data) {
+    this.number = data.getNumber();
+    this.requestName = data.getRequestName();
+    this.url = data.getUrl();
+    this.method = data.getMethod();
+    this.statusCode = data.getStatusCode();
+    this.mime = data.getMime();
+    this.extension = data.getExtension();
+    this.hasParameter = data.hasParameter();
+    this.remark = data.getRemark();
+    this.requestResponse = data.getIHttpRequestResponse();
+    this.duplicated = data.isDuplicated();
+    this.duplicatedMessage = data.getDuplicatedMessage();
+    this.targetType = data.getTargetType();
+    this.colorType = data.getColorType();
   }
 
   public Object getValueByKey(final LogEntryKey key) {
@@ -58,6 +91,8 @@ public class LogEntry {
         return getStatusCode();
       case MIME:
         return getMime();
+      case EXTENSION:
+        return getExtension();
       case IS_DUPLICATED:
         return isDuplicated();
       case DUPLICATED_MESSAGE:
@@ -93,6 +128,9 @@ public class LogEntry {
           break;
         case MIME:
           setMime((String) value);
+          break;
+        case EXTENSION:
+          setExtension((String) value);
           break;
         case IS_DUPLICATED:
           setDuplicated((Boolean) value);
@@ -170,6 +208,14 @@ public class LogEntry {
 
   public void setMime(String mime) {
     this.mime = mime;
+  }
+
+  public String getExtension() {
+    return extension;
+  }
+
+  public void setExtension(String extension) {
+    this.extension = extension;
   }
 
   public boolean isDuplicated() {

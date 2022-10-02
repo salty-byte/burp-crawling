@@ -1,5 +1,6 @@
 package models.json;
 
+import burp.IHttpRequestResponse;
 import models.ColorType;
 import models.LogEntry;
 import models.TargetType;
@@ -12,6 +13,7 @@ public class LogEntryForJson {
   private final String method;
   private final short statusCode;
   private final String mime;
+  private final String extension;
   private final boolean hasParameter;
   private final boolean duplicated;
   private final String duplicatedMessage;
@@ -27,6 +29,7 @@ public class LogEntryForJson {
     this.method = entry.getMethod();
     this.statusCode = entry.getStatusCode();
     this.mime = entry.getMime();
+    this.extension = entry.getExtension();
     this.hasParameter = entry.hasParameter();
     this.duplicated = entry.isDuplicated();
     this.duplicatedMessage = entry.getDuplicatedMessage();
@@ -61,6 +64,10 @@ public class LogEntryForJson {
     return mime;
   }
 
+  public String getExtension() {
+    return extension;
+  }
+
   public boolean hasParameter() {
     return hasParameter;
   }
@@ -73,12 +80,12 @@ public class LogEntryForJson {
     return duplicatedMessage;
   }
 
-  public byte getTargetType() {
-    return targetType;
+  public TargetType getTargetType() {
+    return TargetType.fromByte(targetType);
   }
 
-  public byte getColorType() {
-    return colorType;
+  public ColorType getColorType() {
+    return ColorType.fromByte(colorType);
   }
 
   public String getRemark() {
@@ -89,21 +96,7 @@ public class LogEntryForJson {
     return requestResponse;
   }
 
-  public LogEntry toLogEntry() {
-    return new LogEntry(
-        number,
-        requestName,
-        url,
-        method,
-        statusCode,
-        mime,
-        hasParameter,
-        remark,
-        requestResponse == null ? null : requestResponse.toIHttpRequestResponse(),
-        duplicated,
-        duplicatedMessage,
-        TargetType.fromByte(targetType),
-        ColorType.fromByte(colorType)
-    );
+  public IHttpRequestResponse getIHttpRequestResponse() {
+    return requestResponse == null ? null : requestResponse.toIHttpRequestResponse();
   }
 }

@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import models.ColorType;
+import models.TargetType;
 import org.junit.jupiter.api.Test;
 import utils.JsonUtils;
 
@@ -40,7 +42,7 @@ class CrawledDataTest {
   @Test
   void testFromJson() {
     final var jsonStr = "{\"version\":\"1.0\",\"entries\":["
-        + "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"png\",\"hasParameter\":false,\"duplicated\":false,\"duplicatedMessage\":\"\",\"remark\":\"test\",\"colorType\":1,\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\",\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}}"
+        + "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"png\",\"extension\":\"png\",\"hasParameter\":false,\"duplicated\":false,\"duplicatedMessage\":\"\",\"remark\":\"test\",\"colorType\":1,\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\",\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}}"
         + "]}";
     final var crawledData = JsonUtils.fromJson(jsonStr, CrawledData.class);
     assertEquals("1.0", crawledData.getVersion());
@@ -52,11 +54,12 @@ class CrawledDataTest {
     assertEquals("GET", logEntryForJson.getMethod());
     assertEquals((short) 200, logEntryForJson.getStatusCode());
     assertEquals("png", logEntryForJson.getMime());
+    assertEquals("png", logEntryForJson.getExtension());
     assertFalse(logEntryForJson.hasParameter());
     assertFalse(logEntryForJson.isDuplicated());
     assertEquals("", logEntryForJson.getDuplicatedMessage());
-    assertEquals((byte) 0x0, logEntryForJson.getTargetType());
-    assertEquals((byte) 0x1, logEntryForJson.getColorType());
+    assertEquals(TargetType.NONE, logEntryForJson.getTargetType());
+    assertEquals(ColorType.RED, logEntryForJson.getColorType());
     assertEquals("test", logEntryForJson.getRemark());
 
     final var requestResponse = logEntryForJson.getRequestResponse();

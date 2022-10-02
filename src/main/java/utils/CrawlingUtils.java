@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import models.LogEntry;
 
@@ -12,6 +13,12 @@ public class CrawlingUtils {
 
   private CrawlingUtils() {
     throw new IllegalStateException("Utility class");
+  }
+
+  public static String findExtension(final URL url) {
+    final var pattern = Pattern.compile("/.+\\.([^/.]+)$");
+    final var matcher = pattern.matcher(url.getPath());
+    return matcher.find() ? matcher.group(1) : "";
   }
 
   public static String createUrlString(final URL url) {

@@ -26,7 +26,7 @@ public class CrawledData {
 
   public List<LogEntry> toLogEntries() {
     return entries.stream()
-        .map(LogEntryForJson::toLogEntry)
+        .map(LogEntry::new)
         .collect(Collectors.toList());
   }
 }

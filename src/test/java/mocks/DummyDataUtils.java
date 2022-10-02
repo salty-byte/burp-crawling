@@ -7,9 +7,7 @@ import burp.IRequestInfo;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import models.ColorType;
 import models.LogEntry;
-import models.TargetType;
 
 public class DummyDataUtils {
 
@@ -105,8 +103,9 @@ public class DummyDataUtils {
   }
 
   public static LogEntry createLogEntry(final int number, final String requestName) {
-    return new LogEntry(number, requestName, "https://example.com", "GET", (short) 200, "HTML",
-        false, "test", null, false, "", TargetType.NONE, ColorType.DEFAULT);
+    final var logEntry = new LogEntry(number);
+    logEntry.setRequestName(requestName);
+    return logEntry;
   }
 
   public static LogEntry createLogEntry(final int number, final byte[] request) {
@@ -115,8 +114,16 @@ public class DummyDataUtils {
 
   public static LogEntry createLogEntry(final int number,
       final IHttpRequestResponse requestResponse) {
-    return new LogEntry(number, "top", "https://example.com", "GET", (short) 200, "HTML", false,
-        "test", requestResponse, false, "", TargetType.NONE, ColorType.DEFAULT);
+    final var logEntry = new LogEntry(number);
+    logEntry.setRequestName("top");
+    logEntry.setUrl("https://example.com");
+    logEntry.setMethod("GET");
+    logEntry.setStatusCode((short) 200);
+    logEntry.setMime("HTML");
+    logEntry.setExtension("html");
+    logEntry.setRequestResponse(requestResponse);
+    logEntry.setRemark("test");
+    return logEntry;
   }
 
   public static LogEntry createEmptyLogEntry() {
