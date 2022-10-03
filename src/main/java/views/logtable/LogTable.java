@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.swing.DropMode;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import models.LogEntry;
 import models.LogEntryKey;
@@ -25,6 +27,7 @@ public class LogTable extends JTable {
     setRowHeight(20);
     Arrays.stream(LogEntryKey.values())
         .forEach(v -> getColumn(v.getDisplayName()).setPreferredWidth(v.getWidth()));
+    setCellRenderer();
     setSelectionListener(logDetailController);
     setRowSorter(new LogTableRowSorter<>(getModel()));
 
@@ -79,6 +82,13 @@ public class LogTable extends JTable {
       final var logEntry = getLogEntryAt(selectedRowIndex);
       logDetailController.setMessages(logEntry);
     });
+  }
+
+  private void setCellRenderer() {
+    final var leftRenderer = new DefaultTableCellRenderer();
+    leftRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+    setDefaultRenderer(Integer.class, leftRenderer);
+    setDefaultRenderer(Short.class, leftRenderer);
   }
 
   @Override
