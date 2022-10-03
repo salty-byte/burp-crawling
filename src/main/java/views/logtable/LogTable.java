@@ -58,6 +58,12 @@ public class LogTable extends JTable {
     return component;
   }
 
+  @Override
+  public boolean isCellEditable(int rowIndex, int columnIndex) {
+    final var modelColumnIndex = convertColumnIndexToModel(columnIndex);
+    return getLogEntryKeyAt(modelColumnIndex).isEditable();
+  }
+
   private void setSelectionListener(final LogDetailController logDetailController) {
     getSelectionModel().addListSelectionListener(e -> {
       if (e.getValueIsAdjusting()) {
@@ -139,8 +145,11 @@ public class LogTable extends JTable {
     for (int i = 0; i < lines.length && i < rows.length; i++) {
       final var values = lines[i].split("\t");
       for (int j = 0; j < values.length && j < columns.length; j++) {
-        final var value = getLogEntryKeyAt(columns[j]).parseFromString(values[j]);
-        setValueAt(value, rows[i], columns[j]);
+        final var logEntryKey = getLogEntryKeyAt(columns[j]);
+        if (logEntryKey.isEditable()) {
+          final var value = logEntryKey.parseFromString(values[j]);
+          setValueAt(value, rows[i], columns[j]);
+        }
       }
     }
   }
