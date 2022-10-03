@@ -11,6 +11,10 @@ import static org.mockito.ArgumentMatchers.eq;
 
 import burp.IExtensionHelpers;
 import burp.IParameter;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -156,5 +160,18 @@ class CrawlingUtilsTest {
   })
   void testCreateUrlString(final URL url, final String expected) {
     assertEquals(expected, CrawlingUtils.createUrlString(url));
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+      "test",
+      "https://example.com:8080/\ttrue\ttrue\nhttps://example.com:8080/test?a=1&b=2\tfalse\ttrue",
+  })
+  void testClipBoard(final String message) throws IOException, UnsupportedFlavorException {
+    CrawlingUtils.toClipBoard(message);
+    final var toolkit = Toolkit.getDefaultToolkit();
+    final var clipboard = toolkit.getSystemClipboard();
+    final var result = clipboard.getData(DataFlavor.stringFlavor);
+    assertEquals(message, result);
   }
 }

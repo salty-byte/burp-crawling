@@ -1,6 +1,8 @@
 package utils;
 
 import burp.IExtensionHelpers;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -94,5 +96,12 @@ public class CrawlingUtils {
         entry.setRequestName(requestName);
       }
     }
+  }
+
+  public static void toClipBoard(final String message) {
+    final var toolkit = Toolkit.getDefaultToolkit();
+    final var clipboard = toolkit.getSystemClipboard();
+    final var selection = new StringSelection(message);
+    clipboard.setContents(selection, selection);
   }
 }
