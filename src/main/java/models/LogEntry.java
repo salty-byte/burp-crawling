@@ -44,7 +44,7 @@ public class LogEntry {
       final IRequestInfo requestInfo, final IResponseInfo responseInfo) {
     this.number = number;
     this.requestName = "";
-    this.url = requestInfo.getUrl().toString();
+    this.url = CrawlingUtils.createUrlStringWithQuery(requestInfo.getUrl());
     this.method = requestInfo.getMethod();
     this.statusCode = responseInfo.getStatusCode();
     this.mime = responseInfo.getStatedMimeType();

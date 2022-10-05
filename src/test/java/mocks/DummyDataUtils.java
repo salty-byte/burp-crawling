@@ -48,6 +48,10 @@ public class DummyDataUtils {
     return createIHttpRequestResponse(null, null, null);
   }
 
+  public static IHttpRequestResponse createIHttpRequestResponse(final byte[] request) {
+    return createIHttpRequestResponse(request, null, null);
+  }
+
   public static IHttpRequestResponse createIHttpRequestResponse(final byte[] request,
       final byte[] response, final IHttpService service) {
     return new IHttpRequestResponse() {
@@ -114,10 +118,15 @@ public class DummyDataUtils {
 
   public static LogEntry createLogEntry(final int number,
       final IHttpRequestResponse requestResponse) {
+    return createLogEntry(number, "top", "https://example.com", "GET", requestResponse);
+  }
+
+  public static LogEntry createLogEntry(final int number, final String requestName,
+      final String url, final String method, final IHttpRequestResponse requestResponse) {
     final var logEntry = new LogEntry(number);
-    logEntry.setRequestName("top");
-    logEntry.setUrl("https://example.com");
-    logEntry.setMethod("GET");
+    logEntry.setRequestName(requestName);
+    logEntry.setUrl(url);
+    logEntry.setMethod(method);
     logEntry.setStatusCode((short) 200);
     logEntry.setMime("HTML");
     logEntry.setExtension("html");
@@ -132,6 +141,11 @@ public class DummyDataUtils {
 
   public static IRequestInfo createIRequestInfo(final String method, final URL url,
       final List<IParameter> parameters) {
+    return createIRequestInfo(method, url, parameters, null);
+  }
+
+  public static IRequestInfo createIRequestInfo(final String method, final URL url,
+      final List<IParameter> parameters, final List<String> headers) {
     return new IRequestInfo() {
       @Override
       public String getMethod() {
@@ -145,7 +159,7 @@ public class DummyDataUtils {
 
       @Override
       public List<String> getHeaders() {
-        return null;
+        return headers;
       }
 
       @Override
@@ -166,6 +180,11 @@ public class DummyDataUtils {
   }
 
   public static IParameter createIParameter(final byte type, final String name) {
+    return createIParameter(type, name, "");
+  }
+
+  public static IParameter createIParameter(final byte type, final String name,
+      final String value) {
     return new IParameter() {
 
       @Override
@@ -180,7 +199,7 @@ public class DummyDataUtils {
 
       @Override
       public String getValue() {
-        return null;
+        return value;
       }
 
       @Override

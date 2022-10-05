@@ -18,6 +18,7 @@ import models.json.CrawledData;
 import utils.CrawlingUtils;
 import utils.DialogUtils;
 import utils.JsonUtils;
+import utils.TsvExporter;
 import views.logtable.LogTable;
 import views.logtable.LogTableModel;
 
@@ -102,6 +103,11 @@ public class CrawlHelper {
   public void setLogEntriesColor(final ColorType colorType, final List<LogEntry> logEntries) {
     logEntries.forEach(e -> e.setColorType(colorType));
     logTableModel.updateAllRows();
+  }
+
+  public void exportToClipboardWithTsv(final List<LogEntry> logEntries) {
+    final var data = new TsvExporter(extensionHelper).exportString(logEntries);
+    CrawlingUtils.exportToClipBoard(data);
   }
 
   public void exportCrawledData() {

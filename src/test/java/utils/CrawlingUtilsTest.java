@@ -154,12 +154,27 @@ class CrawlingUtilsTest {
 
   @ParameterizedTest
   @CsvSource({
-      "https://example.com/test, https://example.com:443/test",
+      "https://example.com/test, https://example.com/test",
       "https://example.com:8080/test?a=1&b=2, https://example.com:8080/test",
+      "https://example.com:80/test, https://example.com:80/test",
+      "http://example.com:443/test?/a??=#hash, http://example.com:443/test",
       "http://user:password@172.168.1.56:8088/a/b/c#hash, http://172.168.1.56:8088/a/b/c"
   })
   void testCreateUrlString(final URL url, final String expected) {
     assertEquals(expected, CrawlingUtils.createUrlString(url));
+  }
+
+
+  @ParameterizedTest
+  @CsvSource({
+      "https://example.com/test, https://example.com/test",
+      "https://example.com:8080/test?a=1&b=2, https://example.com:8080/test?a=1&b=2",
+      "https://example.com:80/test, https://example.com:80/test",
+      "http://example.com:443/test?/a??=#hash, http://example.com:443/test?/a??=",
+      "http://user:password@172.168.1.56:8088/a/b/c#hash, http://172.168.1.56:8088/a/b/c"
+  })
+  void testCreateUrlStringWithQuery(final URL url, final String expected) {
+    assertEquals(expected, CrawlingUtils.createUrlStringWithQuery(url));
   }
 
   @ParameterizedTest
@@ -167,8 +182,8 @@ class CrawlingUtilsTest {
       "test",
       "https://example.com:8080/\ttrue\ttrue\nhttps://example.com:8080/test?a=1&b=2\tfalse\ttrue",
   })
-  void testClipBoard(final String message) throws IOException, UnsupportedFlavorException {
-    CrawlingUtils.toClipBoard(message);
+  void testExportToClipBoard(final String message) throws IOException, UnsupportedFlavorException {
+    CrawlingUtils.exportToClipBoard(message);
     final var toolkit = Toolkit.getDefaultToolkit();
     final var clipboard = toolkit.getSystemClipboard();
     final var result = clipboard.getData(DataFlavor.stringFlavor);

@@ -23,9 +23,28 @@ public class CrawlingUtils {
     return matcher.find() ? matcher.group(1) : "";
   }
 
+  private static boolean hasDefaultUrlPort(final URL url) {
+    final int port = url.getPort();
+    final var protocol = url.getProtocol();
+    return port == -1
+        || ("https".equals(protocol) && port == 443)
+        || ("http".equals(protocol) && port == 80);
+  }
+
   public static String createUrlString(final URL url) {
-    final int port = url.getPort() == -1 ? url.getDefaultPort() : url.getPort();
-    return String.format("%s://%s:%s%s", url.getProtocol(), url.getHost(), port, url.getPath());
+    if (hasDefaultUrlPort(url)) {
+      return String.format("%s://%s%s", url.getProtocol(), url.getHost(), url.getPath());
+    }
+    return String.format("%s://%s:%s%s",
+        url.getProtocol(), url.getHost(), url.getPort(), url.getPath());
+  }
+
+  public static String createUrlStringWithQuery(final URL url) {
+    if (hasDefaultUrlPort(url)) {
+      return String.format("%s://%s%s", url.getProtocol(), url.getHost(), url.getFile());
+    }
+    return String.format("%s://%s:%s%s",
+        url.getProtocol(), url.getHost(), url.getPort(), url.getFile());
   }
 
   public static void applyDuplicatedRequest(final List<LogEntry> entries,
@@ -98,7 +117,7 @@ public class CrawlingUtils {
     }
   }
 
-  public static void toClipBoard(final String message) {
+  public static void exportToClipBoard(final String message) {
     final var toolkit = Toolkit.getDefaultToolkit();
     final var clipboard = toolkit.getSystemClipboard();
     final var selection = new StringSelection(message);
