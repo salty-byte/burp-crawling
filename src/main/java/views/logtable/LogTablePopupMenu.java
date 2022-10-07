@@ -13,10 +13,15 @@ import models.LogEntry;
 public class LogTablePopupMenu extends JPopupMenu {
 
   public LogTablePopupMenu(final CrawlHelper crawlHelper, final List<LogEntry> logEntries) {
-    final var tsvCopyItem = new JMenuItem("TSVコピー");
+    final var tsvCopyItem = new JMenuItem("TSVコピー (全て)");
     tsvCopyItem.addActionListener(e -> crawlHelper.exportToClipboardWithTsv(logEntries));
     tsvCopyItem.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(tsvCopyItem);
+    final var tsvCopyOnlyParametersItem = new JMenuItem("TSVコピー (パラメータ)");
+    tsvCopyOnlyParametersItem.addActionListener(
+        e -> crawlHelper.exportParametersToClipboardWithTsv(logEntries));
+    tsvCopyOnlyParametersItem.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(tsvCopyOnlyParametersItem);
     addSeparator();
 
     // create color menu items

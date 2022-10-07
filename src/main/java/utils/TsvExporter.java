@@ -3,6 +3,7 @@ package utils;
 import burp.IExtensionHelpers;
 import burp.IParameter;
 import burp.IRequestInfo;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,6 +57,26 @@ public class TsvExporter {
     return builder.toString();
   }
 
+  public String exportStringOnlyParameters(final List<LogEntry> logEntries) {
+    final var builder = new StringBuilder();
+    for (final var logEntry : logEntries) {
+
+      final var requestResponse = logEntry.getRequestResponse();
+      if (requestResponse == null || requestResponse.getRequest().length <= 0) {
+        builder.append(createFirstLine(logEntry));
+        continue;
+      }
+
+      final var requestInfo = helper.analyzeRequest(
+          requestResponse.getHttpService(),
+          requestResponse.getRequest()
+      );
+      builder.append(createFirstLine(logEntry.getRequestName(), requestInfo));
+      builder.append(parametersToString(requestInfo, List.of(IParameter.PARAM_COOKIE)));
+    }
+    return builder.toString();
+  }
+
   private String createFirstLine(final LogEntry logEntry) {
     final var requestName = logEntry.getRequestName();
     final var method = logEntry.getMethod();
@@ -64,10 +85,11 @@ public class TsvExporter {
     return itemsToString(List.of(item));
   }
 
-  private String createFirstLine(final String requestName, final IRequestInfo requestInfo) {
+  private String createFirstLine(final String requestName,
+      final IRequestInfo requestInfo) {
     final var url = requestInfo.getUrl();
     final var method = requestInfo.getMethod();
-    final var urlStr = CrawlingUtils.createUrlString(url);
+    final var urlStr = CrawlingUtils.createUrlStringWithQuery(url);
     final var item = new TsvItem(requestName, method, urlStr, "-", "-", "-");
     return itemsToString(List.of(item));
   }
@@ -94,8 +116,13 @@ public class TsvExporter {
   }
 
   private String parametersToString(final IRequestInfo requestInfo) {
+    return parametersToString(requestInfo, new ArrayList<>());
+  }
+
+  private String parametersToString(final IRequestInfo requestInfo, List<Byte> ignoreParameters) {
     final var parameters = requestInfo.getParameters();
     final var items = parameters.stream()
+        .filter(h -> !ignoreParameters.contains(h.getType()))
         .map(TsvItem::new)
         .collect(Collectors.toList());
     return itemsToString(items);

@@ -110,6 +110,11 @@ public class CrawlHelper {
     CrawlingUtils.exportToClipBoard(data);
   }
 
+  public void exportParametersToClipboardWithTsv(final List<LogEntry> logEntries) {
+    final var data = new TsvExporter(extensionHelper).exportStringOnlyParameters(logEntries);
+    CrawlingUtils.exportToClipBoard(data);
+  }
+
   public void exportCrawledData() {
     final var fileChooser = new JFileChooser();
     int selected = fileChooser.showOpenDialog(null);

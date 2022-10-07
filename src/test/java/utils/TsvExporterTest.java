@@ -64,7 +64,7 @@ class TsvExporterTest {
     );
     final var exporter = new TsvExporter(helpers);
     final var expectedArray = new String[]{
-        "\"TOP\"\t\"GET\"\t\"https://example.com/\"\t\"-\"\t\"-\"\t\"-\"\n",
+        "\"TOP\"\t\"GET\"\t\"https://example.com/?query1=1\"\t\"-\"\t\"-\"\t\"-\"\n",
         "\"\"\t\"\"\t\"\"\t\"Header\"\t\"Host\"\t\"example.com\"\n",
         "\"\"\t\"\"\t\"\"\t\"URL\"\t\"query1\"\t\"1\"\n",
         "\"TOP>ログイン\"\t\"POST\"\t\"https://example.com/\"\t\"-\"\t\"-\"\t\"-\"\n",
@@ -78,5 +78,25 @@ class TsvExporterTest {
     };
     final var expected = String.join("", expectedArray);
     assertEquals(expected, exporter.exportString(logEntries));
+  }
+
+  @Test
+  void testExportToStringOnlyParameters() {
+    final var request1 = createIHttpRequestResponse("1".getBytes(StandardCharsets.UTF_8));
+    final var request2 = createIHttpRequestResponse("2".getBytes(StandardCharsets.UTF_8));
+    final var logEntries = List.of(
+        createLogEntry(1, "TOP", "https://example.com/?query1=1", "GET", request1),
+        createLogEntry(2, "TOP>ログイン", "https://example.com/", "POST", request2)
+    );
+    final var exporter = new TsvExporter(helpers);
+    final var expectedArray = new String[]{
+        "\"TOP\"\t\"GET\"\t\"https://example.com/?query1=1\"\t\"-\"\t\"-\"\t\"-\"\n",
+        "\"\"\t\"\"\t\"\"\t\"URL\"\t\"query1\"\t\"1\"\n",
+        "\"TOP>ログイン\"\t\"POST\"\t\"https://example.com/\"\t\"-\"\t\"-\"\t\"-\"\n",
+        "\"\"\t\"\"\t\"\"\t\"Body\"\t\"body1\"\t\"key\"\n",
+        "\"\"\t\"\"\t\"\"\t\"Body\"\t\"body2\"\t\"word\"\n"
+    };
+    final var expected = String.join("", expectedArray);
+    assertEquals(expected, exporter.exportStringOnlyParameters(logEntries));
   }
 }
