@@ -129,7 +129,9 @@ public class TsvExporter {
   }
 
   private String escape(final String str) {
-    return String.format("\"%s\"", str);
+    final var escapedStr = str.replaceAll("\\p{Cntrl}", "")
+        .replace("\"", "\"\"");
+    return String.format("\"%s\"", escapedStr);
   }
 
   private String itemsToString(final List<TsvItem> items) {

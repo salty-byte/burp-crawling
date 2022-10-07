@@ -34,6 +34,10 @@ class TsvExporterTest {
         createIParameter(IParameter.PARAM_BODY, "body1", "key"),
         createIParameter(IParameter.PARAM_BODY, "body2", "word")
     );
+    final var param3 = List.of(
+        createIParameter(IParameter.PARAM_COOKIE, "cookie_sp", "!#$%&'()\"`{+*}>"),
+        createIParameter(IParameter.PARAM_BODY, "body_sp", "key\u0000b\u0007c\u008fd")
+    );
     final var header1 = List.of(
         "GET /?query1=1 HTTP/1.1",
         "Host: example.com"
@@ -45,13 +49,22 @@ class TsvExporterTest {
         "Referer: https://example.com/?query1=1",
         "Content-Length: 20"
     );
+    final var header3 = List.of(
+        "GET /?query1=1 HTTP/1.1",
+        "Host: example.com",
+        "Custom: !\"#$&'\n\t()\u0000b\u0008c\u00801"
+    );
     final var info1 = createIRequestInfo("GET", new URL("https://example.com/?query1=1"), param1,
         header1);
     final var info2 = createIRequestInfo("POST", new URL("https://example.com/"), param2, header2);
+    final var info3 = createIRequestInfo("POST", new URL("https://example.com/\"!$%%()`@[;+*}?>_"),
+        param3, header3);
     final var request1 = "1".getBytes(StandardCharsets.UTF_8);
     final var request2 = "2".getBytes(StandardCharsets.UTF_8);
+    final var request3 = "3".getBytes(StandardCharsets.UTF_8);
     Mockito.when(helpers.analyzeRequest(any(), eq(request1))).thenReturn(info1);
     Mockito.when(helpers.analyzeRequest(any(), eq(request2))).thenReturn(info2);
+    Mockito.when(helpers.analyzeRequest(any(), eq(request3))).thenReturn(info3);
   }
 
   @Test
@@ -75,6 +88,25 @@ class TsvExporterTest {
         "\"\"\t\"\"\t\"\"\t\"Cookie\"\t\"cookie2\"\t\"bbb\"\n",
         "\"\"\t\"\"\t\"\"\t\"Body\"\t\"body1\"\t\"key\"\n",
         "\"\"\t\"\"\t\"\"\t\"Body\"\t\"body2\"\t\"word\"\n"
+    };
+    final var expected = String.join("", expectedArray);
+    assertEquals(expected, exporter.exportString(logEntries));
+  }
+
+  @Test
+  void testExportToStringWhenArgumentsHaveSpecialCharacters() {
+    final var request3 = createIHttpRequestResponse("3".getBytes(StandardCharsets.UTF_8));
+    final var logEntries = List.of(
+        createLogEntry(3, "TOP>記号", "https://example.com/\"!$%%()`@[;+*}?>_", "POST", request3)
+    );
+    final var exporter = new TsvExporter(helpers);
+    final var expectedArray = new String[]{
+        "\"TOP>記号\"\t\"POST\"\t\"https://example.com/\"\"!$%%()`@[;+*}?>_\"\t\"-\"\t\"-\"\t\"-\"\n",
+        "\"\"\t\"\"\t\"\"\t\"Path\"\t\"1\"\t\"\"\"!$%%()`@[;+*}\"\n",
+        "\"\"\t\"\"\t\"\"\t\"Header\"\t\"Host\"\t\"example.com\"\n",
+        "\"\"\t\"\"\t\"\"\t\"Header\"\t\"Custom\"\t\"!\"\"#$&'()bc\u00801\"\n",
+        "\"\"\t\"\"\t\"\"\t\"Cookie\"\t\"cookie_sp\"\t\"!#$%&'()\"\"`{+*}>\"\n",
+        "\"\"\t\"\"\t\"\"\t\"Body\"\t\"body_sp\"\t\"keybc\u008fd\"\n",
     };
     final var expected = String.join("", expectedArray);
     assertEquals(expected, exporter.exportString(logEntries));
