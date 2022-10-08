@@ -58,8 +58,9 @@ public class CrawlHelper {
     logTableModel.addLogEntryAt(new LogEntry(rowCount + 1), insertIndex);
   }
 
-  public void addLogEntry(final IHttpRequestResponse requestResponse) {
+  public void addLogEntry(final String requestName, final IHttpRequestResponse requestResponse) {
     final var logEntry = createLogEntry(requestResponse);
+    logEntry.setRequestName(requestName);
     logEntry.setNumber(logTableModel.getRowCount() + 1);
     logTableModel.addLogEntry(logEntry);
   }

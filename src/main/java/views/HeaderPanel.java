@@ -1,23 +1,47 @@
 package views;
 
-import java.awt.Component;
+import controllers.CrawlProxyController;
 import java.awt.Dimension;
-import javax.swing.BoxLayout;
+import java.awt.FlowLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import views.listeners.UpdateDocumentListener;
 
 public class HeaderPanel extends JPanel {
 
-  public static final int HEIGHT = 50;
+  public static final int HEIGHT = 45;
 
-  /**
-   * TODO 操作機能を追加する
-   */
-  public HeaderPanel() {
-    setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-    final var dummyLabel = new JLabel("Dummy Header");
-    dummyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    add(dummyLabel);
+  HeaderPanel(final CrawlProxyController proxyController) {
+    setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
+    final var requestBaseLabel = new JLabel("リクエスト名：");
+    final var requestBaseNameField = new JTextField(50);
+    final var requestBasePartitionLabel = new JLabel(">");
+    final var requestLinkNameField = new JTextField(25);
+    final var requestNameUpdateButton = new JButton("追加");
+    final var listener = (UpdateDocumentListener) e -> {
+      final var base = requestBaseNameField.getText();
+      final var name = requestLinkNameField.getText();
+      final var requestName = name.isEmpty() ? base : String.format("%s>%s", base, name);
+      proxyController.setRequestName(requestName);
+    };
+    requestBaseNameField.getDocument().addDocumentListener(listener);
+    requestLinkNameField.getDocument().addDocumentListener(listener);
+    requestNameUpdateButton.addActionListener(e -> {
+      final var base = requestBaseNameField.getText();
+      final var name = requestLinkNameField.getText();
+      final var requestName = name.isEmpty() ? base : String.format("%s>%s", base, name);
+      requestBaseNameField.setText(requestName);
+      requestLinkNameField.setText("");
+    });
+    add(requestBaseLabel);
+    add(requestBaseNameField);
+    add(requestBasePartitionLabel);
+    add(requestLinkNameField);
+    add(requestNameUpdateButton);
+
     setPreferredSize(new Dimension(Integer.MAX_VALUE, HEIGHT));
   }
 }

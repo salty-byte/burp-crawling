@@ -24,6 +24,7 @@ public class MainTab implements ITab {
   public MainTab(final CrawlController crawlController) {
     final var logPanel = new JScrollPane(crawlController.getLogTable());
     final var logDetailPanel = new LogDetailPanel(crawlController.getLogDetailController());
+    final var headerPanel = new HeaderPanel(crawlController.getProxyController());
 
     final var splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     splitPane.setTopComponent(logPanel);
@@ -32,7 +33,7 @@ public class MainTab implements ITab {
 
     final var leftPane = new JPanel();
     leftPane.setLayout(new BorderLayout());
-    leftPane.add(new HeaderPanel(), BorderLayout.NORTH);
+    leftPane.add(headerPanel, BorderLayout.NORTH);
     leftPane.add(splitPane, BorderLayout.CENTER);
 
     final var rightPane = new ControlPanel(crawlController);

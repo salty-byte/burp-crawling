@@ -10,11 +10,13 @@ public class CrawlProxy implements IProxyListener {
   private final IBurpExtenderCallbacks burpCallbacks;
   private final CrawlHelper crawlHelper;
   private boolean onlyInScope;
+  private String requestName;
 
   public CrawlProxy(final IBurpExtenderCallbacks burpCallbacks, final CrawlHelper crawlHelper) {
     this.burpCallbacks = burpCallbacks;
     this.crawlHelper = crawlHelper;
     this.onlyInScope = false;
+    this.requestName = "";
   }
 
   @Override
@@ -30,7 +32,7 @@ public class CrawlProxy implements IProxyListener {
     }
 
     requestResponse.setComment(""); // clear the comment to remove request id
-    crawlHelper.addLogEntry(requestResponse);
+    crawlHelper.addLogEntry(requestName, requestResponse);
   }
 
   private boolean canImportData(final IHttpRequestResponse requestResponse) {
@@ -47,5 +49,9 @@ public class CrawlProxy implements IProxyListener {
 
   public void setOnlyInScope(final boolean onlyInScope) {
     this.onlyInScope = onlyInScope;
+  }
+
+  public void setRequestName(final String requestName) {
+    this.requestName = requestName;
   }
 }
