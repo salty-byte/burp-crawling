@@ -21,6 +21,7 @@ public class HeaderPanel extends JPanel {
     final var requestBasePartitionLabel = new JLabel(">");
     final var requestLinkNameField = new JTextField(25);
     final var requestNameUpdateButton = new JButton("追加");
+    final var requestLinkNameResetButton = new JButton("リセット");
     final var listener = (UpdateDocumentListener) e -> {
       final var base = requestBaseNameField.getText();
       final var name = requestLinkNameField.getText();
@@ -36,11 +37,13 @@ public class HeaderPanel extends JPanel {
       requestBaseNameField.setText(requestName);
       requestLinkNameField.setText("");
     });
+    requestLinkNameResetButton.addActionListener(e -> requestLinkNameField.setText(""));
     add(requestBaseLabel);
     add(requestBaseNameField);
     add(requestBasePartitionLabel);
     add(requestLinkNameField);
     add(requestNameUpdateButton);
+    add(requestLinkNameResetButton);
 
     setPreferredSize(new Dimension(Integer.MAX_VALUE, HEIGHT));
   }
