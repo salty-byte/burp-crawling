@@ -45,17 +45,17 @@ class LogEntryKeyTest {
   @Test
   void testGetWidth() {
     assertEquals(50, LogEntryKey.NUMBER.getWidth());
-    assertEquals(300, LogEntryKey.REQUEST_NAME.getWidth());
-    assertEquals(100, LogEntryKey.METHOD.getWidth());
-    assertEquals(300, LogEntryKey.URL.getWidth());
-    assertEquals(100, LogEntryKey.HAS_PARAMETER.getWidth());
+    assertEquals(350, LogEntryKey.REQUEST_NAME.getWidth());
+    assertEquals(60, LogEntryKey.METHOD.getWidth());
+    assertEquals(350, LogEntryKey.URL.getWidth());
+    assertEquals(50, LogEntryKey.HAS_PARAMETER.getWidth());
     assertEquals(60, LogEntryKey.STATUS_CODE.getWidth());
     assertEquals(60, LogEntryKey.MIME.getWidth());
     assertEquals(60, LogEntryKey.EXTENSION.getWidth());
-    assertEquals(100, LogEntryKey.IS_DUPLICATED.getWidth());
-    assertEquals(100, LogEntryKey.DUPLICATED_MESSAGE.getWidth());
-    assertEquals(60, LogEntryKey.TARGET_AUTO.getWidth());
-    assertEquals(60, LogEntryKey.TARGET_MANUAL.getWidth());
+    assertEquals(50, LogEntryKey.IS_DUPLICATED.getWidth());
+    assertEquals(80, LogEntryKey.DUPLICATED_MESSAGE.getWidth());
+    assertEquals(50, LogEntryKey.TARGET_AUTO.getWidth());
+    assertEquals(50, LogEntryKey.TARGET_MANUAL.getWidth());
     assertEquals(300, LogEntryKey.REMARK.getWidth());
   }
 

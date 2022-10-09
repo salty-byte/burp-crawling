@@ -6,17 +6,17 @@ import java.util.function.Function;
 
 public enum LogEntryKey {
   NUMBER(Integer.class, "No", 50, false, true),
-  REQUEST_NAME(String.class, "リクエスト名", 300, true, true),
-  METHOD(String.class, "メソッド", 100, false, true),
-  URL(String.class, "URL", 300, true, false),
-  HAS_PARAMETER(Boolean.class, "パラメータ有無", 100, false, true),
+  REQUEST_NAME(String.class, "リクエスト名", 350, true, true),
+  METHOD(String.class, "メソッド", 60, false, true),
+  URL(String.class, "URL", 350, true, false),
+  HAS_PARAMETER(Boolean.class, "パラメータ有無", 50, false, true),
   STATUS_CODE(Short.class, "ステータス", 60, false, false),
   MIME(String.class, "MIME", 60, false, false),
   EXTENSION(String.class, "拡張子", 60, false, false),
-  IS_DUPLICATED(Boolean.class, "重複", 100, false, true),
-  DUPLICATED_MESSAGE(String.class, "重複箇所", 100, false, false),
-  TARGET_AUTO(Boolean.class, "自動対象", 60, false, true),
-  TARGET_MANUAL(Boolean.class, "手動対象", 60, false, true),
+  IS_DUPLICATED(Boolean.class, "重複", 50, false, true),
+  DUPLICATED_MESSAGE(String.class, "重複箇所", 80, false, false),
+  TARGET_AUTO(Boolean.class, "自動対象", 50, false, true),
+  TARGET_MANUAL(Boolean.class, "手動対象", 50, false, true),
   REMARK(String.class, "備考", 300, true, true),
   ;
 

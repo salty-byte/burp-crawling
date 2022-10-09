@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import views.logtable.LogTable;
 
 /**
@@ -37,10 +37,7 @@ public class MainTab implements ITab {
     leftPane.add(splitPane, BorderLayout.CENTER);
 
     final var rightPane = new ControlPanel(crawlController);
-
-    // FIXME デバッグ用の枠線を表示する：後で消す
-    leftPane.setBorder(new LineBorder(Color.GRAY, 1, true));
-    rightPane.setBorder(new LineBorder(Color.GRAY, 1, true));
+    rightPane.setBorder(new MatteBorder(0, 2, 0, 0, Color.DARK_GRAY));
 
     component = new JPanel();
     component.setLayout(new BorderLayout());

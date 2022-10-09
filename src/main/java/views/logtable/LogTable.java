@@ -18,7 +18,7 @@ import models.LogEntryKey;
 
 public class LogTable extends JTable {
 
-  public static final int DEFAULT_HEIGHT = 600;
+  public static final int DEFAULT_HEIGHT = 500;
 
   public LogTable(final LogTableModel logTableModel,
       final LogDetailController logDetailController) {

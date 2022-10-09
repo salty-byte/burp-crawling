@@ -27,7 +27,7 @@ public class LogTablePopupMenu extends JPopupMenu {
     // create color menu items
     Arrays.stream(ColorType.values())
         .map(c -> {
-          final var item = new JMenuItem("色変更：" + c.getDisplayName());
+          final var item = new JMenuItem("    色変更：" + c.getDisplayName());
           item.addActionListener(e -> crawlHelper.setLogEntriesColor(c, logEntries));
           item.setBackground(c.getBackground());
           item.setForeground(c.getForeground());

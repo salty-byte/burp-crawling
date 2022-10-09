@@ -2,7 +2,9 @@ package views;
 
 import controllers.CrawlProxyController;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,8 +16,6 @@ public class HeaderPanel extends JPanel {
   public static final int HEIGHT = 45;
 
   HeaderPanel(final CrawlProxyController proxyController) {
-    setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
-
     final var requestBaseLabel = new JLabel("リクエスト名：");
     final var requestBaseNameField = new JTextField(50);
     final var requestBasePartitionLabel = new JLabel(">");
@@ -38,12 +38,31 @@ public class HeaderPanel extends JPanel {
       requestLinkNameField.setText("");
     });
     requestLinkNameResetButton.addActionListener(e -> requestLinkNameField.setText(""));
-    add(requestBaseLabel);
-    add(requestBaseNameField);
-    add(requestBasePartitionLabel);
-    add(requestLinkNameField);
-    add(requestNameUpdateButton);
-    add(requestLinkNameResetButton);
+
+    setLayout(new GridBagLayout());
+    final var gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.BOTH;
+    gbc.gridx = 0;
+    gbc.weightx = 0;
+    gbc.weighty = 0;
+    gbc.insets = new Insets(0, 10, 0, 5);
+    add(requestBaseLabel, gbc);
+    gbc.gridx++;
+    gbc.weightx = 4;
+    gbc.insets = new Insets(0, 0, 0, 5);
+    add(requestBaseNameField, gbc);
+    gbc.gridx++;
+    gbc.weightx = 0;
+    add(requestBasePartitionLabel, gbc);
+    gbc.gridx++;
+    gbc.weightx = 3;
+    add(requestLinkNameField, gbc);
+    gbc.gridx++;
+    gbc.weightx = 0;
+    add(requestNameUpdateButton, gbc);
+    gbc.gridx++;
+    gbc.insets = new Insets(0, 0, 0, 10);
+    add(requestLinkNameResetButton, gbc);
 
     setPreferredSize(new Dimension(Integer.MAX_VALUE, HEIGHT));
   }

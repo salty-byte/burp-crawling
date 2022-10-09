@@ -1,26 +1,38 @@
 package views;
 
 import controllers.LogDetailController;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-public class LogDetailPanel extends JPanel {
-
-  public static final int HEIGHT = 500;
+public class LogDetailPanel extends JSplitPane {
 
   public LogDetailPanel(final LogDetailController logDetailController) {
+    super(JSplitPane.HORIZONTAL_SPLIT);
+
     final var requestEditorComponent = logDetailController.getRequestEditor().getComponent();
     final var responseEditorComponent = logDetailController.getResponseEditor().getComponent();
 
-    final var splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    splitPane.setLeftComponent(requestEditorComponent);
-    splitPane.setRightComponent(responseEditorComponent);
+    final var leftPane = new JPanel(new GridBagLayout());
+    final var gbcL = new GridBagConstraints();
+    gbcL.fill = GridBagConstraints.BOTH;
+    gbcL.weightx = 1;
+    gbcL.weighty = 1;
+    gbcL.insets = new Insets(0, 0, 0, -5); // for margin
+    leftPane.add(requestEditorComponent, gbcL);
 
-    setPreferredSize(new Dimension(Integer.MAX_VALUE, HEIGHT));
-    setLayout(new BorderLayout());
-    add(splitPane, BorderLayout.CENTER);
-    splitPane.setResizeWeight(0.5);
+    final var rightPane = new JPanel(new GridBagLayout());
+    final var gbcR = new GridBagConstraints();
+    gbcR.fill = GridBagConstraints.BOTH;
+    gbcR.weightx = 1;
+    gbcR.weighty = 1;
+    gbcR.insets = new Insets(0, 0, 0, -15); // for margin
+    rightPane.add(responseEditorComponent, gbcR);
+
+    setLeftComponent(leftPane);
+    setRightComponent(rightPane);
+    setResizeWeight(0.5);
   }
 }
