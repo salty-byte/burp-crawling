@@ -8,11 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 
 import burp.IExtensionHelpers;
 import burp.IParameter;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -23,6 +26,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 class CrawlingUtilsTest {
@@ -183,10 +187,23 @@ class CrawlingUtilsTest {
       "https://example.com:8080/\ttrue\ttrue\nhttps://example.com:8080/test?a=1&b=2\tfalse\ttrue",
   })
   void testExportToClipBoard(final String message) throws IOException, UnsupportedFlavorException {
-    CrawlingUtils.exportToClipBoard(message);
-    final var toolkit = Toolkit.getDefaultToolkit();
-    final var clipboard = toolkit.getSystemClipboard();
-    final var result = clipboard.getData(DataFlavor.stringFlavor);
-    assertEquals(message, result);
+    // use mocks to avoid java.awt.HeadlessException in Toolkit#getSystemClipboard
+    final var captor = ArgumentCaptor.forClass(StringSelection.class);
+    final var toolkit = Mockito.mock(Toolkit.class);
+    final var clipboard = Mockito.mock(Clipboard.class);
+    Mockito.doNothing().when(clipboard).setContents(captor.capture(), captor.capture());
+    Mockito.doReturn(clipboard).when(toolkit).getSystemClipboard();
+    try (final var mocked = Mockito.mockStatic(Toolkit.class)) {
+      mocked.when(Toolkit::getDefaultToolkit).thenReturn(toolkit);
+
+      // do the target method
+      CrawlingUtils.exportToClipBoard(message);
+    }
+
+    Mockito.verify(clipboard, times(1)).setContents(any(), any());
+    for (final var selection : captor.getAllValues()) {
+      final var result = selection.getTransferData(DataFlavor.stringFlavor).toString();
+      assertEquals(message, result);
+    }
   }
 }
