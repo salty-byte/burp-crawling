@@ -1,9 +1,8 @@
 :tada: Initial commit
 :sparkles: New feature
 :+1: Fix feature
-:shirt:	Fix lint warning
-:space_invader:	Bug fix
-:shower: Delete function
+:shirt: Fix lint warning
+:space_invader: Bug fix
 :pencil: Refactoring
 :art: Accessibility
 :police_car: Security related improvements
@@ -11,7 +10,7 @@
 :wrench: Changing configuration files
 :rotating_light: Test implementation
 :poop: Deprecation
-:books:	Add Library
+:books: Add Library
 :chart_with_upwards_trend: Library upgrade
 :chart_with_downwards_trend: Library downgrade
 :lock: Restriction of disclosure range

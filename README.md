@@ -2,33 +2,36 @@
 
 ![build](https://github.com/salty-byte/burp-crawling/workflows/build/badge.svg)
 ![test](https://github.com/salty-byte/burp-crawling/workflows/test/badge.svg)
-[![coverage sample](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://shields.io/category/coverage)
 
-[BurpSuite](https://portswigger.net/burp/releases) のクローリングサポート用拡張機能。
+クローリングサポート用の [BurpSuite](https://portswigger.net/burp/releases) 拡張機能。
 
-## Requirement
+## キャプチャ
+
+![メイン画面](./images/main.jpg)
+
+## 前提
 
 - Java 11 (or later)
 - BurpSuite 2020.1 (or later)
 
-## Usage
+## ビルド
 
-_Usage here_
+- for Windows
 
-## Installation
-
-_Installation here_
-
-## Build
-
+```ps
+.\gradlew.bat clean fatJar
 ```
+
+- for Linux
+
+```sh
 ./gradlew clean fatJar
 ```
 
-## License
+## ライセンス
 
 [MIT](/LICENSE)
 
-## Author
+## 作成者
 
 [salty-byte](https://github.com/salty-byte)
