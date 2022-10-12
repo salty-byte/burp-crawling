@@ -1,6 +1,7 @@
 package utils;
 
 import burp.IExtensionHelpers;
+import burp.IParameter;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.net.URL;
@@ -59,6 +60,7 @@ public class CrawlingUtils {
       final var requestInfo = helper.analyzeRequest(reqRes.getHttpService(), reqRes.getRequest());
       final var paramsStr = requestInfo.getParameters()
           .stream()
+          .filter(p -> p.getType() != IParameter.PARAM_COOKIE)
           .map(p -> p.getType() + p.getName())
           .sorted()
           .collect(Collectors.joining(","));

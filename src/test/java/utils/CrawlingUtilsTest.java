@@ -42,7 +42,8 @@ class CrawlingUtilsTest {
     );
     final var param2 = List.of(
         createIParameter(IParameter.PARAM_URL, "b"),
-        createIParameter(IParameter.PARAM_URL, "a")
+        createIParameter(IParameter.PARAM_URL, "a"),
+        createIParameter(IParameter.PARAM_COOKIE, "a")
     );
     final var param3 = List.of(
         createIParameter(IParameter.PARAM_URL, "a"),
@@ -50,10 +51,12 @@ class CrawlingUtilsTest {
     );
     final var param4 = List.of(
         createIParameter(IParameter.PARAM_BODY, "a"),
-        createIParameter(IParameter.PARAM_BODY, "b")
+        createIParameter(IParameter.PARAM_BODY, "b"),
+        createIParameter(IParameter.PARAM_COOKIE, "a")
     );
     final var param5 = List.of(
-        createIParameter(IParameter.PARAM_URL, "a")
+        createIParameter(IParameter.PARAM_URL, "a"),
+        createIParameter(IParameter.PARAM_COOKIE, "b")
     );
     final var info1 = createIRequestInfo("GET", new URL("https://example.com/?a=1&b=3"), param1);
     final var info2 = createIRequestInfo("GET", new URL("https://example.com/?b=1&a=1"), param2);
