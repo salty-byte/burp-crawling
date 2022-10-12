@@ -61,6 +61,7 @@ class LogEntryForJsonTest {
     );
     assertTrue(jsonStr.contains("\"targetType\":0"), String.format("%s has targetType", jsonStr));
     assertTrue(jsonStr.contains("\"colorType\":0"), String.format("%s has colorType", jsonStr));
+    assertTrue(jsonStr.contains("\"date\":"), String.format("%s has date", jsonStr));
     assertTrue(jsonStr.contains("\"remark\":\"test\""), String.format("%s has remark", jsonStr));
 
     final var reqResBlock = jsonStr.split("requestResponse")[1];
@@ -88,7 +89,7 @@ class LogEntryForJsonTest {
   @Test
   void testFromJson() {
     final var jsonStr =
-        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"extension\":\"txt\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"remark\":\"test\","
+        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"extension\":\"txt\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"date\":\"12:34:56 10 Oct 2022\",\"remark\":\"test\","
             + "\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\","
             + "\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}"
             + "}}";
@@ -105,6 +106,7 @@ class LogEntryForJsonTest {
     assertEquals("", logEntryForJson.getDuplicatedMessage());
     assertEquals(TargetType.AUTO, logEntryForJson.getTargetType());
     assertEquals(ColorType.YELLOW, logEntryForJson.getColorType());
+    assertEquals("12:34:56 10 Oct 2022", logEntryForJson.getDate());
     assertEquals("test", logEntryForJson.getRemark());
 
     final var requestResponse = logEntryForJson.getRequestResponse();

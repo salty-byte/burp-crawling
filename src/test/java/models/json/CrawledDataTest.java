@@ -42,7 +42,7 @@ class CrawledDataTest {
   @Test
   void testFromJson() {
     final var jsonStr = "{\"version\":\"1.0\",\"entries\":["
-        + "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"png\",\"extension\":\"png\",\"hasParameter\":false,\"duplicated\":false,\"duplicatedMessage\":\"\",\"remark\":\"test\",\"colorType\":1,\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\",\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}}"
+        + "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"png\",\"extension\":\"png\",\"hasParameter\":false,\"duplicated\":false,\"duplicatedMessage\":\"\",\"date\":\"12:34:56 10 Oct 2022\",\"remark\":\"test\",\"colorType\":1,\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\",\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}}"
         + "]}";
     final var crawledData = JsonUtils.fromJson(jsonStr, CrawledData.class);
     assertEquals("1.0", crawledData.getVersion());
@@ -60,6 +60,7 @@ class CrawledDataTest {
     assertEquals("", logEntryForJson.getDuplicatedMessage());
     assertEquals(TargetType.NONE, logEntryForJson.getTargetType());
     assertEquals(ColorType.RED, logEntryForJson.getColorType());
+    assertEquals("12:34:56 10 Oct 2022", logEntryForJson.getDate());
     assertEquals("test", logEntryForJson.getRemark());
 
     final var requestResponse = logEntryForJson.getRequestResponse();

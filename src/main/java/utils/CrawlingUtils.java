@@ -5,8 +5,12 @@ import burp.IParameter;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -22,6 +26,11 @@ public class CrawlingUtils {
     final var pattern = Pattern.compile("/.+\\.([^/.]+)$");
     final var matcher = pattern.matcher(url.getPath());
     return matcher.find() ? matcher.group(1) : "";
+  }
+
+  public static String createDateString() {
+    final var date = Date.from(Instant.now());
+    return new SimpleDateFormat("HH:mm:ss dd MMM yyyy", Locale.US).format(date);
   }
 
   private static boolean hasDefaultUrlPort(final URL url) {

@@ -20,6 +20,7 @@ public class LogEntryForJson {
   private final byte targetType;
   private final byte colorType;
   private final String remark;
+  private final String date;
   private final RequestResponse requestResponse;
 
   public LogEntryForJson(final LogEntry entry) {
@@ -35,6 +36,7 @@ public class LogEntryForJson {
     this.duplicatedMessage = entry.getDuplicatedMessage();
     this.targetType = entry.getTargetType().getValue();
     this.colorType = entry.getColorType().getValue();
+    this.date = entry.getDate();
     this.remark = entry.getRemark();
     final var iReqRes = entry.getRequestResponse();
     requestResponse = iReqRes == null ? null : new RequestResponse(iReqRes);
@@ -86,6 +88,10 @@ public class LogEntryForJson {
 
   public ColorType getColorType() {
     return ColorType.fromByte(colorType);
+  }
+
+  public String getDate() {
+    return date;
   }
 
   public String getRemark() {

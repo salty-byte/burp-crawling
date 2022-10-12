@@ -21,6 +21,7 @@ public class LogEntry {
   private String remark;
   private TargetType targetType;
   private ColorType colorType;
+  private String date;
   private IHttpRequestResponse requestResponse;
 
   public LogEntry(final int number) {
@@ -38,6 +39,7 @@ public class LogEntry {
     this.duplicatedMessage = "";
     this.targetType = TargetType.NONE;
     this.colorType = ColorType.DEFAULT;
+    this.date = CrawlingUtils.createDateString();
   }
 
   public LogEntry(final int number, final IHttpRequestResponse requestResponse,
@@ -56,6 +58,7 @@ public class LogEntry {
     this.duplicatedMessage = "";
     this.targetType = TargetType.NONE;
     this.colorType = ColorType.DEFAULT;
+    this.date = CrawlingUtils.createDateString();
   }
 
   public LogEntry(final LogEntryForJson data) {
@@ -73,6 +76,7 @@ public class LogEntry {
     this.duplicatedMessage = data.getDuplicatedMessage();
     this.targetType = data.getTargetType();
     this.colorType = data.getColorType();
+    this.date = data.getDate();
   }
 
   public Object getValueByKey(final LogEntryKey key) {
@@ -101,6 +105,8 @@ public class LogEntry {
         return targetType.hasAuto();
       case TARGET_MANUAL:
         return targetType.hasManual();
+      case DATE:
+        return getDate();
       case REMARK:
         return getRemark();
       default:
@@ -256,6 +262,14 @@ public class LogEntry {
 
   public void setManualTarget(boolean hasManual) {
     targetType = targetType.setManual(hasManual);
+  }
+
+  public String getDate() {
+    return date;
+  }
+
+  public void setDate(String date) {
+    this.date = date;
   }
 
   public String getRemark() {

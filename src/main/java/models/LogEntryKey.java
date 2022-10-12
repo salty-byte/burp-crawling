@@ -17,6 +17,7 @@ public enum LogEntryKey {
   DUPLICATED_MESSAGE(String.class, "重複箇所", 80, false, false),
   TARGET_AUTO(Boolean.class, "自動対象", 50, false, true),
   TARGET_MANUAL(Boolean.class, "手動対象", 50, false, true),
+  DATE(String.class, "日時", 130, true, false),
   REMARK(String.class, "備考", 300, true, true),
   ;
 

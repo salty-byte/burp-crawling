@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -157,6 +160,16 @@ class CrawlingUtilsTest {
   })
   void testFindExtension(final URL url, final String expected) {
     assertEquals(expected, CrawlingUtils.findExtension(url));
+  }
+
+  @Test
+  void testCreateDateString() {
+    final var clock = Clock.fixed(Instant.parse("2022-12-12T03:34:56Z"), ZoneId.of("Asia/Tokyo"));
+    final var instant = Instant.now(clock);
+    try (final var mocked = Mockito.mockStatic(Instant.class)) {
+      mocked.when(Instant::now).thenReturn(instant);
+      assertEquals("12:34:56 12 Dec 2022", CrawlingUtils.createDateString());
+    }
   }
 
   @ParameterizedTest
