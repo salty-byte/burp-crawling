@@ -1,11 +1,13 @@
 package utils;
 
+import com.google.gson.JsonObject;
 import exceptions.CrawlException;
 import io.swagger.parser.OpenAPIParser;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import models.LogEntry;
 
@@ -15,8 +17,19 @@ public class OpenApiImporter {
     throw new IllegalStateException("Utility class");
   }
 
-  public static List<LogEntry> parse(final Path file) throws CrawlException, IOException {
-    final var contents = Files.readString(file);
+  public static boolean isOpenApi(final File file) throws IOException {
+    final var fileName = file.getName();
+    final var ymlExtensions = new String[]{"yml", "yaml"};
+    if (Arrays.stream(ymlExtensions).anyMatch(fileName::startsWith)) {
+      return true;
+    }
+
+    final var jsonObj = JsonUtils.fromJson(file, JsonObject.class);
+    return jsonObj.has("openapi");
+  }
+
+  public static List<LogEntry> parse(final File file) throws CrawlException, IOException {
+    final var contents = Files.readString(file.toPath());
     return parse(contents);
   }
 

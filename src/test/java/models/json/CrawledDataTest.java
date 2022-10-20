@@ -35,13 +35,13 @@ class CrawledDataTest {
     final var list = List.of(createLogEntry());
     final var crawledData = new CrawledData(list);
     final var jsonStr = JsonUtils.toJson(crawledData, CrawledData.class);
-    assertTrue(jsonStr.contains("\"version\":\"1.0\""), String.format("%s has version", jsonStr));
+    assertTrue(jsonStr.contains("\"crawling\":\"1.0\""), String.format("%s has version", jsonStr));
     assertTrue(jsonStr.contains("\"entries\":["), String.format("%s has entries", jsonStr));
   }
 
   @Test
   void testFromJson() {
-    final var jsonStr = "{\"version\":\"1.0\",\"entries\":["
+    final var jsonStr = "{\"crawling\":\"1.0\",\"entries\":["
         + "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"png\",\"extension\":\"png\",\"hasParameter\":false,\"duplicated\":false,\"duplicatedMessage\":\"\",\"date\":\"12:34:56 10 Oct 2022\",\"remark\":\"test\",\"colorType\":1,\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\",\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}}"
         + "]}";
     final var crawledData = JsonUtils.fromJson(jsonStr, CrawledData.class);

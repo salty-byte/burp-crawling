@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Base64;
@@ -29,8 +30,10 @@ public class JsonUtils {
     return createGsonBuilder().fromJson(json, classification);
   }
 
-  public static <T> T fromJson(final FileReader reader, final Class<T> classification) {
-    return createGsonBuilder().fromJson(reader, classification);
+  public static <T> T fromJson(final File file, final Class<T> classification) throws IOException {
+    try (final var reader = new FileReader(file)) {
+      return createGsonBuilder().fromJson(reader, classification);
+    }
   }
 
   static class Base64TypeAdapter extends TypeAdapter<byte[]> {

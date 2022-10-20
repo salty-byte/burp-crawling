@@ -15,8 +15,8 @@ class OpenApiImporterTest {
     final var resource = getClass().getResource("/openapi/openapi-v3.yaml");
     assertNotNull(resource);
 
-    final var filePath = new File(resource.getFile()).toPath();
-    final var result = OpenApiImporter.parse(filePath);
+    final var file = new File(resource.getFile());
+    final var result = OpenApiImporter.parse(file);
     assertEquals(3, result.size());
 
     final var logEntry1 = result.get(0);
@@ -43,8 +43,8 @@ class OpenApiImporterTest {
     final var resource = getClass().getResource("/openapi/openapi-v3.json");
     assertNotNull(resource);
 
-    final var filePath = new File(resource.getFile()).toPath();
-    final var result = OpenApiImporter.parse(filePath);
+    final var file = new File(resource.getFile());
+    final var result = OpenApiImporter.parse(file);
     assertEquals(19, result.size());
 
     final var logEntry1 = result.get(0);
@@ -77,7 +77,7 @@ class OpenApiImporterTest {
     final var resource = getClass().getResource("/openapi/openapi-error.json");
     assertNotNull(resource);
 
-    final var filePath = new File(resource.getFile()).toPath();
-    assertThrows(CrawlException.class, () -> OpenApiImporter.parse(filePath));
+    final var file = new File(resource.getFile());
+    assertThrows(CrawlException.class, () -> OpenApiImporter.parse(file));
   }
 }
