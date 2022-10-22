@@ -24,18 +24,21 @@ class OpenApiImporterTest {
     assertEquals("List all pets", logEntry1.getRequestName());
     assertEquals("GET", logEntry1.getMethod());
     assertEquals("/pets", logEntry1.getUrl());
+    assertEquals("pets", logEntry1.getPageTitle());
 
     final var logEntry2 = result.get(1);
     assertEquals(2, logEntry2.getNumber());
     assertEquals("Create a pet", logEntry2.getRequestName());
     assertEquals("POST", logEntry2.getMethod());
     assertEquals("/pets", logEntry2.getUrl());
+    assertEquals("pets", logEntry2.getPageTitle());
 
     final var logEntry3 = result.get(2);
     assertEquals(3, logEntry3.getNumber());
     assertEquals("Info for a specific pet", logEntry3.getRequestName());
     assertEquals("GET", logEntry3.getMethod());
     assertEquals("/pets/{petId}", logEntry3.getUrl());
+    assertEquals("pets", logEntry3.getPageTitle());
   }
 
   @Test
@@ -52,24 +55,28 @@ class OpenApiImporterTest {
     assertEquals("Update an existing pet", logEntry1.getRequestName());
     assertEquals("PUT", logEntry1.getMethod());
     assertEquals("/pet", logEntry1.getUrl());
+    assertEquals("pet", logEntry1.getPageTitle());
 
     final var logEntry2 = result.get(1);
     assertEquals(2, logEntry2.getNumber());
     assertEquals("Add a new pet to the store", logEntry2.getRequestName());
     assertEquals("POST", logEntry2.getMethod());
     assertEquals("/pet", logEntry2.getUrl());
+    assertEquals("pet", logEntry2.getPageTitle());
 
     final var logEntry3 = result.get(2);
     assertEquals(3, logEntry3.getNumber());
     assertEquals("Finds Pets by status", logEntry3.getRequestName());
     assertEquals("GET", logEntry3.getMethod());
     assertEquals("/pet/findByStatus", logEntry3.getUrl());
+    assertEquals("pet", logEntry3.getPageTitle());
 
     final var logEntry19 = result.get(18);
     assertEquals(19, logEntry19.getNumber());
     assertEquals("Delete user", logEntry19.getRequestName());
     assertEquals("DELETE", logEntry19.getMethod());
     assertEquals("/user/{username}", logEntry19.getUrl());
+    assertEquals("user", logEntry19.getPageTitle());
   }
 
   @Test

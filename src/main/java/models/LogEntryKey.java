@@ -18,6 +18,7 @@ public enum LogEntryKey {
   TARGET_AUTO(Boolean.class, "自動対象", 50, false, true),
   TARGET_MANUAL(Boolean.class, "手動対象", 50, false, true),
   DATE(String.class, "日時", 130, true, false),
+  PAGE_TITLE(String.class, "画面名", 130, true, true),
   REMARK(String.class, "備考", 300, true, true),
   ;
 

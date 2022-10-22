@@ -51,13 +51,16 @@ public class OpenApiImporter {
 
       for (final var operationSet : item.readOperationsMap().entrySet()) {
         final var method = operationSet.getKey().name();
-        final var summary = operationSet.getValue().getSummary();
-        final var description = operationSet.getValue().getDescription();
+        final var operation = operationSet.getValue();
+        final var pageTitle = String.join(",", operation.getTags());
+        final var summary = operation.getSummary();
+        final var description = operation.getDescription();
         final var logEntry = new LogEntry(logEntries.size() + 1);
         logEntry.setRequestName(summary);
         logEntry.setUrl(path);
         logEntry.setMethod(method);
         logEntry.setRemark(description);
+        logEntry.setPageTitle(pageTitle);
         logEntries.add(logEntry);
       }
     }

@@ -33,6 +33,10 @@ class LogEntryForJsonTest {
     final var jsonStr = JsonUtils.toJson(logEntryForJson, LogEntryForJson.class);
     assertTrue(jsonStr.contains("\"number\":1"), String.format("%s has number", jsonStr));
     assertTrue(
+        jsonStr.contains("\"pageTitle\":\"title\""),
+        String.format("%s has pageTitle", jsonStr)
+    );
+    assertTrue(
         jsonStr.contains("\"requestName\":\"top\""),
         String.format("%s has requestName", jsonStr)
     );
@@ -89,12 +93,13 @@ class LogEntryForJsonTest {
   @Test
   void testFromJson() {
     final var jsonStr =
-        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"extension\":\"txt\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"date\":\"12:34:56 10 Oct 2022\",\"remark\":\"test\","
+        "{\"number\":1,\"pageTitle\":\"title\",\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"extension\":\"txt\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"date\":\"12:34:56 10 Oct 2022\",\"remark\":\"test\","
             + "\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\","
             + "\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}"
             + "}}";
     final var logEntryForJson = JsonUtils.fromJson(jsonStr, LogEntryForJson.class);
     assertEquals(1, logEntryForJson.getNumber());
+    assertEquals("title", logEntryForJson.getPageTitle());
     assertEquals("top", logEntryForJson.getRequestName());
     assertEquals("https://example.com", logEntryForJson.getUrl());
     assertEquals("GET", logEntryForJson.getMethod());

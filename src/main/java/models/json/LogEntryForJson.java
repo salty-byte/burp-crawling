@@ -8,6 +8,7 @@ import models.TargetType;
 public class LogEntryForJson {
 
   private final int number;
+  private final String pageTitle;
   private final String requestName;
   private final String url;
   private final String method;
@@ -25,6 +26,7 @@ public class LogEntryForJson {
 
   public LogEntryForJson(final LogEntry entry) {
     this.number = entry.getNumber();
+    this.pageTitle = entry.getPageTitle();
     this.requestName = entry.getRequestName();
     this.url = entry.getUrl();
     this.method = entry.getMethod();
@@ -44,6 +46,10 @@ public class LogEntryForJson {
 
   public int getNumber() {
     return number;
+  }
+
+  public String getPageTitle() {
+    return pageTitle;
   }
 
   public String getRequestName() {
