@@ -48,7 +48,7 @@ public class CrawlHelper {
     return new LogEntry(0, requestResponse, requestInfo, responseInfo);
   }
 
-  private IResponseInfo analyzeResponse(final byte[] response) {
+  public IResponseInfo analyzeResponse(final byte[] response) {
     return extensionHelper.analyzeResponse(response == null ? new byte[0] : response);
   }
 

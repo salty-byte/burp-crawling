@@ -1,15 +1,21 @@
 package views;
 
 import controllers.CrawlController;
+import controllers.CrawlProxyController;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import views.listeners.UpdateDocumentListener;
 
 /**
  * データのインポートやエクスポート等の操作ボタンを配置するコンポーネント。
@@ -67,6 +73,8 @@ public class ControlPanel extends JPanel {
     });
     scopeOnlyCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+    final var excludedPanel = createExcludedPanel(proxyController);
+
     setLayout(new GridBagLayout());
     final var gbc = new GridBagConstraints();
     gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -93,12 +101,53 @@ public class ControlPanel extends JPanel {
     gbc.insets = new Insets(100, 5, 0, 5);
     add(crawlProxyToggle, gbc);
     gbc.gridy++;
-    gbc.insets = new Insets(5, 5, 0, 5);
+    gbc.insets = new Insets(5, 5, 10, 5);
     add(scopeOnlyCheckBox, gbc);
+    gbc.gridy++;
+    gbc.insets = new Insets(5, 5, 0, 5);
+    add(excludedPanel, gbc);
     gbc.gridy++;
     gbc.weighty = 1;
     add(new JPanel(), gbc);
 
     setPreferredSize(new Dimension(WIDTH, Integer.MAX_VALUE));
+  }
+
+  private JPanel createExcludedPanel(final CrawlProxyController proxyController) {
+    final var excludedMimeCheckBox = new JCheckBox("MIME");
+    excludedMimeCheckBox.addChangeListener(e -> {
+      final var checkBox = (JCheckBox) e.getSource();
+      proxyController.useExcludedMime(checkBox.isSelected());
+    });
+
+    final var excludedMimeTextField = new JTextField(50);
+    final var excludedMimeListener = (UpdateDocumentListener) e -> {
+      final var mimeList = excludedMimeTextField.getText().split(",");
+      proxyController.setExcludedMime(List.of(mimeList));
+    };
+    excludedMimeTextField.getDocument().addDocumentListener(excludedMimeListener);
+
+    final var excludedExtensionsCheckBox = new JCheckBox("拡張子");
+    excludedExtensionsCheckBox.addChangeListener(e -> {
+      final var checkBox = (JCheckBox) e.getSource();
+      proxyController.useExcludedExtensions(checkBox.isSelected());
+    });
+
+    final var excludedExtensionsTextField = new JTextField(50);
+    final var excludedExtensionsListener = (UpdateDocumentListener) e -> {
+      final var extensionList = excludedExtensionsTextField.getText().split(",");
+      proxyController.setExcludedExtensions(List.of(extensionList));
+    };
+    excludedExtensionsTextField.getDocument().addDocumentListener(excludedExtensionsListener);
+
+    final var excludedPanel = new JPanel();
+    excludedPanel.setBorder(BorderFactory.createTitledBorder("対象外"));
+    excludedPanel.setLayout(new BoxLayout(excludedPanel, BoxLayout.PAGE_AXIS));
+    excludedPanel.add(excludedMimeCheckBox);
+    excludedPanel.add(excludedMimeTextField);
+    excludedPanel.add(excludedExtensionsCheckBox);
+    excludedPanel.add(excludedExtensionsTextField);
+
+    return excludedPanel;
   }
 }
