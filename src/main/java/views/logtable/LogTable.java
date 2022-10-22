@@ -63,8 +63,7 @@ public class LogTable extends JTable {
 
   @Override
   public boolean isCellEditable(int rowIndex, int columnIndex) {
-    final var modelColumnIndex = convertColumnIndexToModel(columnIndex);
-    return getLogEntryKeyAt(modelColumnIndex).isEditable();
+    return getLogEntryKeyAt(columnIndex).isEditable();
   }
 
   private void setSelectionListener(final LogDetailController logDetailController) {
