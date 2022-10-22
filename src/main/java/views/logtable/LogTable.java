@@ -108,8 +108,12 @@ public class LogTable extends JTable {
       return null;
     }
 
-    final var text = getValueAt(rowIndex, columnIndex).toString();
-    final var chunks = text.split("(?<=\\G.{100})");
+    final var value = getValueAt(rowIndex, columnIndex);
+    if (value == null) {
+      return null;
+    }
+
+    final var chunks = value.toString().split("(?<=\\G.{100})");
     return String.join("\n", chunks);
   }
 
