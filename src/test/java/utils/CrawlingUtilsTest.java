@@ -96,7 +96,8 @@ class CrawlingUtilsTest {
         createLogEntry(7, "1".getBytes(StandardCharsets.UTF_8)),
         createLogEntry(8, "2".getBytes(StandardCharsets.UTF_8)),
         createLogEntry(9, "6".getBytes(StandardCharsets.UTF_8)),
-        createLogEntry(10, "8".getBytes(StandardCharsets.UTF_8))
+        createLogEntry(10, "7".getBytes(StandardCharsets.UTF_8)),
+        createLogEntry(11, "4".getBytes(StandardCharsets.UTF_8))
     );
     CrawlingUtils.applyDuplicatedRequest(logEntries, helpers);
     assertFalse(logEntries.get(0).isDuplicated());
@@ -113,6 +114,8 @@ class CrawlingUtilsTest {
     assertTrue(logEntries.get(8).isDuplicated());
     assertEquals("No6", logEntries.get(8).getDuplicatedMessage());
     assertFalse(logEntries.get(9).isDuplicated());
+    assertTrue(logEntries.get(10).isDuplicated());
+    assertEquals("No4", logEntries.get(10).getDuplicatedMessage());
   }
 
   @Test

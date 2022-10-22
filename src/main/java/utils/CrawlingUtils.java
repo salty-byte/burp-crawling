@@ -61,7 +61,7 @@ public class CrawlingUtils {
       final IExtensionHelpers helper) {
     // prepare checklist
     final var checkMap = new HashMap<Integer, String>();
-    for (int i = 0; i < entries.size() - 1; i++) {
+    for (int i = 0; i < entries.size(); i++) {
       final var reqRes = entries.get(i).getRequestResponse();
       if (reqRes == null) {
         continue;
