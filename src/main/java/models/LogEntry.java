@@ -9,6 +9,7 @@ import utils.CrawlingUtils;
 public class LogEntry {
 
   private int number;
+  private String pageTitle;
   private String requestName;
   private String url;
   private String method;
@@ -26,6 +27,7 @@ public class LogEntry {
 
   public LogEntry(final int number) {
     this.number = number;
+    this.pageTitle = "";
     this.requestName = "";
     this.url = "https://";
     this.method = "GET";
@@ -45,6 +47,7 @@ public class LogEntry {
   public LogEntry(final int number, final IHttpRequestResponse requestResponse,
       final IRequestInfo requestInfo, final IResponseInfo responseInfo) {
     this.number = number;
+    this.pageTitle = "";
     this.requestName = "";
     this.url = CrawlingUtils.createUrlStringWithQuery(requestInfo.getUrl());
     this.method = requestInfo.getMethod();
@@ -63,6 +66,7 @@ public class LogEntry {
 
   public LogEntry(final LogEntryForJson data) {
     this.number = data.getNumber();
+    this.pageTitle = data.getPageTitle();
     this.requestName = data.getRequestName();
     this.url = data.getUrl();
     this.method = data.getMethod();
@@ -83,6 +87,8 @@ public class LogEntry {
     switch (key) {
       case NUMBER:
         return getNumber();
+      case PAGE_TITLE:
+        return getPageTitle();
       case REQUEST_NAME:
         return getRequestName();
       case URL:
@@ -119,6 +125,9 @@ public class LogEntry {
       switch (key) {
         case NUMBER:
           setNumber((Integer) value);
+          break;
+        case PAGE_TITLE:
+          setPageTitle((String) value);
           break;
         case REQUEST_NAME:
           setRequestName((String) value);
@@ -166,6 +175,14 @@ public class LogEntry {
 
   public void setNumber(int number) {
     this.number = number;
+  }
+
+  public String getPageTitle() {
+    return pageTitle;
+  }
+
+  public void setPageTitle(String pageTitle) {
+    this.pageTitle = pageTitle;
   }
 
   public String getRequestName() {

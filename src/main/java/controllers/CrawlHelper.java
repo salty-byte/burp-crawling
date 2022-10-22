@@ -3,8 +3,8 @@ package controllers;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
 import burp.IResponseInfo;
+import exceptions.CrawlException;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -18,6 +18,7 @@ import models.json.CrawledData;
 import utils.CrawlingUtils;
 import utils.DialogUtils;
 import utils.JsonUtils;
+import utils.OpenApiImporter;
 import utils.TsvExporter;
 import views.logtable.LogTable;
 import views.logtable.LogTableModel;
@@ -162,12 +163,21 @@ public class CrawlHelper {
       DialogUtils.showError("ファイルが存在しません。", "エラー");
     }
 
-    try (final var reader = new FileReader(file)) {
-      final var crawledData = JsonUtils.fromJson(reader, CrawledData.class);
-      logTableModel.addLogEntriesAt(crawledData.toLogEntries(), index);
-    } catch (IOException e) {
+    try {
+      final var logEntries = loadFile(file);
+      logTableModel.addLogEntriesAt(logEntries, index);
+    } catch (IOException | CrawlException e) {
       DialogUtils.showError("JSON追加時にエラーが発生しました。", "エラー");
       e.printStackTrace();
     }
+  }
+
+  private List<LogEntry> loadFile(final File file) throws IOException, CrawlException {
+    if (OpenApiImporter.isOpenApi(file)) {
+      return OpenApiImporter.parse(file);
+    }
+
+    final var crawledData = JsonUtils.fromJson(file, CrawledData.class);
+    return crawledData.toLogEntries();
   }
 }
