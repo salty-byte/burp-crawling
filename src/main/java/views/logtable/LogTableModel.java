@@ -87,6 +87,9 @@ public class LogTableModel extends AbstractTableModel {
   }
 
   public void addLogEntryAt(final LogEntry logEntry, final int index) {
+    if (index < 0) {
+      return;
+    }
     entries.add(index, logEntry);
     fireTableRowsInserted(index, index);
   }
@@ -96,6 +99,9 @@ public class LogTableModel extends AbstractTableModel {
   }
 
   public void addLogEntriesAt(final List<LogEntry> logEntries, final int index) {
+    if (index < 0 || logEntries.isEmpty()) {
+      return;
+    }
     entries.addAll(index, logEntries);
     fireTableRowsInserted(index, index + logEntries.size() - 1);
   }

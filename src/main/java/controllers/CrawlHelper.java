@@ -7,6 +7,7 @@ import exceptions.CrawlException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ public class CrawlHelper {
   private final IExtensionHelpers extensionHelper;
   private final LogTable logTable;
   private final LogTableModel logTableModel;
+  private List<LogEntry> markedLogEntries;
 
   public CrawlHelper(final LogTable logTable) {
     this(null, logTable);
@@ -37,6 +39,7 @@ public class CrawlHelper {
     this.extensionHelper = extensionHelper;
     this.logTable = logTable;
     logTableModel = logTable.getModel();
+    markedLogEntries = new ArrayList<>();
   }
 
   private LogEntry createLogEntry(final IHttpRequestResponse requestResponse) {
@@ -84,6 +87,38 @@ public class CrawlHelper {
 
   public void removeLogEntries(final List<LogEntry> logEntries) {
     logTableModel.removeLogEntries(logEntries);
+  }
+
+  public boolean hasMarkedLogEntries() {
+    return !markedLogEntries.isEmpty();
+  }
+
+  public void updateMarkedLogEntries() {
+    markedLogEntries = logTableModel.getLogEntryAll()
+        .stream()
+        .filter(markedLogEntries::contains)
+        .collect(Collectors.toList());
+  }
+
+  public void markLogEntries(final List<LogEntry> logEntries) {
+    markedLogEntries = logEntries;
+  }
+
+  public void moveMarkedLogEntriesAt(final int index) {
+    updateMarkedLogEntries();
+    if (!hasMarkedLogEntries()) {
+      return;
+    }
+
+    final var logEntries = logTableModel.getLogEntryAll();
+    final var offset = (int) markedLogEntries.stream()
+        .map(logEntries::indexOf)
+        .filter(i -> i < index)
+        .count();
+    final var insertIndex = Math.max(index - offset, 0);
+    removeLogEntries(markedLogEntries);
+    logTableModel.addLogEntriesAt(markedLogEntries, insertIndex);
+    markedLogEntries.clear();
   }
 
   public void renumber() {

@@ -12,7 +12,8 @@ import models.LogEntry;
 
 public class LogTablePopupMenu extends JPopupMenu {
 
-  public LogTablePopupMenu(final CrawlHelper crawlHelper, final List<LogEntry> logEntries) {
+  public LogTablePopupMenu(final CrawlHelper crawlHelper, final List<LogEntry> logEntries,
+      final int[] indices) {
     final var tsvCopyItem = new JMenuItem("TSVコピー (全て)");
     tsvCopyItem.addActionListener(e -> crawlHelper.exportToClipboardWithTsv(logEntries));
     tsvCopyItem.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -35,6 +36,27 @@ public class LogTablePopupMenu extends JPopupMenu {
           item.setUI(new LogTablePopupMenuUI(c));
           return item;
         }).forEachOrdered(this::add);
+    addSeparator();
+
+    final var markLogEntriesItem = new JMenuItem("行移動：マーク");
+    markLogEntriesItem.addActionListener(e -> crawlHelper.markLogEntries(logEntries));
+    markLogEntriesItem.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(markLogEntriesItem);
+    final var moveUpMarkedLogEntriesItem = new JMenuItem("行移動：一つ上");
+    moveUpMarkedLogEntriesItem.addActionListener(
+        e -> crawlHelper.moveMarkedLogEntriesAt(indices[0]));
+    moveUpMarkedLogEntriesItem.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(moveUpMarkedLogEntriesItem);
+    final var moveDownMarkedLogEntriesItem = new JMenuItem("行移動：一つ下");
+    moveDownMarkedLogEntriesItem.addActionListener(
+        e -> crawlHelper.moveMarkedLogEntriesAt(indices[0] + 1));
+    moveDownMarkedLogEntriesItem.setAlignmentX(Component.CENTER_ALIGNMENT);
+    add(moveDownMarkedLogEntriesItem);
+    crawlHelper.updateMarkedLogEntries();
+    if (!crawlHelper.hasMarkedLogEntries()) {
+      moveUpMarkedLogEntriesItem.setEnabled(false);
+      moveDownMarkedLogEntriesItem.setEnabled(false);
+    }
     addSeparator();
 
     final var removeLogEntriesItem = new JMenuItem("行削除");

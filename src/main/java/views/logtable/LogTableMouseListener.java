@@ -27,7 +27,7 @@ public class LogTableMouseListener extends MouseAdapter {
       return;
     }
 
-    final var popupMenu = new LogTablePopupMenu(crawlHelper, entries);
+    final var popupMenu = new LogTablePopupMenu(crawlHelper, entries, indices);
     popupMenu.show(logTable, event.getX(), event.getY());
   }
 }
