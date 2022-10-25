@@ -19,8 +19,8 @@ public class OpenApiImporter {
 
   public static boolean isOpenApi(final File file) throws IOException {
     final var fileName = file.getName();
-    final var ymlExtensions = new String[]{"yml", "yaml"};
-    if (Arrays.stream(ymlExtensions).anyMatch(fileName::startsWith)) {
+    final var ymlExtensions = new String[]{".yml", ".yaml"};
+    if (Arrays.stream(ymlExtensions).anyMatch(fileName::endsWith)) {
       return true;
     }
 
