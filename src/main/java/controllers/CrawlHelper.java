@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import models.ColorType;
 import models.LogEntry;
 import models.json.CrawledData;
@@ -154,11 +155,18 @@ public class CrawlHelper {
 
   public void exportCrawledData() {
     final var fileChooser = new JFileChooser();
+    final var crawlingFilter = new FileNameExtensionFilter("Crawlingファイル (*.json)", "json");
+    fileChooser.addChoosableFileFilter(crawlingFilter);
+    fileChooser.setFileFilter(crawlingFilter);
     int selected = fileChooser.showOpenDialog(null);
     if (selected != JFileChooser.APPROVE_OPTION) {
       return;
     }
-    final var file = fileChooser.getSelectedFile();
+
+    final var tmpFile = fileChooser.getSelectedFile();
+    final var file = crawlingFilter.accept(tmpFile)
+        ? tmpFile
+        : new File(tmpFile.getAbsolutePath() + "." + crawlingFilter.getExtensions()[0]);
     if (file.exists()) {
       int result = DialogUtils.confirm("ファイルが既に存在します。上書きしますか?", "警告");
       if (result != JOptionPane.YES_OPTION) {
@@ -181,6 +189,12 @@ public class CrawlHelper {
 
   public void importCrawledData() {
     final var fileChooser = new JFileChooser();
+    final var crawlingFilter = new FileNameExtensionFilter("Crawlingファイル (*.json)", "json");
+    final var openApiFilter = new FileNameExtensionFilter("OpenAPIファイル (*.json;*.yml;*.yaml)",
+        "json", "yml", "yaml");
+    fileChooser.addChoosableFileFilter(crawlingFilter);
+    fileChooser.addChoosableFileFilter(openApiFilter);
+    fileChooser.setFileFilter(crawlingFilter);
     int selected = fileChooser.showOpenDialog(null);
     if (selected != JFileChooser.APPROVE_OPTION) {
       return;
