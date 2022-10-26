@@ -27,7 +27,7 @@ public class LogTableModel extends AbstractTableModel {
 
   @Override
   public boolean isCellEditable(int rowIndex, int columnIndex) {
-    return true;
+    return getLogEntryKey(columnIndex).isEditable();
   }
 
   @Override

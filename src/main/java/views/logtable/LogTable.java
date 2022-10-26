@@ -61,11 +61,6 @@ public class LogTable extends JTable {
     return component;
   }
 
-  @Override
-  public boolean isCellEditable(int rowIndex, int columnIndex) {
-    return getLogEntryKeyAt(columnIndex).isEditable();
-  }
-
   private void setSelectionListener(final LogDetailController logDetailController) {
     getSelectionModel().addListSelectionListener(e -> {
       if (e.getValueIsAdjusting()) {
