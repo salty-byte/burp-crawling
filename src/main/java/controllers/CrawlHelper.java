@@ -158,7 +158,7 @@ public class CrawlHelper {
     final var crawlingFilter = new FileNameExtensionFilter("Crawlingファイル (*.json)", "json");
     fileChooser.addChoosableFileFilter(crawlingFilter);
     fileChooser.setFileFilter(crawlingFilter);
-    int selected = fileChooser.showOpenDialog(null);
+    int selected = fileChooser.showSaveDialog(null);
     if (selected != JFileChooser.APPROVE_OPTION) {
       return;
     }
