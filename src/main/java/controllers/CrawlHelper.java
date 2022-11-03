@@ -132,9 +132,9 @@ public class CrawlHelper {
     logTableModel.updateAllRows();
   }
 
-  public void applyDuplicatedRequest() {
+  public void applySimilarOrDuplicatedRequest() {
     final var logEntries = logTableModel.getLogEntryAll();
-    CrawlingUtils.applyDuplicatedRequest(logEntries, extensionHelper);
+    CrawlingUtils.applySimilarOrDuplicatedRequest(logEntries, extensionHelper);
     logTableModel.updateAllRows();
   }
 

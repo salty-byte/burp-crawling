@@ -42,7 +42,8 @@ public class ControlPanel extends JPanel {
     applyRequestNameHashButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
     final var applyDuplicatedRequestButton = new JButton("重複判定");
-    applyDuplicatedRequestButton.addActionListener(e -> crawlHelper.applyDuplicatedRequest());
+    applyDuplicatedRequestButton.addActionListener(
+        e -> crawlHelper.applySimilarOrDuplicatedRequest());
     applyDuplicatedRequestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
     final var importCrawledDataButton = new JButton("JSON追加");

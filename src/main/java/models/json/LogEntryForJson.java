@@ -17,7 +17,8 @@ public class LogEntryForJson {
   private final String extension;
   private final boolean hasParameter;
   private final boolean duplicated;
-  private final String duplicatedMessage;
+  private final boolean similar;
+  private final String checkedMessage;
   private final byte targetType;
   private final byte colorType;
   private final String remark;
@@ -35,7 +36,8 @@ public class LogEntryForJson {
     this.extension = entry.getExtension();
     this.hasParameter = entry.hasParameter();
     this.duplicated = entry.isDuplicated();
-    this.duplicatedMessage = entry.getDuplicatedMessage();
+    this.similar = entry.isSimilar();
+    this.checkedMessage = entry.getCheckedMessage();
     this.targetType = entry.getTargetType().getValue();
     this.colorType = entry.getColorType().getValue();
     this.date = entry.getDate();
@@ -84,8 +86,12 @@ public class LogEntryForJson {
     return duplicated;
   }
 
-  public String getDuplicatedMessage() {
-    return duplicatedMessage;
+  public boolean isSimilar() {
+    return similar;
+  }
+
+  public String getCheckedMessage() {
+    return checkedMessage;
   }
 
   public TargetType getTargetType() {

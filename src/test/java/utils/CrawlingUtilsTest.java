@@ -85,7 +85,7 @@ class CrawlingUtilsTest {
   }
 
   @Test
-  void testApplyDuplicatedRequest() {
+  void testApplySimilarOrDuplicatedRequestRequest() {
     final var logEntries = List.of(
         createLogEntry(1, "1".getBytes(StandardCharsets.UTF_8)),
         createLogEntry(2, "2".getBytes(StandardCharsets.UTF_8)),
@@ -99,23 +99,40 @@ class CrawlingUtilsTest {
         createLogEntry(10, "7".getBytes(StandardCharsets.UTF_8)),
         createLogEntry(11, "4".getBytes(StandardCharsets.UTF_8))
     );
-    CrawlingUtils.applyDuplicatedRequest(logEntries, helpers);
-    assertFalse(logEntries.get(0).isDuplicated());
-    assertTrue(logEntries.get(1).isDuplicated());
-    assertEquals("No1", logEntries.get(1).getDuplicatedMessage());
-    assertFalse(logEntries.get(2).isDuplicated());
-    assertFalse(logEntries.get(3).isDuplicated());
-    assertFalse(logEntries.get(4).isDuplicated());
-    assertFalse(logEntries.get(5).isDuplicated());
-    assertTrue(logEntries.get(6).isDuplicated());
-    assertEquals("No1", logEntries.get(6).getDuplicatedMessage());
-    assertTrue(logEntries.get(7).isDuplicated());
-    assertEquals("No1", logEntries.get(7).getDuplicatedMessage());
-    assertTrue(logEntries.get(8).isDuplicated());
-    assertEquals("No6", logEntries.get(8).getDuplicatedMessage());
-    assertFalse(logEntries.get(9).isDuplicated());
-    assertTrue(logEntries.get(10).isDuplicated());
-    assertEquals("No4", logEntries.get(10).getDuplicatedMessage());
+    CrawlingUtils.applySimilarOrDuplicatedRequest(logEntries, helpers);
+    final var entry0 = logEntries.get(0);
+    assertFalse(entry0.isDuplicated());
+    assertFalse(entry0.isSimilar());
+    final var entry1 = logEntries.get(1);
+    assertTrue(entry1.isDuplicated());
+    assertEquals("No1", entry1.getCheckedMessage());
+    final var entry2 = logEntries.get(2);
+    assertFalse(entry2.isDuplicated());
+    assertFalse(entry2.isSimilar());
+    final var entry3 = logEntries.get(3);
+    assertFalse(entry3.isDuplicated());
+    assertFalse(entry3.isSimilar());
+    final var entry4 = logEntries.get(4);
+    assertFalse(entry4.isDuplicated());
+    assertFalse(entry4.isSimilar());
+    final var entry5 = logEntries.get(5);
+    assertFalse(entry5.isDuplicated());
+    assertFalse(entry5.isSimilar());
+    final var entry6 = logEntries.get(6);
+    assertTrue(entry6.isDuplicated());
+    assertEquals("No1", entry6.getCheckedMessage());
+    final var entry7 = logEntries.get(7);
+    assertTrue(entry7.isDuplicated());
+    assertEquals("No1", entry7.getCheckedMessage());
+    final var entry8 = logEntries.get(8);
+    assertTrue(entry8.isDuplicated());
+    assertEquals("No6", entry8.getCheckedMessage());
+    final var entry9 = logEntries.get(9);
+    assertTrue(entry9.isSimilar());
+    assertEquals("No1", entry9.getCheckedMessage());
+    final var entry10 = logEntries.get(10);
+    assertTrue(entry10.isDuplicated());
+    assertEquals("No4", entry10.getCheckedMessage());
   }
 
   @Test

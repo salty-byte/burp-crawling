@@ -5,6 +5,7 @@ import static mocks.DummyDataUtils.createLogEntry;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -60,8 +61,12 @@ class LogEntryForJsonTest {
         String.format("%s has duplicated", jsonStr)
     );
     assertTrue(
-        jsonStr.contains("\"duplicatedMessage\":\"\""),
-        String.format("%s has duplicatedMessage", jsonStr)
+        jsonStr.contains("\"similar\":false"),
+        String.format("%s has similar", jsonStr)
+    );
+    assertTrue(
+        jsonStr.contains("\"checkedMessage\":\"\""),
+        String.format("%s has checkedMessage", jsonStr)
     );
     assertTrue(jsonStr.contains("\"targetType\":0"), String.format("%s has targetType", jsonStr));
     assertTrue(jsonStr.contains("\"colorType\":0"), String.format("%s has colorType", jsonStr));
@@ -93,7 +98,7 @@ class LogEntryForJsonTest {
   @Test
   void testFromJson() {
     final var jsonStr =
-        "{\"number\":1,\"pageTitle\":\"title\",\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"extension\":\"txt\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"date\":\"12:34:56 10 Oct 2022\",\"remark\":\"test\","
+        "{\"number\":1,\"pageTitle\":\"title\",\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"extension\":\"txt\",\"hasParameter\":true,\"duplicated\":true,\"similar\":false,\"checkedMessage\":\"No1\",\"targetType\":1,\"colorType\":3,\"date\":\"12:34:56 10 Oct 2022\",\"remark\":\"test\","
             + "\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\","
             + "\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}"
             + "}}";
@@ -108,7 +113,8 @@ class LogEntryForJsonTest {
     assertEquals("txt", logEntryForJson.getExtension());
     assertTrue(logEntryForJson.hasParameter());
     assertTrue(logEntryForJson.isDuplicated());
-    assertEquals("", logEntryForJson.getDuplicatedMessage());
+    assertFalse(logEntryForJson.isSimilar());
+    assertEquals("No1", logEntryForJson.getCheckedMessage());
     assertEquals(TargetType.AUTO, logEntryForJson.getTargetType());
     assertEquals(ColorType.YELLOW, logEntryForJson.getColorType());
     assertEquals("12:34:56 10 Oct 2022", logEntryForJson.getDate());

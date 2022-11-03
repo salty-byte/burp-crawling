@@ -18,7 +18,8 @@ public class LogEntry {
   private String extension;
   private boolean hasParameter;
   private boolean duplicated;
-  private String duplicatedMessage;
+  private boolean similar;
+  private String checkedMessage;
   private String remark;
   private TargetType targetType;
   private ColorType colorType;
@@ -38,7 +39,8 @@ public class LogEntry {
     this.remark = "";
     this.requestResponse = null;
     this.duplicated = false;
-    this.duplicatedMessage = "";
+    this.similar = false;
+    this.checkedMessage = "";
     this.targetType = TargetType.NONE;
     this.colorType = ColorType.DEFAULT;
     this.date = CrawlingUtils.createDateString();
@@ -58,7 +60,8 @@ public class LogEntry {
     this.remark = requestResponse.getComment();
     this.requestResponse = requestResponse;
     this.duplicated = false;
-    this.duplicatedMessage = "";
+    this.similar = false;
+    this.checkedMessage = "";
     this.targetType = TargetType.NONE;
     this.colorType = ColorType.DEFAULT;
     this.date = CrawlingUtils.createDateString();
@@ -77,7 +80,8 @@ public class LogEntry {
     this.remark = data.getRemark();
     this.requestResponse = data.getIHttpRequestResponse();
     this.duplicated = data.isDuplicated();
-    this.duplicatedMessage = data.getDuplicatedMessage();
+    this.similar = data.isSimilar();
+    this.checkedMessage = data.getCheckedMessage();
     this.targetType = data.getTargetType();
     this.colorType = data.getColorType();
     this.date = data.getDate();
@@ -105,8 +109,10 @@ public class LogEntry {
         return getExtension();
       case IS_DUPLICATED:
         return isDuplicated();
-      case DUPLICATED_MESSAGE:
-        return getDuplicatedMessage();
+      case IS_SIMILAR:
+        return isSimilar();
+      case CHECKED_MESSAGE:
+        return getCheckedMessage();
       case TARGET_AUTO:
         return targetType.hasAuto();
       case TARGET_MANUAL:
@@ -150,8 +156,11 @@ public class LogEntry {
         case IS_DUPLICATED:
           setDuplicated((Boolean) value);
           break;
-        case DUPLICATED_MESSAGE:
-          setDuplicatedMessage((String) value);
+        case IS_SIMILAR:
+          setSimilar((Boolean) value);
+          break;
+        case CHECKED_MESSAGE:
+          setCheckedMessage((String) value);
           break;
         case TARGET_AUTO:
           setAutoTarget((Boolean) value);
@@ -249,12 +258,20 @@ public class LogEntry {
     this.duplicated = duplicated;
   }
 
-  public String getDuplicatedMessage() {
-    return duplicatedMessage;
+  public boolean isSimilar() {
+    return similar;
   }
 
-  public void setDuplicatedMessage(String duplicatedMessage) {
-    this.duplicatedMessage = duplicatedMessage;
+  public void setSimilar(boolean similar) {
+    this.similar = similar;
+  }
+
+  public String getCheckedMessage() {
+    return checkedMessage;
+  }
+
+  public void setCheckedMessage(String checkedMessage) {
+    this.checkedMessage = checkedMessage;
   }
 
   public TargetType getTargetType() {
