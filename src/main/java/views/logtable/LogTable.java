@@ -30,6 +30,7 @@ public class LogTable extends JTable {
     setCellRenderer();
     setSelectionListener(logDetailController);
     setRowSorter(new LogTableRowSorter<>(getModel()));
+    setTableHeader(new LogTableHeader(this));
 
     // settings to drag and drop some rows
     setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
