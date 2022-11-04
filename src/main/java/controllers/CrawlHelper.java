@@ -1,5 +1,6 @@
 package controllers;
 
+import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
 import burp.IResponseInfo;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -27,6 +29,7 @@ import views.logtable.LogTableModel;
 
 public class CrawlHelper {
 
+  private final IBurpExtenderCallbacks burpCallbacks;
   private final IExtensionHelpers extensionHelper;
   private final LogTable logTable;
   private final LogTableModel logTableModel;
@@ -36,9 +39,10 @@ public class CrawlHelper {
     this(null, logTable);
   }
 
-  public CrawlHelper(final IExtensionHelpers extensionHelper, final LogTable logTable) {
-    this.extensionHelper = extensionHelper;
+  public CrawlHelper(final IBurpExtenderCallbacks burpCallbacks, final LogTable logTable) {
+    this.burpCallbacks = burpCallbacks;
     this.logTable = logTable;
+    extensionHelper = burpCallbacks == null ? null : burpCallbacks.getHelpers();
     logTableModel = logTable.getModel();
     markedLogEntries = new ArrayList<>();
   }
@@ -136,6 +140,27 @@ public class CrawlHelper {
     final var logEntries = logTableModel.getLogEntryAll();
     CrawlingUtils.applySimilarOrDuplicatedRequest(logEntries, extensionHelper);
     logTableModel.updateAllRows();
+  }
+
+  public int countRequest(final List<LogEntry> logEntries) {
+    return (int) logEntries.stream()
+        .filter(LogEntry::hasRequest)
+        .count();
+  }
+
+  public void sendToRepeater(final List<LogEntry> logEntries) {
+    logEntries.stream()
+        .filter(LogEntry::hasRequest)
+        .forEachOrdered(e -> {
+          final var requestResponse = e.getRequestResponse();
+          final var request = requestResponse.getRequest();
+          final var service = e.getRequestResponse().getHttpService();
+          final var host = service.getHost();
+          final var port = service.getPort();
+          final var useHttps = Objects.equals("https", service.getProtocol());
+          final var tabCaption = "No" + e.getNumber();
+          burpCallbacks.sendToRepeater(host, port, useHttps, request, tabCaption);
+        });
   }
 
   public void setLogEntriesColor(final ColorType colorType, final List<LogEntry> logEntries) {

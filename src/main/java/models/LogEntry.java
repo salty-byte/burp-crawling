@@ -314,6 +314,12 @@ public class LogEntry {
     this.remark = remark;
   }
 
+  public boolean hasRequest() {
+    return requestResponse != null
+        && requestResponse.getHttpService() != null
+        && requestResponse.getRequest() != null;
+  }
+
   public IHttpRequestResponse getRequestResponse() {
     return requestResponse;
   }

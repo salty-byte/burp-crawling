@@ -19,7 +19,7 @@ public class CrawlController {
     logDetailController = new LogDetailController(callbacks);
     logTableModel = new LogTableModel();
     logTable = new LogTable(logTableModel, logDetailController);
-    helper = new CrawlHelper(callbacks.getHelpers(), logTable);
+    helper = new CrawlHelper(callbacks, logTable);
     proxyController = new CrawlProxyController(callbacks, helper);
 
     // later settings

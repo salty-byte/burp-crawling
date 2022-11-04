@@ -14,6 +14,15 @@ public class LogTablePopupMenu extends JPopupMenu {
 
   public LogTablePopupMenu(final CrawlHelper crawlHelper, final List<LogEntry> logEntries,
       final int[] indices) {
+    final var requestCount = crawlHelper.countRequest(logEntries);
+    final var repeaterItem = new JMenuItem(String.format("Repeaterに送る：%s", requestCount));
+    repeaterItem.addActionListener(e -> crawlHelper.sendToRepeater(logEntries));
+    repeaterItem.setAlignmentX(Component.CENTER_ALIGNMENT);
+    repeaterItem.setToolTipText("リクエストデータがある場合、選択箇所をRepeaterに送る");
+    repeaterItem.setEnabled(requestCount != 0);
+    add(repeaterItem);
+    addSeparator();
+
     final var tsvCopyItem = new JMenuItem("TSVコピー (全て)");
     tsvCopyItem.addActionListener(e -> crawlHelper.exportToClipboardWithTsv(logEntries));
     tsvCopyItem.setAlignmentX(Component.CENTER_ALIGNMENT);
