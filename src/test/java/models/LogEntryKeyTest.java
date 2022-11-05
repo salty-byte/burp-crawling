@@ -10,7 +10,7 @@ class LogEntryKeyTest {
 
   @Test
   void testCount() {
-    assertEquals(16, LogEntryKey.values().length);
+    assertEquals(17, LogEntryKey.values().length);
   }
 
   @Test
@@ -20,6 +20,7 @@ class LogEntryKeyTest {
     assertEquals(String.class, LogEntryKey.METHOD.getClassification());
     assertEquals(String.class, LogEntryKey.URL.getClassification());
     assertEquals(Boolean.class, LogEntryKey.HAS_PARAMETER.getClassification());
+    assertEquals(Integer.class, LogEntryKey.PARAMETER_COUNT.getClassification());
     assertEquals(Short.class, LogEntryKey.STATUS_CODE.getClassification());
     assertEquals(String.class, LogEntryKey.MIME.getClassification());
     assertEquals(String.class, LogEntryKey.EXTENSION.getClassification());
@@ -40,6 +41,7 @@ class LogEntryKeyTest {
     assertEquals("メソッド", LogEntryKey.METHOD.getDisplayName());
     assertEquals("URL", LogEntryKey.URL.getDisplayName());
     assertEquals("パラメータ有無", LogEntryKey.HAS_PARAMETER.getDisplayName());
+    assertEquals("パラメータ数", LogEntryKey.PARAMETER_COUNT.getDisplayName());
     assertEquals("ステータス", LogEntryKey.STATUS_CODE.getDisplayName());
     assertEquals("MIME", LogEntryKey.MIME.getDisplayName());
     assertEquals("拡張子", LogEntryKey.EXTENSION.getDisplayName());
@@ -60,6 +62,7 @@ class LogEntryKeyTest {
     assertEquals(60, LogEntryKey.METHOD.getWidth());
     assertEquals(350, LogEntryKey.URL.getWidth());
     assertEquals(50, LogEntryKey.HAS_PARAMETER.getWidth());
+    assertEquals(50, LogEntryKey.PARAMETER_COUNT.getWidth());
     assertEquals(60, LogEntryKey.STATUS_CODE.getWidth());
     assertEquals(60, LogEntryKey.MIME.getWidth());
     assertEquals(60, LogEntryKey.EXTENSION.getWidth());
@@ -80,6 +83,7 @@ class LogEntryKeyTest {
     assertFalse(LogEntryKey.METHOD.hasTooltip());
     assertTrue(LogEntryKey.URL.hasTooltip());
     assertFalse(LogEntryKey.HAS_PARAMETER.hasTooltip());
+    assertFalse(LogEntryKey.PARAMETER_COUNT.hasTooltip());
     assertFalse(LogEntryKey.STATUS_CODE.hasTooltip());
     assertFalse(LogEntryKey.MIME.hasTooltip());
     assertFalse(LogEntryKey.EXTENSION.hasTooltip());
@@ -100,6 +104,7 @@ class LogEntryKeyTest {
     assertTrue(LogEntryKey.METHOD.isEditable());
     assertFalse(LogEntryKey.URL.isEditable());
     assertTrue(LogEntryKey.HAS_PARAMETER.isEditable());
+    assertTrue(LogEntryKey.PARAMETER_COUNT.isEditable());
     assertFalse(LogEntryKey.STATUS_CODE.isEditable());
     assertFalse(LogEntryKey.MIME.isEditable());
     assertFalse(LogEntryKey.EXTENSION.isEditable());
@@ -120,6 +125,7 @@ class LogEntryKeyTest {
     assertEquals("GET", LogEntryKey.METHOD.parseFromString("GET"));
     assertEquals("https://example.com", LogEntryKey.URL.parseFromString("https://example.com"));
     assertEquals(true, LogEntryKey.HAS_PARAMETER.parseFromString("true"));
+    assertEquals(25, LogEntryKey.PARAMETER_COUNT.parseFromString("25"));
     assertEquals((short) 200, LogEntryKey.STATUS_CODE.parseFromString("200"));
     assertEquals("png", LogEntryKey.MIME.parseFromString("png"));
     assertEquals("txt", LogEntryKey.EXTENSION.parseFromString("txt"));

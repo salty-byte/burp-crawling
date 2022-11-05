@@ -10,6 +10,7 @@ public enum LogEntryKey {
   METHOD(String.class, "メソッド", 60, false, true),
   URL(String.class, "URL", 350, true, false),
   HAS_PARAMETER(Boolean.class, "パラメータ有無", 50, false, true),
+  PARAMETER_COUNT(Integer.class, "パラメータ数", 50, false, true),
   STATUS_CODE(Short.class, "ステータス", 60, false, false),
   MIME(String.class, "MIME", 60, false, false),
   EXTENSION(String.class, "拡張子", 60, false, false),

@@ -1,6 +1,7 @@
 package models;
 
 import burp.IHttpRequestResponse;
+import burp.IParameter;
 import burp.IRequestInfo;
 import burp.IResponseInfo;
 import models.json.LogEntryForJson;
@@ -17,6 +18,7 @@ public class LogEntry {
   private String mime;
   private String extension;
   private boolean hasParameter;
+  private int parameterCount;
   private boolean duplicated;
   private boolean similar;
   private String checkedMessage;
@@ -36,6 +38,7 @@ public class LogEntry {
     this.mime = "";
     this.extension = "";
     this.hasParameter = false;
+    this.parameterCount = 0;
     this.remark = "";
     this.requestResponse = null;
     this.duplicated = false;
@@ -57,6 +60,10 @@ public class LogEntry {
     this.mime = responseInfo.getStatedMimeType();
     this.extension = CrawlingUtils.findExtension(requestInfo.getUrl());
     this.hasParameter = !requestInfo.getParameters().isEmpty();
+    this.parameterCount = (int) requestInfo.getParameters()
+        .stream()
+        .filter(p -> p.getType() != IParameter.PARAM_COOKIE)
+        .count();
     this.remark = requestResponse.getComment();
     this.requestResponse = requestResponse;
     this.duplicated = false;
@@ -77,6 +84,7 @@ public class LogEntry {
     this.mime = data.getMime();
     this.extension = data.getExtension();
     this.hasParameter = data.hasParameter();
+    this.parameterCount = data.getParameterCount();
     this.remark = data.getRemark();
     this.requestResponse = data.getIHttpRequestResponse();
     this.duplicated = data.isDuplicated();
@@ -101,6 +109,8 @@ public class LogEntry {
         return getMethod();
       case HAS_PARAMETER:
         return hasParameter();
+      case PARAMETER_COUNT:
+        return getParameterCount();
       case STATUS_CODE:
         return getStatusCode();
       case MIME:
@@ -146,6 +156,9 @@ public class LogEntry {
           break;
         case HAS_PARAMETER:
           setHasParameter((Boolean) value);
+          break;
+        case PARAMETER_COUNT:
+          setParameterCount((Integer) value);
           break;
         case MIME:
           setMime((String) value);
@@ -224,6 +237,14 @@ public class LogEntry {
 
   public void setHasParameter(boolean hasParameter) {
     this.hasParameter = hasParameter;
+  }
+
+  public int getParameterCount() {
+    return parameterCount;
+  }
+
+  public void setParameterCount(int parameterCount) {
+    this.parameterCount = parameterCount;
   }
 
   public short getStatusCode() {

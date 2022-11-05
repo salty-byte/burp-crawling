@@ -16,6 +16,7 @@ public class LogEntryForJson {
   private final String mime;
   private final String extension;
   private final boolean hasParameter;
+  private final int parameterCount;
   private final boolean duplicated;
   private final boolean similar;
   private final String checkedMessage;
@@ -35,6 +36,7 @@ public class LogEntryForJson {
     this.mime = entry.getMime();
     this.extension = entry.getExtension();
     this.hasParameter = entry.hasParameter();
+    this.parameterCount = entry.getParameterCount();
     this.duplicated = entry.isDuplicated();
     this.similar = entry.isSimilar();
     this.checkedMessage = entry.getCheckedMessage();
@@ -80,6 +82,10 @@ public class LogEntryForJson {
 
   public boolean hasParameter() {
     return hasParameter;
+  }
+
+  public int getParameterCount() {
+    return parameterCount;
   }
 
   public boolean isDuplicated() {
