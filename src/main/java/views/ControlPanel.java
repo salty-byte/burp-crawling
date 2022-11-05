@@ -73,6 +73,13 @@ public class ControlPanel extends JPanel {
       proxyController.setOnlyInScope(checkBox.isSelected());
     });
     scopeOnlyCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+    final var addingToSelectionCheckBox = new JCheckBox("選択箇所");
+    addingToSelectionCheckBox.setToolTipText("ON:選択箇所に追加する, OFF:一番下に追加する");
+    addingToSelectionCheckBox.addChangeListener(e -> {
+      final var checkBox = (JCheckBox) e.getSource();
+      proxyController.setAddingToSelection(checkBox.isSelected());
+    });
+    addingToSelectionCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 
     final var excludedPanel = createExcludedPanel(proxyController);
 
@@ -102,8 +109,11 @@ public class ControlPanel extends JPanel {
     gbc.insets = new Insets(100, 5, 0, 5);
     add(crawlProxyToggle, gbc);
     gbc.gridy++;
-    gbc.insets = new Insets(5, 5, 10, 5);
+    gbc.insets = new Insets(5, 5, 0, 5);
     add(scopeOnlyCheckBox, gbc);
+    gbc.gridy++;
+    gbc.insets = new Insets(5, 5, 10, 5);
+    add(addingToSelectionCheckBox, gbc);
     gbc.gridy++;
     gbc.insets = new Insets(5, 5, 0, 5);
     add(excludedPanel, gbc);

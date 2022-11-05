@@ -62,6 +62,16 @@ public class LogTable extends JTable {
     return component;
   }
 
+  public void setRowSelection(final LogEntry logEntry) {
+    final var index = getModel().getLogEntryAll().indexOf(logEntry);
+    if (index == -1) {
+      return;
+    }
+    final var insertedIndex = convertRowIndexToView(index);
+    clearSelection();
+    addRowSelectionInterval(insertedIndex, insertedIndex);
+  }
+
   private void setSelectionListener(final LogDetailController logDetailController) {
     getSelectionModel().addListSelectionListener(e -> {
       if (e.getValueIsAdjusting()) {

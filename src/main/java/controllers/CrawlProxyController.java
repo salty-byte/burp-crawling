@@ -35,6 +35,10 @@ public class CrawlProxyController {
     proxy.setOnlyInScope(targetOnly);
   }
 
+  public void setAddingToSelection(final boolean addingToSelection) {
+    proxy.setAddingToSelection(addingToSelection);
+  }
+
   public void setRequestName(final String requestName) {
     proxy.setRequestName(requestName);
   }

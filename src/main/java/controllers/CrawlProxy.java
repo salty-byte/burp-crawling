@@ -19,11 +19,13 @@ public class CrawlProxy implements IProxyListener {
   private boolean usingExcludedExtensions;
   private List<String> excludedMime;
   private List<String> excludedExtensions;
+  private boolean addingToSelection;
 
   public CrawlProxy(final IBurpExtenderCallbacks burpCallbacks, final CrawlHelper crawlHelper) {
     this.burpCallbacks = burpCallbacks;
     this.crawlHelper = crawlHelper;
     this.onlyInScope = false;
+    this.addingToSelection = false;
     this.requestName = "";
     this.usingExcludedMime = false;
     this.usingExcludedExtensions = false;
@@ -44,7 +46,11 @@ public class CrawlProxy implements IProxyListener {
     }
 
     requestResponse.setComment(""); // clear the comment to remove request id
-    crawlHelper.addLogEntry(requestName, requestResponse);
+    if (addingToSelection) {
+      crawlHelper.addLogEntryToSelection(requestName, requestResponse);
+    } else {
+      crawlHelper.addLogEntry(requestName, requestResponse);
+    }
   }
 
   private boolean canImportData(final IHttpRequestResponse requestResponse) {
@@ -82,6 +88,10 @@ public class CrawlProxy implements IProxyListener {
 
   public void setOnlyInScope(final boolean onlyInScope) {
     this.onlyInScope = onlyInScope;
+  }
+
+  public void setAddingToSelection(final boolean addingToSelection) {
+    this.addingToSelection = addingToSelection;
   }
 
   public void useExcludedMime(boolean usingExcludedMime) {

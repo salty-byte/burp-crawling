@@ -74,6 +74,22 @@ public class CrawlHelper {
     logTableModel.addLogEntry(logEntry);
   }
 
+  public void addLogEntryToSelection(final String requestName,
+      final IHttpRequestResponse requestResponse) {
+    final var rowCount = logTableModel.getRowCount();
+    final var row = logTable.getSelectedRow();
+    final var logEntry = createLogEntry(requestResponse);
+    logEntry.setRequestName(requestName);
+    logEntry.setNumber(rowCount + 1);
+    if (row == -1) {
+      logTableModel.addLogEntryAt(logEntry, rowCount);
+    } else {
+      final var insertIndex = logTable.convertRowIndexToModel(row) + 1;
+      logTableModel.addLogEntryAt(logEntry, insertIndex);
+      logTable.setRowSelection(logEntry);
+    }
+  }
+
   public void addLogEntries(final IHttpRequestResponse[] requestResponses) {
     final var logEntries = Arrays.stream(requestResponses)
         .map(this::createLogEntry)
