@@ -209,7 +209,7 @@ public class CrawlHelper {
         ? tmpFile
         : new File(tmpFile.getAbsolutePath() + "." + crawlingFilter.getExtensions()[0]);
     if (file.exists()) {
-      int result = DialogUtils.confirm("ファイルが既に存在します。上書きしますか?", "警告");
+      int result = DialogUtils.confirm("ファイルが既に存在します。上書きしますか?", "警告", logTable.getRootPane());
       if (result != JOptionPane.YES_OPTION) {
         return;
       }
@@ -219,13 +219,13 @@ public class CrawlHelper {
     final var jsonStr = JsonUtils.toJson(new CrawledData(logEntries), CrawledData.class);
     try (final var writer = new FileWriter(file)) {
       writer.write(jsonStr);
-    } catch (IOException e) {
-      DialogUtils.showError("JSON出力時にエラーが発生しました。", "エラー");
+    } catch (Exception e) {
+      DialogUtils.showError("JSON出力時にエラーが発生しました。", "エラー", logTable.getRootPane());
       e.printStackTrace();
       return;
     }
 
-    DialogUtils.showInfo("JSON出力が完了しました。", "完了");
+    DialogUtils.showInfo("JSON出力が完了しました。", "完了", logTable.getRootPane());
   }
 
   public void importCrawledData() {
@@ -250,14 +250,14 @@ public class CrawlHelper {
 
   public void importCrawledDataAt(final File file, final int index) {
     if (!file.exists()) {
-      DialogUtils.showError("ファイルが存在しません。", "エラー");
+      DialogUtils.showError("ファイルが存在しません。", "エラー", logTable.getRootPane());
     }
 
     try {
       final var logEntries = loadFile(file);
       logTableModel.addLogEntriesAt(logEntries, index);
-    } catch (IOException | CrawlException e) {
-      DialogUtils.showError("JSON追加時にエラーが発生しました。", "エラー");
+    } catch (Exception e) {
+      DialogUtils.showError("JSON追加時にエラーが発生しました。", "エラー", logTable.getRootPane());
       e.printStackTrace();
     }
   }
