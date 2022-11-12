@@ -19,6 +19,8 @@ import models.LogEntry;
 
 public class CrawlingUtils {
 
+  private static final String NUMBER_MASK = "__N__";
+
   private CrawlingUtils() {
     throw new IllegalStateException("Utility class");
   }
@@ -74,7 +76,8 @@ public class CrawlingUtils {
           .sorted()
           .collect(Collectors.joining());
       final var urlStr = createUrlString(requestInfo.getUrl());
-      final var value = requestInfo.getMethod() + urlStr + paramStr;
+      final var maskedUrlStr = urlStr.replaceAll("/\\d+(/|$)", String.format("/%s$1", NUMBER_MASK));
+      final var value = requestInfo.getMethod() + maskedUrlStr + paramStr;
       checkMap.put(i, value);
     }
     return checkMap;
