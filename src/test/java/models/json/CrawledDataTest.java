@@ -35,20 +35,21 @@ class CrawledDataTest {
     final var list = List.of(createLogEntry());
     final var crawledData = new CrawledData(list);
     final var jsonStr = JsonUtils.toJson(crawledData, CrawledData.class);
-    assertTrue(jsonStr.contains("\"version\":\"1.0\""), String.format("%s has version", jsonStr));
+    assertTrue(jsonStr.contains("\"crawling\":\"1.0\""), String.format("%s has version", jsonStr));
     assertTrue(jsonStr.contains("\"entries\":["), String.format("%s has entries", jsonStr));
   }
 
   @Test
   void testFromJson() {
-    final var jsonStr = "{\"version\":\"1.0\",\"entries\":["
-        + "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"png\",\"extension\":\"png\",\"hasParameter\":false,\"duplicated\":false,\"duplicatedMessage\":\"\",\"remark\":\"test\",\"colorType\":1,\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\",\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}}"
+    final var jsonStr = "{\"crawling\":\"1.0\",\"entries\":["
+        + "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"pageTitle\":\"title\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"png\",\"extension\":\"png\",\"hasParameter\":false,\"parameterCount\":0,\"duplicated\":false,\"similar\":false,\"checkedMessage\":\"\",\"date\":\"12:34:56 10 Oct 2022\",\"remark\":\"test\",\"colorType\":1,\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\",\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}}}"
         + "]}";
     final var crawledData = JsonUtils.fromJson(jsonStr, CrawledData.class);
     assertEquals("1.0", crawledData.getVersion());
 
     final var logEntryForJson = crawledData.getEntries().get(0);
     assertEquals(1, logEntryForJson.getNumber());
+    assertEquals("title", logEntryForJson.getPageTitle());
     assertEquals("top", logEntryForJson.getRequestName());
     assertEquals("https://example.com", logEntryForJson.getUrl());
     assertEquals("GET", logEntryForJson.getMethod());
@@ -56,10 +57,13 @@ class CrawledDataTest {
     assertEquals("png", logEntryForJson.getMime());
     assertEquals("png", logEntryForJson.getExtension());
     assertFalse(logEntryForJson.hasParameter());
+    assertEquals(0, logEntryForJson.getParameterCount());
     assertFalse(logEntryForJson.isDuplicated());
-    assertEquals("", logEntryForJson.getDuplicatedMessage());
+    assertFalse(logEntryForJson.isSimilar());
+    assertEquals("", logEntryForJson.getCheckedMessage());
     assertEquals(TargetType.NONE, logEntryForJson.getTargetType());
     assertEquals(ColorType.RED, logEntryForJson.getColorType());
+    assertEquals("12:34:56 10 Oct 2022", logEntryForJson.getDate());
     assertEquals("test", logEntryForJson.getRemark());
 
     final var requestResponse = logEntryForJson.getRequestResponse();

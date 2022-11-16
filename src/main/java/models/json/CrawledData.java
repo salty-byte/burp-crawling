@@ -6,18 +6,18 @@ import models.LogEntry;
 
 public class CrawledData {
 
-  private final String version;
+  private final String crawling;
   private final List<LogEntryForJson> entries;
 
   public CrawledData(final List<LogEntry> entries) {
     this.entries = entries.stream()
         .map(LogEntryForJson::new)
         .collect(Collectors.toList());
-    version = "1.0";
+    crawling = "1.0";
   }
 
   public String getVersion() {
-    return version;
+    return crawling;
   }
 
   public List<LogEntryForJson> getEntries() {

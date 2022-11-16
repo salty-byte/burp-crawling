@@ -1,41 +1,50 @@
 package controllers;
 
+import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
 import burp.IResponseInfo;
+import exceptions.CrawlException;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import models.ColorType;
 import models.LogEntry;
 import models.json.CrawledData;
 import utils.CrawlingUtils;
 import utils.DialogUtils;
 import utils.JsonUtils;
+import utils.OpenApiImporter;
 import utils.TsvExporter;
 import views.logtable.LogTable;
 import views.logtable.LogTableModel;
 
 public class CrawlHelper {
 
+  private final IBurpExtenderCallbacks burpCallbacks;
   private final IExtensionHelpers extensionHelper;
   private final LogTable logTable;
   private final LogTableModel logTableModel;
+  private List<LogEntry> markedLogEntries;
 
   public CrawlHelper(final LogTable logTable) {
     this(null, logTable);
   }
 
-  public CrawlHelper(final IExtensionHelpers extensionHelper, final LogTable logTable) {
-    this.extensionHelper = extensionHelper;
+  public CrawlHelper(final IBurpExtenderCallbacks burpCallbacks, final LogTable logTable) {
+    this.burpCallbacks = burpCallbacks;
     this.logTable = logTable;
+    extensionHelper = burpCallbacks == null ? null : burpCallbacks.getHelpers();
     logTableModel = logTable.getModel();
+    markedLogEntries = new ArrayList<>();
   }
 
   private LogEntry createLogEntry(final IHttpRequestResponse requestResponse) {
@@ -47,7 +56,7 @@ public class CrawlHelper {
     return new LogEntry(0, requestResponse, requestInfo, responseInfo);
   }
 
-  private IResponseInfo analyzeResponse(final byte[] response) {
+  public IResponseInfo analyzeResponse(final byte[] response) {
     return extensionHelper.analyzeResponse(response == null ? new byte[0] : response);
   }
 
@@ -63,6 +72,22 @@ public class CrawlHelper {
     logEntry.setRequestName(requestName);
     logEntry.setNumber(logTableModel.getRowCount() + 1);
     logTableModel.addLogEntry(logEntry);
+  }
+
+  public void addLogEntryToSelection(final String requestName,
+      final IHttpRequestResponse requestResponse) {
+    final var rowCount = logTableModel.getRowCount();
+    final var row = logTable.getSelectedRow();
+    final var logEntry = createLogEntry(requestResponse);
+    logEntry.setRequestName(requestName);
+    logEntry.setNumber(rowCount + 1);
+    if (row == -1) {
+      logTableModel.addLogEntryAt(logEntry, rowCount);
+    } else {
+      final var insertIndex = logTable.convertRowIndexToModel(row) + 1;
+      logTableModel.addLogEntryAt(logEntry, insertIndex);
+      logTable.setRowSelection(logEntry);
+    }
   }
 
   public void addLogEntries(final IHttpRequestResponse[] requestResponses) {
@@ -85,6 +110,38 @@ public class CrawlHelper {
     logTableModel.removeLogEntries(logEntries);
   }
 
+  public boolean hasMarkedLogEntries() {
+    return !markedLogEntries.isEmpty();
+  }
+
+  public void updateMarkedLogEntries() {
+    markedLogEntries = logTableModel.getLogEntryAll()
+        .stream()
+        .filter(markedLogEntries::contains)
+        .collect(Collectors.toList());
+  }
+
+  public void markLogEntries(final List<LogEntry> logEntries) {
+    markedLogEntries = logEntries;
+  }
+
+  public void moveMarkedLogEntriesAt(final int index) {
+    updateMarkedLogEntries();
+    if (!hasMarkedLogEntries()) {
+      return;
+    }
+
+    final var logEntries = logTableModel.getLogEntryAll();
+    final var offset = (int) markedLogEntries.stream()
+        .map(logEntries::indexOf)
+        .filter(i -> i < index)
+        .count();
+    final var insertIndex = Math.max(index - offset, 0);
+    removeLogEntries(markedLogEntries);
+    logTableModel.addLogEntriesAt(markedLogEntries, insertIndex);
+    markedLogEntries.clear();
+  }
+
   public void renumber() {
     logTableModel.renumber();
   }
@@ -95,10 +152,31 @@ public class CrawlHelper {
     logTableModel.updateAllRows();
   }
 
-  public void applyDuplicatedRequest() {
+  public void applySimilarOrDuplicatedRequest() {
     final var logEntries = logTableModel.getLogEntryAll();
-    CrawlingUtils.applyDuplicatedRequest(logEntries, extensionHelper);
+    CrawlingUtils.applySimilarOrDuplicatedRequest(logEntries, extensionHelper);
     logTableModel.updateAllRows();
+  }
+
+  public int countRequest(final List<LogEntry> logEntries) {
+    return (int) logEntries.stream()
+        .filter(LogEntry::hasRequest)
+        .count();
+  }
+
+  public void sendToRepeater(final List<LogEntry> logEntries) {
+    logEntries.stream()
+        .filter(LogEntry::hasRequest)
+        .forEachOrdered(e -> {
+          final var requestResponse = e.getRequestResponse();
+          final var request = requestResponse.getRequest();
+          final var service = e.getRequestResponse().getHttpService();
+          final var host = service.getHost();
+          final var port = service.getPort();
+          final var useHttps = Objects.equals("https", service.getProtocol());
+          final var tabCaption = "No" + e.getNumber();
+          burpCallbacks.sendToRepeater(host, port, useHttps, request, tabCaption);
+        });
   }
 
   public void setLogEntriesColor(final ColorType colorType, final List<LogEntry> logEntries) {
@@ -118,13 +196,20 @@ public class CrawlHelper {
 
   public void exportCrawledData() {
     final var fileChooser = new JFileChooser();
-    int selected = fileChooser.showOpenDialog(null);
+    final var crawlingFilter = new FileNameExtensionFilter("Crawlingファイル (*.json)", "json");
+    fileChooser.addChoosableFileFilter(crawlingFilter);
+    fileChooser.setFileFilter(crawlingFilter);
+    int selected = fileChooser.showSaveDialog(null);
     if (selected != JFileChooser.APPROVE_OPTION) {
       return;
     }
-    final var file = fileChooser.getSelectedFile();
+
+    final var tmpFile = fileChooser.getSelectedFile();
+    final var file = crawlingFilter.accept(tmpFile)
+        ? tmpFile
+        : new File(tmpFile.getAbsolutePath() + "." + crawlingFilter.getExtensions()[0]);
     if (file.exists()) {
-      int result = DialogUtils.confirm("ファイルが既に存在します。上書きしますか?", "警告");
+      int result = DialogUtils.confirm("ファイルが既に存在します。上書きしますか?", "警告", logTable.getRootPane());
       if (result != JOptionPane.YES_OPTION) {
         return;
       }
@@ -134,17 +219,23 @@ public class CrawlHelper {
     final var jsonStr = JsonUtils.toJson(new CrawledData(logEntries), CrawledData.class);
     try (final var writer = new FileWriter(file)) {
       writer.write(jsonStr);
-    } catch (IOException e) {
-      DialogUtils.showError("JSON出力時にエラーが発生しました。", "エラー");
+    } catch (Exception e) {
+      DialogUtils.showError("JSON出力時にエラーが発生しました。", "エラー", logTable.getRootPane());
       e.printStackTrace();
       return;
     }
 
-    DialogUtils.showInfo("JSON出力が完了しました。", "完了");
+    DialogUtils.showInfo("JSON出力が完了しました。", "完了", logTable.getRootPane());
   }
 
   public void importCrawledData() {
     final var fileChooser = new JFileChooser();
+    final var crawlingFilter = new FileNameExtensionFilter("Crawlingファイル (*.json)", "json");
+    final var openApiFilter = new FileNameExtensionFilter("OpenAPIファイル (*.json;*.yml;*.yaml)",
+        "json", "yml", "yaml");
+    fileChooser.addChoosableFileFilter(crawlingFilter);
+    fileChooser.addChoosableFileFilter(openApiFilter);
+    fileChooser.setFileFilter(crawlingFilter);
     int selected = fileChooser.showOpenDialog(null);
     if (selected != JFileChooser.APPROVE_OPTION) {
       return;
@@ -159,15 +250,24 @@ public class CrawlHelper {
 
   public void importCrawledDataAt(final File file, final int index) {
     if (!file.exists()) {
-      DialogUtils.showError("ファイルが存在しません。", "エラー");
+      DialogUtils.showError("ファイルが存在しません。", "エラー", logTable.getRootPane());
     }
 
-    try (final var reader = new FileReader(file)) {
-      final var crawledData = JsonUtils.fromJson(reader, CrawledData.class);
-      logTableModel.addLogEntriesAt(crawledData.toLogEntries(), index);
-    } catch (IOException e) {
-      DialogUtils.showError("JSON追加時にエラーが発生しました。", "エラー");
+    try {
+      final var logEntries = loadFile(file);
+      logTableModel.addLogEntriesAt(logEntries, index);
+    } catch (Exception e) {
+      DialogUtils.showError("JSON追加時にエラーが発生しました。", "エラー", logTable.getRootPane());
       e.printStackTrace();
     }
+  }
+
+  private List<LogEntry> loadFile(final File file) throws IOException, CrawlException {
+    if (OpenApiImporter.isOpenApi(file)) {
+      return OpenApiImporter.parse(file);
+    }
+
+    final var crawledData = JsonUtils.fromJson(file, CrawledData.class);
+    return crawledData.toLogEntries();
   }
 }

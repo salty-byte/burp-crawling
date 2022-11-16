@@ -1,6 +1,7 @@
 package models;
 
 import burp.IHttpRequestResponse;
+import burp.IParameter;
 import burp.IRequestInfo;
 import burp.IResponseInfo;
 import models.json.LogEntryForJson;
@@ -9,6 +10,7 @@ import utils.CrawlingUtils;
 public class LogEntry {
 
   private int number;
+  private String pageTitle;
   private String requestName;
   private String url;
   private String method;
@@ -16,15 +18,19 @@ public class LogEntry {
   private String mime;
   private String extension;
   private boolean hasParameter;
+  private int parameterCount;
   private boolean duplicated;
-  private String duplicatedMessage;
+  private boolean similar;
+  private String checkedMessage;
   private String remark;
   private TargetType targetType;
   private ColorType colorType;
+  private String date;
   private IHttpRequestResponse requestResponse;
 
   public LogEntry(final int number) {
     this.number = number;
+    this.pageTitle = "";
     this.requestName = "";
     this.url = "https://";
     this.method = "GET";
@@ -32,17 +38,21 @@ public class LogEntry {
     this.mime = "";
     this.extension = "";
     this.hasParameter = false;
+    this.parameterCount = 0;
     this.remark = "";
     this.requestResponse = null;
     this.duplicated = false;
-    this.duplicatedMessage = "";
+    this.similar = false;
+    this.checkedMessage = "";
     this.targetType = TargetType.NONE;
     this.colorType = ColorType.DEFAULT;
+    this.date = CrawlingUtils.createDateString();
   }
 
   public LogEntry(final int number, final IHttpRequestResponse requestResponse,
       final IRequestInfo requestInfo, final IResponseInfo responseInfo) {
     this.number = number;
+    this.pageTitle = "";
     this.requestName = "";
     this.url = CrawlingUtils.createUrlStringWithQuery(requestInfo.getUrl());
     this.method = requestInfo.getMethod();
@@ -50,16 +60,23 @@ public class LogEntry {
     this.mime = responseInfo.getStatedMimeType();
     this.extension = CrawlingUtils.findExtension(requestInfo.getUrl());
     this.hasParameter = !requestInfo.getParameters().isEmpty();
+    this.parameterCount = (int) requestInfo.getParameters()
+        .stream()
+        .filter(p -> p.getType() != IParameter.PARAM_COOKIE)
+        .count();
     this.remark = requestResponse.getComment();
     this.requestResponse = requestResponse;
     this.duplicated = false;
-    this.duplicatedMessage = "";
+    this.similar = false;
+    this.checkedMessage = "";
     this.targetType = TargetType.NONE;
     this.colorType = ColorType.DEFAULT;
+    this.date = CrawlingUtils.createDateString();
   }
 
   public LogEntry(final LogEntryForJson data) {
     this.number = data.getNumber();
+    this.pageTitle = data.getPageTitle();
     this.requestName = data.getRequestName();
     this.url = data.getUrl();
     this.method = data.getMethod();
@@ -67,18 +84,23 @@ public class LogEntry {
     this.mime = data.getMime();
     this.extension = data.getExtension();
     this.hasParameter = data.hasParameter();
+    this.parameterCount = data.getParameterCount();
     this.remark = data.getRemark();
     this.requestResponse = data.getIHttpRequestResponse();
     this.duplicated = data.isDuplicated();
-    this.duplicatedMessage = data.getDuplicatedMessage();
+    this.similar = data.isSimilar();
+    this.checkedMessage = data.getCheckedMessage();
     this.targetType = data.getTargetType();
     this.colorType = data.getColorType();
+    this.date = data.getDate();
   }
 
   public Object getValueByKey(final LogEntryKey key) {
     switch (key) {
       case NUMBER:
         return getNumber();
+      case PAGE_TITLE:
+        return getPageTitle();
       case REQUEST_NAME:
         return getRequestName();
       case URL:
@@ -87,6 +109,8 @@ public class LogEntry {
         return getMethod();
       case HAS_PARAMETER:
         return hasParameter();
+      case PARAMETER_COUNT:
+        return getParameterCount();
       case STATUS_CODE:
         return getStatusCode();
       case MIME:
@@ -95,12 +119,16 @@ public class LogEntry {
         return getExtension();
       case IS_DUPLICATED:
         return isDuplicated();
-      case DUPLICATED_MESSAGE:
-        return getDuplicatedMessage();
+      case IS_SIMILAR:
+        return isSimilar();
+      case CHECKED_MESSAGE:
+        return getCheckedMessage();
       case TARGET_AUTO:
         return targetType.hasAuto();
       case TARGET_MANUAL:
         return targetType.hasManual();
+      case DATE:
+        return getDate();
       case REMARK:
         return getRemark();
       default:
@@ -114,6 +142,9 @@ public class LogEntry {
         case NUMBER:
           setNumber((Integer) value);
           break;
+        case PAGE_TITLE:
+          setPageTitle((String) value);
+          break;
         case REQUEST_NAME:
           setRequestName((String) value);
           break;
@@ -126,6 +157,9 @@ public class LogEntry {
         case HAS_PARAMETER:
           setHasParameter((Boolean) value);
           break;
+        case PARAMETER_COUNT:
+          setParameterCount((Integer) value);
+          break;
         case MIME:
           setMime((String) value);
           break;
@@ -135,8 +169,11 @@ public class LogEntry {
         case IS_DUPLICATED:
           setDuplicated((Boolean) value);
           break;
-        case DUPLICATED_MESSAGE:
-          setDuplicatedMessage((String) value);
+        case IS_SIMILAR:
+          setSimilar((Boolean) value);
+          break;
+        case CHECKED_MESSAGE:
+          setCheckedMessage((String) value);
           break;
         case TARGET_AUTO:
           setAutoTarget((Boolean) value);
@@ -160,6 +197,14 @@ public class LogEntry {
 
   public void setNumber(int number) {
     this.number = number;
+  }
+
+  public String getPageTitle() {
+    return pageTitle;
+  }
+
+  public void setPageTitle(String pageTitle) {
+    this.pageTitle = pageTitle;
   }
 
   public String getRequestName() {
@@ -194,6 +239,14 @@ public class LogEntry {
     this.hasParameter = hasParameter;
   }
 
+  public int getParameterCount() {
+    return parameterCount;
+  }
+
+  public void setParameterCount(int parameterCount) {
+    this.parameterCount = parameterCount;
+  }
+
   public short getStatusCode() {
     return statusCode;
   }
@@ -226,12 +279,20 @@ public class LogEntry {
     this.duplicated = duplicated;
   }
 
-  public String getDuplicatedMessage() {
-    return duplicatedMessage;
+  public boolean isSimilar() {
+    return similar;
   }
 
-  public void setDuplicatedMessage(String duplicatedMessage) {
-    this.duplicatedMessage = duplicatedMessage;
+  public void setSimilar(boolean similar) {
+    this.similar = similar;
+  }
+
+  public String getCheckedMessage() {
+    return checkedMessage;
+  }
+
+  public void setCheckedMessage(String checkedMessage) {
+    this.checkedMessage = checkedMessage;
   }
 
   public TargetType getTargetType() {
@@ -258,12 +319,26 @@ public class LogEntry {
     targetType = targetType.setManual(hasManual);
   }
 
+  public String getDate() {
+    return date;
+  }
+
+  public void setDate(String date) {
+    this.date = date;
+  }
+
   public String getRemark() {
     return remark;
   }
 
   public void setRemark(String remark) {
     this.remark = remark;
+  }
+
+  public boolean hasRequest() {
+    return requestResponse != null
+        && requestResponse.getHttpService() != null
+        && requestResponse.getRequest() != null;
   }
 
   public IHttpRequestResponse getRequestResponse() {

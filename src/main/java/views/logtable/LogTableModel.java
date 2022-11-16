@@ -3,7 +3,6 @@ package views.logtable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.table.AbstractTableModel;
@@ -28,7 +27,7 @@ public class LogTableModel extends AbstractTableModel {
 
   @Override
   public boolean isCellEditable(int rowIndex, int columnIndex) {
-    return true;
+    return getLogEntryKey(columnIndex).isEditable();
   }
 
   @Override
@@ -88,6 +87,9 @@ public class LogTableModel extends AbstractTableModel {
   }
 
   public void addLogEntryAt(final LogEntry logEntry, final int index) {
+    if (index < 0) {
+      return;
+    }
     entries.add(index, logEntry);
     fireTableRowsInserted(index, index);
   }
@@ -97,13 +99,11 @@ public class LogTableModel extends AbstractTableModel {
   }
 
   public void addLogEntriesAt(final List<LogEntry> logEntries, final int index) {
+    if (index < 0 || logEntries.isEmpty()) {
+      return;
+    }
     entries.addAll(index, logEntries);
     fireTableRowsInserted(index, index + logEntries.size() - 1);
-  }
-
-  public void removeLogEntry(final LogEntry logEntry) {
-    final var index = entries.indexOf(logEntry);
-    removeLogEntryAt(index);
   }
 
   public void removeLogEntryAt(final int index) {
@@ -115,15 +115,16 @@ public class LogTableModel extends AbstractTableModel {
   }
 
   public void removeLogEntries(final List<LogEntry> logEntries) {
-    logEntries.forEach(this::removeLogEntry);
+    entries.removeAll(logEntries);
+    fireTableDataChanged();
   }
 
   public void removeLogEntriesAt(final int[] indices) {
-    Arrays.stream(indices)
+    final var targets = Arrays.stream(indices)
         .distinct()
-        .boxed()
-        .sorted(Comparator.reverseOrder())
-        .forEachOrdered(this::removeLogEntryAt);
+        .mapToObj(entries::get)
+        .collect(Collectors.toList());
+    removeLogEntries(targets);
   }
 
   public void renumber() {

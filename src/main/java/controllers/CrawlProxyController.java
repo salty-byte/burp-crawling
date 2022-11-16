@@ -1,6 +1,7 @@
 package controllers;
 
 import burp.IBurpExtenderCallbacks;
+import java.util.List;
 
 public class CrawlProxyController {
 
@@ -34,7 +35,27 @@ public class CrawlProxyController {
     proxy.setOnlyInScope(targetOnly);
   }
 
+  public void setAddingToSelection(final boolean addingToSelection) {
+    proxy.setAddingToSelection(addingToSelection);
+  }
+
   public void setRequestName(final String requestName) {
     proxy.setRequestName(requestName);
+  }
+
+  public void useExcludedMime(boolean usingExcludedMime) {
+    proxy.useExcludedMime(usingExcludedMime);
+  }
+
+  public void useExcludedExtensions(boolean usingExcludedExtensions) {
+    proxy.useExcludedExtensions(usingExcludedExtensions);
+  }
+
+  public void setExcludedMime(List<String> excludedMime) {
+    proxy.setExcludedMime(excludedMime);
+  }
+
+  public void setExcludedExtensions(List<String> excludedExtensions) {
+    proxy.setExcludedExtensions(excludedExtensions);
   }
 }

@@ -30,6 +30,7 @@ public class LogTable extends JTable {
     setCellRenderer();
     setSelectionListener(logDetailController);
     setRowSorter(new LogTableRowSorter<>(getModel()));
+    setTableHeader(new LogTableHeader(this));
 
     // settings to drag and drop some rows
     setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -61,10 +62,14 @@ public class LogTable extends JTable {
     return component;
   }
 
-  @Override
-  public boolean isCellEditable(int rowIndex, int columnIndex) {
-    final var modelColumnIndex = convertColumnIndexToModel(columnIndex);
-    return getLogEntryKeyAt(modelColumnIndex).isEditable();
+  public void setRowSelection(final LogEntry logEntry) {
+    final var index = getModel().getLogEntryAll().indexOf(logEntry);
+    if (index == -1) {
+      return;
+    }
+    final var insertedIndex = convertRowIndexToView(index);
+    clearSelection();
+    addRowSelectionInterval(insertedIndex, insertedIndex);
   }
 
   private void setSelectionListener(final LogDetailController logDetailController) {
@@ -109,8 +114,12 @@ public class LogTable extends JTable {
       return null;
     }
 
-    final var text = getValueAt(rowIndex, columnIndex).toString();
-    final var chunks = text.split("(?<=\\G.{100})");
+    final var value = getValueAt(rowIndex, columnIndex);
+    if (value == null) {
+      return null;
+    }
+
+    final var chunks = value.toString().split("(?<=\\G.{100})");
     return String.join("\n", chunks);
   }
 

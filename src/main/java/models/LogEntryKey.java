@@ -10,13 +10,17 @@ public enum LogEntryKey {
   METHOD(String.class, "メソッド", 60, false, true),
   URL(String.class, "URL", 350, true, false),
   HAS_PARAMETER(Boolean.class, "パラメータ有無", 50, false, true),
+  PARAMETER_COUNT(Integer.class, "パラメータ数", 50, false, true),
   STATUS_CODE(Short.class, "ステータス", 60, false, false),
   MIME(String.class, "MIME", 60, false, false),
   EXTENSION(String.class, "拡張子", 60, false, false),
   IS_DUPLICATED(Boolean.class, "重複", 50, false, true),
-  DUPLICATED_MESSAGE(String.class, "重複箇所", 80, false, false),
+  IS_SIMILAR(Boolean.class, "類似", 50, false, true),
+  CHECKED_MESSAGE(String.class, "確認箇所", 80, false, false),
   TARGET_AUTO(Boolean.class, "自動対象", 50, false, true),
   TARGET_MANUAL(Boolean.class, "手動対象", 50, false, true),
+  DATE(String.class, "日時", 130, true, false),
+  PAGE_TITLE(String.class, "画面名", 130, true, true),
   REMARK(String.class, "備考", 300, true, true),
   ;
 

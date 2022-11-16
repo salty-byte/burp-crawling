@@ -118,12 +118,14 @@ public class DummyDataUtils {
 
   public static LogEntry createLogEntry(final int number,
       final IHttpRequestResponse requestResponse) {
-    return createLogEntry(number, "top", "https://example.com", "GET", requestResponse);
+    return createLogEntry(number, "title", "top", "https://example.com", "GET", requestResponse);
   }
 
-  public static LogEntry createLogEntry(final int number, final String requestName,
-      final String url, final String method, final IHttpRequestResponse requestResponse) {
+  public static LogEntry createLogEntry(final int number, final String pageTitle,
+      final String requestName, final String url, final String method,
+      final IHttpRequestResponse requestResponse) {
     final var logEntry = new LogEntry(number);
+    logEntry.setPageTitle(pageTitle);
     logEntry.setRequestName(requestName);
     logEntry.setUrl(url);
     logEntry.setMethod(method);

@@ -5,6 +5,7 @@ import static mocks.DummyDataUtils.createLogEntry;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,6 +34,10 @@ class LogEntryForJsonTest {
     final var jsonStr = JsonUtils.toJson(logEntryForJson, LogEntryForJson.class);
     assertTrue(jsonStr.contains("\"number\":1"), String.format("%s has number", jsonStr));
     assertTrue(
+        jsonStr.contains("\"pageTitle\":\"title\""),
+        String.format("%s has pageTitle", jsonStr)
+    );
+    assertTrue(
         jsonStr.contains("\"requestName\":\"top\""),
         String.format("%s has requestName", jsonStr)
     );
@@ -52,15 +57,24 @@ class LogEntryForJsonTest {
         String.format("%s has hasParameter", jsonStr)
     );
     assertTrue(
+        jsonStr.contains("\"parameterCount\":0"),
+        String.format("%s has parameterCount", jsonStr)
+    );
+    assertTrue(
         jsonStr.contains("\"duplicated\":false"),
         String.format("%s has duplicated", jsonStr)
     );
     assertTrue(
-        jsonStr.contains("\"duplicatedMessage\":\"\""),
-        String.format("%s has duplicatedMessage", jsonStr)
+        jsonStr.contains("\"similar\":false"),
+        String.format("%s has similar", jsonStr)
+    );
+    assertTrue(
+        jsonStr.contains("\"checkedMessage\":\"\""),
+        String.format("%s has checkedMessage", jsonStr)
     );
     assertTrue(jsonStr.contains("\"targetType\":0"), String.format("%s has targetType", jsonStr));
     assertTrue(jsonStr.contains("\"colorType\":0"), String.format("%s has colorType", jsonStr));
+    assertTrue(jsonStr.contains("\"date\":"), String.format("%s has date", jsonStr));
     assertTrue(jsonStr.contains("\"remark\":\"test\""), String.format("%s has remark", jsonStr));
 
     final var reqResBlock = jsonStr.split("requestResponse")[1];
@@ -88,12 +102,13 @@ class LogEntryForJsonTest {
   @Test
   void testFromJson() {
     final var jsonStr =
-        "{\"number\":1,\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"extension\":\"txt\",\"hasParameter\":true,\"duplicated\":true,\"duplicatedMessage\":\"\",\"targetType\":1,\"colorType\":3,\"remark\":\"test\","
+        "{\"number\":1,\"pageTitle\":\"title\",\"requestName\":\"top\",\"url\":\"https://example.com\",\"method\":\"GET\",\"statusCode\":200,\"mime\":\"text\",\"extension\":\"txt\",\"hasParameter\":true,\"parameterCount\":5,\"duplicated\":true,\"similar\":false,\"checkedMessage\":\"No1\",\"targetType\":1,\"colorType\":3,\"date\":\"12:34:56 10 Oct 2022\",\"remark\":\"test\","
             + "\"requestResponse\":{\"request\":\"cmVxdWVzdA\",\"response\":\"cmVzcG9uc2U\","
             + "\"origin\":{\"host\":\"example.com\",\"port\":443,\"protocol\":\"https\"}"
             + "}}";
     final var logEntryForJson = JsonUtils.fromJson(jsonStr, LogEntryForJson.class);
     assertEquals(1, logEntryForJson.getNumber());
+    assertEquals("title", logEntryForJson.getPageTitle());
     assertEquals("top", logEntryForJson.getRequestName());
     assertEquals("https://example.com", logEntryForJson.getUrl());
     assertEquals("GET", logEntryForJson.getMethod());
@@ -101,10 +116,13 @@ class LogEntryForJsonTest {
     assertEquals("text", logEntryForJson.getMime());
     assertEquals("txt", logEntryForJson.getExtension());
     assertTrue(logEntryForJson.hasParameter());
+    assertEquals(5, logEntryForJson.getParameterCount());
     assertTrue(logEntryForJson.isDuplicated());
-    assertEquals("", logEntryForJson.getDuplicatedMessage());
+    assertFalse(logEntryForJson.isSimilar());
+    assertEquals("No1", logEntryForJson.getCheckedMessage());
     assertEquals(TargetType.AUTO, logEntryForJson.getTargetType());
     assertEquals(ColorType.YELLOW, logEntryForJson.getColorType());
+    assertEquals("12:34:56 10 Oct 2022", logEntryForJson.getDate());
     assertEquals("test", logEntryForJson.getRemark());
 
     final var requestResponse = logEntryForJson.getRequestResponse();

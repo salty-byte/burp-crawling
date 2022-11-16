@@ -72,8 +72,8 @@ class TsvExporterTest {
     final var request1 = createIHttpRequestResponse("1".getBytes(StandardCharsets.UTF_8));
     final var request2 = createIHttpRequestResponse("2".getBytes(StandardCharsets.UTF_8));
     final var logEntries = List.of(
-        createLogEntry(1, "TOP", "https://example.com/?query1=1", "GET", request1),
-        createLogEntry(2, "TOP>ログイン", "https://example.com/", "POST", request2)
+        createLogEntry(1, "", "TOP", "https://example.com/?query1=1", "GET", request1),
+        createLogEntry(2, "", "TOP>ログイン", "https://example.com/", "POST", request2)
     );
     final var exporter = new TsvExporter(helpers);
     final var expectedArray = new String[]{
@@ -97,7 +97,7 @@ class TsvExporterTest {
   void testExportToStringWhenArgumentsHaveSpecialCharacters() {
     final var request3 = createIHttpRequestResponse("3".getBytes(StandardCharsets.UTF_8));
     final var logEntries = List.of(
-        createLogEntry(3, "TOP>記号", "https://example.com/\"!$%%()`@[;+*}?>_", "POST", request3)
+        createLogEntry(3, "", "TOP>記号", "https://example.com/\"!$%%()`@[;+*}?>_", "POST", request3)
     );
     final var exporter = new TsvExporter(helpers);
     final var expectedArray = new String[]{
@@ -117,8 +117,8 @@ class TsvExporterTest {
     final var request1 = createIHttpRequestResponse("1".getBytes(StandardCharsets.UTF_8));
     final var request2 = createIHttpRequestResponse("2".getBytes(StandardCharsets.UTF_8));
     final var logEntries = List.of(
-        createLogEntry(1, "TOP", "https://example.com/?query1=1", "GET", request1),
-        createLogEntry(2, "TOP>ログイン", "https://example.com/", "POST", request2)
+        createLogEntry(1, "", "TOP", "https://example.com/?query1=1", "GET", request1),
+        createLogEntry(2, "", "TOP>ログイン", "https://example.com/", "POST", request2)
     );
     final var exporter = new TsvExporter(helpers);
     final var expectedArray = new String[]{

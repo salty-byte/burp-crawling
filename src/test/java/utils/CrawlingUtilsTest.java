@@ -21,7 +21,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.TimeZone;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,7 +46,8 @@ class CrawlingUtilsTest {
     );
     final var param2 = List.of(
         createIParameter(IParameter.PARAM_URL, "b"),
-        createIParameter(IParameter.PARAM_URL, "a")
+        createIParameter(IParameter.PARAM_URL, "a"),
+        createIParameter(IParameter.PARAM_COOKIE, "a")
     );
     final var param3 = List.of(
         createIParameter(IParameter.PARAM_URL, "a"),
@@ -50,10 +55,12 @@ class CrawlingUtilsTest {
     );
     final var param4 = List.of(
         createIParameter(IParameter.PARAM_BODY, "a"),
-        createIParameter(IParameter.PARAM_BODY, "b")
+        createIParameter(IParameter.PARAM_BODY, "b"),
+        createIParameter(IParameter.PARAM_COOKIE, "a")
     );
     final var param5 = List.of(
-        createIParameter(IParameter.PARAM_URL, "a")
+        createIParameter(IParameter.PARAM_URL, "a"),
+        createIParameter(IParameter.PARAM_COOKIE, "b")
     );
     final var info1 = createIRequestInfo("GET", new URL("https://example.com/?a=1&b=3"), param1);
     final var info2 = createIRequestInfo("GET", new URL("https://example.com/?b=1&a=1"), param2);
@@ -62,6 +69,8 @@ class CrawlingUtilsTest {
     final var info5 = createIRequestInfo("POST", new URL("https://example.com/"), param1);
     final var info6 = createIRequestInfo("PATCH", new URL("https://example.com/test"), param4);
     final var info7 = createIRequestInfo("GET", new URL("https://example.com/"), param5);
+    final var info8 = createIRequestInfo("POST", new URL("https://example.com/1/edit/1"), param4);
+    final var info9 = createIRequestInfo("POST", new URL("https://example.com/101/edit/1"), param4);
     final var request1 = "1".getBytes(StandardCharsets.UTF_8);
     final var request2 = "2".getBytes(StandardCharsets.UTF_8);
     final var request3 = "3".getBytes(StandardCharsets.UTF_8);
@@ -69,6 +78,8 @@ class CrawlingUtilsTest {
     final var request5 = "5".getBytes(StandardCharsets.UTF_8);
     final var request6 = "6".getBytes(StandardCharsets.UTF_8);
     final var request7 = "7".getBytes(StandardCharsets.UTF_8);
+    final var request8 = "8".getBytes(StandardCharsets.UTF_8);
+    final var request9 = "9".getBytes(StandardCharsets.UTF_8);
     Mockito.when(helpers.analyzeRequest(any(), eq(request1))).thenReturn(info1);
     Mockito.when(helpers.analyzeRequest(any(), eq(request2))).thenReturn(info2);
     Mockito.when(helpers.analyzeRequest(any(), eq(request3))).thenReturn(info3);
@@ -76,10 +87,12 @@ class CrawlingUtilsTest {
     Mockito.when(helpers.analyzeRequest(any(), eq(request5))).thenReturn(info5);
     Mockito.when(helpers.analyzeRequest(any(), eq(request6))).thenReturn(info6);
     Mockito.when(helpers.analyzeRequest(any(), eq(request7))).thenReturn(info7);
+    Mockito.when(helpers.analyzeRequest(any(), eq(request8))).thenReturn(info8);
+    Mockito.when(helpers.analyzeRequest(any(), eq(request9))).thenReturn(info9);
   }
 
   @Test
-  void testApplyDuplicatedRequest() {
+  void testApplySimilarOrDuplicatedRequestRequest() {
     final var logEntries = List.of(
         createLogEntry(1, "1".getBytes(StandardCharsets.UTF_8)),
         createLogEntry(2, "2".getBytes(StandardCharsets.UTF_8)),
@@ -90,23 +103,42 @@ class CrawlingUtilsTest {
         createLogEntry(7, "1".getBytes(StandardCharsets.UTF_8)),
         createLogEntry(8, "2".getBytes(StandardCharsets.UTF_8)),
         createLogEntry(9, "6".getBytes(StandardCharsets.UTF_8)),
-        createLogEntry(10, "8".getBytes(StandardCharsets.UTF_8))
+        createLogEntry(10, "7".getBytes(StandardCharsets.UTF_8)),
+        createLogEntry(11, "4".getBytes(StandardCharsets.UTF_8)),
+        createLogEntry(12, "8".getBytes(StandardCharsets.UTF_8)),
+        createLogEntry(13, "9".getBytes(StandardCharsets.UTF_8))
     );
-    CrawlingUtils.applyDuplicatedRequest(logEntries, helpers);
-    assertFalse(logEntries.get(0).isDuplicated());
-    assertTrue(logEntries.get(1).isDuplicated());
-    assertEquals("No1", logEntries.get(1).getDuplicatedMessage());
-    assertFalse(logEntries.get(2).isDuplicated());
-    assertFalse(logEntries.get(3).isDuplicated());
-    assertFalse(logEntries.get(4).isDuplicated());
-    assertFalse(logEntries.get(5).isDuplicated());
-    assertTrue(logEntries.get(6).isDuplicated());
-    assertEquals("No1", logEntries.get(6).getDuplicatedMessage());
-    assertTrue(logEntries.get(7).isDuplicated());
-    assertEquals("No1", logEntries.get(7).getDuplicatedMessage());
-    assertTrue(logEntries.get(8).isDuplicated());
-    assertEquals("No6", logEntries.get(8).getDuplicatedMessage());
-    assertFalse(logEntries.get(9).isDuplicated());
+    CrawlingUtils.applySimilarOrDuplicatedRequest(logEntries, helpers);
+    final var entry1 = logEntries.get(0);
+    assertFalse(entry1.isDuplicated());
+    assertFalse(entry1.isSimilar());
+    final var entry2 = logEntries.get(1);
+    assertTrue(entry2.isDuplicated());
+    assertEquals("No1", entry2.getCheckedMessage());
+    final var entry3 = logEntries.get(2);
+    assertFalse(entry3.isDuplicated());
+    assertFalse(entry3.isSimilar());
+    final var entry7 = logEntries.get(6);
+    assertTrue(entry7.isDuplicated());
+    assertEquals("No1", entry7.getCheckedMessage());
+    final var entry8 = logEntries.get(7);
+    assertTrue(entry8.isDuplicated());
+    assertEquals("No1", entry8.getCheckedMessage());
+    final var entry9 = logEntries.get(8);
+    assertTrue(entry9.isDuplicated());
+    assertEquals("No6", entry9.getCheckedMessage());
+    final var entry10 = logEntries.get(9);
+    assertTrue(entry10.isSimilar());
+    assertEquals("No1", entry10.getCheckedMessage());
+    final var entry11 = logEntries.get(10);
+    assertTrue(entry11.isDuplicated());
+    assertEquals("No4", entry11.getCheckedMessage());
+    final var entry12 = logEntries.get(11);
+    assertFalse(entry12.isDuplicated());
+    assertFalse(entry12.isSimilar());
+    final var entry13 = logEntries.get(12);
+    assertTrue(entry13.isDuplicated());
+    assertEquals("No12", entry13.getCheckedMessage());
   }
 
   @Test
@@ -154,6 +186,17 @@ class CrawlingUtilsTest {
   })
   void testFindExtension(final URL url, final String expected) {
     assertEquals(expected, CrawlingUtils.findExtension(url));
+  }
+
+  @Test
+  void testCreateDateString() {
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Tokyo"));
+    final var clock = Clock.fixed(Instant.parse("2022-12-12T03:34:56Z"), ZoneId.of("Asia/Tokyo"));
+    final var instant = Instant.now(clock);
+    try (final var mocked = Mockito.mockStatic(Instant.class)) {
+      mocked.when(Instant::now).thenReturn(instant);
+      assertEquals("12:34:56 12 Dec 2022", CrawlingUtils.createDateString());
+    }
   }
 
   @ParameterizedTest
