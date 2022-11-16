@@ -2,9 +2,9 @@ name: test
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   test:
@@ -20,3 +20,8 @@ jobs:
         run: chmod +x gradlew
       - name: Test with Gradle
         run: ./gradlew clean test
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v3
+        if: cancelled() != true
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
