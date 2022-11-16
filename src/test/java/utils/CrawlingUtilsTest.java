@@ -25,6 +25,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.TimeZone;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -189,6 +190,7 @@ class CrawlingUtilsTest {
 
   @Test
   void testCreateDateString() {
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Tokyo"));
     final var clock = Clock.fixed(Instant.parse("2022-12-12T03:34:56Z"), ZoneId.of("Asia/Tokyo"));
     final var instant = Instant.now(clock);
     try (final var mocked = Mockito.mockStatic(Instant.class)) {

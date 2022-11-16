@@ -1,5 +1,5 @@
 group 'burp'
-version '1.0.0-SNAPSHOT'
+version '1.1.0'
 
 apply plugin: 'java'
 
@@ -11,8 +11,8 @@ repositories {
 
 dependencies {
     implementation 'net.portswigger.burp.extender:burp-extender-api:2.3'
-    implementation 'com.google.code.gson:gson:2.9.1'
-    implementation 'io.swagger.parser.v3:swagger-parser:2.1.5'
+    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'io.swagger.parser.v3:swagger-parser:2.1.8'
 
     testImplementation 'org.slf4j:slf4j-simple:2.0.3'
     testImplementation 'org.mockito:mockito-core:4.8.0'
