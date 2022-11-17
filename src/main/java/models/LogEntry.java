@@ -59,11 +59,11 @@ public class LogEntry {
     this.statusCode = responseInfo.getStatusCode();
     this.mime = responseInfo.getStatedMimeType();
     this.extension = CrawlingUtils.findExtension(requestInfo.getUrl());
-    this.hasParameter = !requestInfo.getParameters().isEmpty();
     this.parameterCount = (int) requestInfo.getParameters()
         .stream()
         .filter(p -> p.getType() != IParameter.PARAM_COOKIE)
         .count();
+    this.hasParameter = parameterCount != 0;
     this.remark = requestResponse.getComment();
     this.requestResponse = requestResponse;
     this.duplicated = false;

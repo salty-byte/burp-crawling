@@ -1,11 +1,14 @@
 package mocks;
 
+import burp.ICookie;
 import burp.IHttpRequestResponse;
 import burp.IHttpService;
 import burp.IParameter;
 import burp.IRequestInfo;
+import burp.IResponseInfo;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import models.LogEntry;
 
@@ -75,7 +78,7 @@ public class DummyDataUtils {
 
       @Override
       public String getComment() {
-        return null;
+        return "comment";
       }
 
       @Override
@@ -177,6 +180,41 @@ public class DummyDataUtils {
       @Override
       public byte getContentType() {
         return 0;
+      }
+    };
+  }
+
+  public static IResponseInfo createIResponseInfo(final short status, final String mime) {
+    return new IResponseInfo() {
+
+      @Override
+      public List<String> getHeaders() {
+        return new ArrayList<>();
+      }
+
+      @Override
+      public int getBodyOffset() {
+        return 0;
+      }
+
+      @Override
+      public short getStatusCode() {
+        return status;
+      }
+
+      @Override
+      public List<ICookie> getCookies() {
+        return new ArrayList<>();
+      }
+
+      @Override
+      public String getStatedMimeType() {
+        return mime;
+      }
+
+      @Override
+      public String getInferredMimeType() {
+        return mime;
       }
     };
   }
