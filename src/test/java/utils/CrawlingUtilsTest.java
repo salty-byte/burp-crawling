@@ -65,12 +65,13 @@ class CrawlingUtilsTest {
     final var info1 = createIRequestInfo("GET", new URL("https://example.com/?a=1&b=3"), param1);
     final var info2 = createIRequestInfo("GET", new URL("https://example.com/?b=1&a=1"), param2);
     final var info3 = createIRequestInfo("GET", new URL("https://example.com/"), param3);
-    final var info4 = createIRequestInfo("GET", new URL("https://example.com/test/"), param1);
+    final var info4 = createIRequestInfo("GET", new URL("https://example.com/test/test"), param1);
     final var info5 = createIRequestInfo("POST", new URL("https://example.com/"), param1);
     final var info6 = createIRequestInfo("PATCH", new URL("https://example.com/test"), param4);
     final var info7 = createIRequestInfo("GET", new URL("https://example.com/"), param5);
     final var info8 = createIRequestInfo("POST", new URL("https://example.com/1/edit/1"), param4);
     final var info9 = createIRequestInfo("POST", new URL("https://example.com/101/edit/1"), param4);
+    final var info10 = createIRequestInfo("GET", new URL("https://example.com/test/te"), List.of());
     final var request1 = "1".getBytes(StandardCharsets.UTF_8);
     final var request2 = "2".getBytes(StandardCharsets.UTF_8);
     final var request3 = "3".getBytes(StandardCharsets.UTF_8);
@@ -80,6 +81,7 @@ class CrawlingUtilsTest {
     final var request7 = "7".getBytes(StandardCharsets.UTF_8);
     final var request8 = "8".getBytes(StandardCharsets.UTF_8);
     final var request9 = "9".getBytes(StandardCharsets.UTF_8);
+    final var request10 = "10".getBytes(StandardCharsets.UTF_8);
     Mockito.when(helpers.analyzeRequest(any(), eq(request1))).thenReturn(info1);
     Mockito.when(helpers.analyzeRequest(any(), eq(request2))).thenReturn(info2);
     Mockito.when(helpers.analyzeRequest(any(), eq(request3))).thenReturn(info3);
@@ -89,6 +91,7 @@ class CrawlingUtilsTest {
     Mockito.when(helpers.analyzeRequest(any(), eq(request7))).thenReturn(info7);
     Mockito.when(helpers.analyzeRequest(any(), eq(request8))).thenReturn(info8);
     Mockito.when(helpers.analyzeRequest(any(), eq(request9))).thenReturn(info9);
+    Mockito.when(helpers.analyzeRequest(any(), eq(request10))).thenReturn(info10);
   }
 
   @Test
@@ -106,7 +109,8 @@ class CrawlingUtilsTest {
         createLogEntry(10, "7".getBytes(StandardCharsets.UTF_8)),
         createLogEntry(11, "4".getBytes(StandardCharsets.UTF_8)),
         createLogEntry(12, "8".getBytes(StandardCharsets.UTF_8)),
-        createLogEntry(13, "9".getBytes(StandardCharsets.UTF_8))
+        createLogEntry(13, "9".getBytes(StandardCharsets.UTF_8)),
+        createLogEntry(14, "10".getBytes(StandardCharsets.UTF_8))
     );
     CrawlingUtils.applySimilarOrDuplicatedRequest(logEntries, helpers);
     final var entry1 = logEntries.get(0);
@@ -139,6 +143,9 @@ class CrawlingUtilsTest {
     final var entry13 = logEntries.get(12);
     assertTrue(entry13.isDuplicated());
     assertEquals("No12", entry13.getCheckedMessage());
+    final var entry14 = logEntries.get(13);
+    assertFalse(entry14.isDuplicated());
+    assertFalse(entry14.isSimilar());
   }
 
   @Test

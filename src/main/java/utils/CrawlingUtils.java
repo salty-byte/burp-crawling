@@ -77,7 +77,7 @@ public class CrawlingUtils {
           .collect(Collectors.joining());
       final var urlStr = createUrlString(requestInfo.getUrl());
       final var maskedUrlStr = urlStr.replaceAll("/\\d+(/|$)", String.format("/%s$1", NUMBER_MASK));
-      final var value = requestInfo.getMethod() + maskedUrlStr + paramStr;
+      final var value = requestInfo.getMethod() + maskedUrlStr + "?" + paramStr;
       checkMap.put(i, value);
     }
     return checkMap;
