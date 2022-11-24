@@ -73,6 +73,7 @@ public class CrawlingUtils {
           .stream()
           .filter(p -> p.getType() != IParameter.PARAM_COOKIE)
           .map(p -> p.getType() + p.getName())
+          .distinct()
           .sorted()
           .collect(Collectors.joining());
       final var urlStr = createUrlString(requestInfo.getUrl());

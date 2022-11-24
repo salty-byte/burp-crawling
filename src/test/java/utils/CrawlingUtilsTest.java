@@ -149,6 +149,71 @@ class CrawlingUtilsTest {
   }
 
   @Test
+  void testApplySimilarOrDuplicatedRequestRequestWithArrays() throws MalformedURLException {
+    final var param1 = List.of(
+        createIParameter(IParameter.PARAM_BODY, "a[]"),
+        createIParameter(IParameter.PARAM_BODY, "b"),
+        createIParameter(IParameter.PARAM_COOKIE, "a")
+    );
+    final var param2 = List.of(
+        createIParameter(IParameter.PARAM_BODY, "a[]"),
+        createIParameter(IParameter.PARAM_BODY, "a[]"),
+        createIParameter(IParameter.PARAM_BODY, "b"),
+        createIParameter(IParameter.PARAM_COOKIE, "a")
+    );
+    final var param3 = List.of(
+        createIParameter(IParameter.PARAM_BODY, "a[]"),
+        createIParameter(IParameter.PARAM_BODY, "a[]"),
+        createIParameter(IParameter.PARAM_BODY, "b"),
+        createIParameter(IParameter.PARAM_COOKIE, "b")
+    );
+    final var param4 = List.of(
+        createIParameter(IParameter.PARAM_URL, "a"),
+        createIParameter(IParameter.PARAM_URL, "b"),
+        createIParameter(IParameter.PARAM_URL, "b"),
+        createIParameter(IParameter.PARAM_URL, "c"),
+        createIParameter(IParameter.PARAM_COOKIE, "b")
+    );
+    final var info1 = createIRequestInfo("POST", new URL("https://example.com/arrays/"), param1);
+    final var info2 = createIRequestInfo("POST", new URL("https://example.com/arrays/"), param2);
+    final var info3 = createIRequestInfo("POST", new URL("https://example.com/arrays/"), param3);
+    final var info4 = createIRequestInfo("POST",
+        new URL("https://example.com/arrays/?a=3&b=5&b=4&c=1"), param4);
+    final var request1 = "array1".getBytes(StandardCharsets.UTF_8);
+    final var request2 = "array2".getBytes(StandardCharsets.UTF_8);
+    final var request3 = "array3".getBytes(StandardCharsets.UTF_8);
+    final var request4 = "array4".getBytes(StandardCharsets.UTF_8);
+    Mockito.when(helpers.analyzeRequest(any(), eq(request1))).thenReturn(info1);
+    Mockito.when(helpers.analyzeRequest(any(), eq(request2))).thenReturn(info2);
+    Mockito.when(helpers.analyzeRequest(any(), eq(request3))).thenReturn(info3);
+    Mockito.when(helpers.analyzeRequest(any(), eq(request4))).thenReturn(info4);
+
+    final var logEntries = List.of(
+        createLogEntry(1, "array1".getBytes(StandardCharsets.UTF_8)),
+        createLogEntry(2, "array2".getBytes(StandardCharsets.UTF_8)),
+        createLogEntry(3, "array4".getBytes(StandardCharsets.UTF_8)),
+        createLogEntry(4, "array3".getBytes(StandardCharsets.UTF_8)),
+        createLogEntry(5, "array4".getBytes(StandardCharsets.UTF_8))
+    );
+    CrawlingUtils.applySimilarOrDuplicatedRequest(logEntries, helpers);
+    final var entry1 = logEntries.get(0);
+    assertFalse(entry1.isDuplicated());
+    assertFalse(entry1.isSimilar());
+    final var entry2 = logEntries.get(1);
+    assertTrue(entry2.isDuplicated());
+    assertEquals("No1", entry2.getCheckedMessage());
+    final var entry3 = logEntries.get(2);
+    assertFalse(entry3.isDuplicated());
+    assertFalse(entry3.isSimilar());
+    final var entry4 = logEntries.get(3);
+    assertTrue(entry4.isDuplicated());
+    assertEquals("No1", entry4.getCheckedMessage());
+    final var entry5 = logEntries.get(4);
+    assertTrue(entry5.isDuplicated());
+    assertEquals("No3", entry5.getCheckedMessage());
+  }
+
+  @Test
   void testApplyRequestNameHash() {
     final var logEntries = List.of(
         createLogEntry(1, "TOP"),
