@@ -10,9 +10,11 @@ public class RequestResponse {
   private final HttpOrigin origin;
 
   public RequestResponse(final IHttpRequestResponse requestResponse) {
-    this.request = requestResponse.getRequest();
-    this.response = requestResponse.getResponse();
+    final var originalRequest = requestResponse.getRequest();
+    final var originalResponse = requestResponse.getResponse();
     final var service = requestResponse.getHttpService();
+    request = originalRequest == null ? new byte[0] : originalRequest;
+    response = originalResponse == null ? new byte[0] : originalResponse;
     origin = service == null ? null : new HttpOrigin(service);
   }
 
