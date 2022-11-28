@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import models.LogEntry;
@@ -60,34 +59,34 @@ public class CrawlingUtils {
         url.getProtocol(), url.getHost(), url.getPort(), url.getFile());
   }
 
-  private static Map<Integer, String> createCheckMap(final List<LogEntry> entries,
+  private static Map<Integer, List<String>> createDuplicateCheckMap(final List<LogEntry> entries,
       final IExtensionHelpers helper) {
-    final Map<Integer, String> checkMap = new HashMap<>();
+    final Map<Integer, List<String>> checkMap = new HashMap<>();
     for (int i = 0; i < entries.size(); i++) {
       final var reqRes = entries.get(i).getRequestResponse();
       if (reqRes == null) {
         continue;
       }
       final var requestInfo = helper.analyzeRequest(reqRes.getHttpService(), reqRes.getRequest());
-      final var paramStr = requestInfo.getParameters()
+      final var checkItems = requestInfo.getParameters()
           .stream()
           .filter(p -> p.getType() != IParameter.PARAM_COOKIE)
           .map(p -> p.getType() + p.getName())
           .distinct()
-          .sorted()
-          .collect(Collectors.joining());
+          .collect(Collectors.toList());
       final var urlStr = createUrlString(requestInfo.getUrl());
       final var maskedUrlStr = urlStr.replaceAll("/\\d+(/|$)", String.format("/%s$1", NUMBER_MASK));
-      final var value = requestInfo.getMethod() + maskedUrlStr + "?" + paramStr;
-      checkMap.put(i, value);
+      final var basePath = requestInfo.getMethod() + maskedUrlStr;
+      checkItems.add(basePath);
+      checkMap.put(i, checkItems);
     }
     return checkMap;
   }
 
   public static void applySimilarOrDuplicatedRequest(final List<LogEntry> entries,
       final IExtensionHelpers helper) {
-    // prepare checklist
-    final var checkMap = createCheckMap(entries, helper);
+    // prepare checkMap
+    final var checkMap = createDuplicateCheckMap(entries, helper);
 
     // clear status
     entries.parallelStream().forEach(e -> {
@@ -98,26 +97,25 @@ public class CrawlingUtils {
 
     // apply
     for (int i = 0; i < entries.size() - 1; i++) {
-      final var checkStr1 = checkMap.get(i);
-      if (checkStr1 == null) {
+      if (!checkMap.containsKey(i)) {
         continue;
       }
 
-      final var entry1 = entries.get(i);
+      final var checkItems1 = checkMap.get(i);
       for (int j = 0; j < entries.size(); j++) {
-        final var checkStr2 = checkMap.get(j);
-        if (checkStr2 == null || i == j) {
+        if (!checkMap.containsKey(j) || i == j) {
           continue;
         }
 
-        if (Objects.equals(checkStr1, checkStr2)) {
+        final var checkItems2 = checkMap.get(j);
+        if (checkItems1.containsAll(checkItems2)) {
+          final var entry1 = entries.get(i);
           final var entry2 = entries.get(j);
-          entry2.setDuplicated(true);
-          entry2.setCheckedMessage("No" + entry1.getNumber());
-          checkMap.remove(j);
-        } else if (checkStr1.startsWith(checkStr2)) {
-          final var entry2 = entries.get(j);
-          entry2.setSimilar(true);
+          if (checkItems2.containsAll(checkItems1)) {
+            entry2.setDuplicated(true);
+          } else {
+            entry2.setSimilar(true);
+          }
           entry2.setCheckedMessage("No" + entry1.getNumber());
           checkMap.remove(j);
         }

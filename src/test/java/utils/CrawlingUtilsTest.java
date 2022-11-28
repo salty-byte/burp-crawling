@@ -42,11 +42,13 @@ class CrawlingUtilsTest {
     helpers = Mockito.mock(IExtensionHelpers.class);
     final var param1 = List.of(
         createIParameter(IParameter.PARAM_URL, "a"),
-        createIParameter(IParameter.PARAM_URL, "b")
+        createIParameter(IParameter.PARAM_URL, "b"),
+        createIParameter(IParameter.PARAM_URL, "c")
     );
     final var param2 = List.of(
         createIParameter(IParameter.PARAM_URL, "b"),
         createIParameter(IParameter.PARAM_URL, "a"),
+        createIParameter(IParameter.PARAM_URL, "c"),
         createIParameter(IParameter.PARAM_COOKIE, "a")
     );
     final var param3 = List.of(
@@ -62,16 +64,26 @@ class CrawlingUtilsTest {
         createIParameter(IParameter.PARAM_URL, "a"),
         createIParameter(IParameter.PARAM_COOKIE, "b")
     );
-    final var info1 = createIRequestInfo("GET", new URL("https://example.com/?a=1&b=3"), param1);
-    final var info2 = createIRequestInfo("GET", new URL("https://example.com/?b=1&a=1"), param2);
-    final var info3 = createIRequestInfo("GET", new URL("https://example.com/"), param3);
-    final var info4 = createIRequestInfo("GET", new URL("https://example.com/test/test"), param1);
-    final var info5 = createIRequestInfo("POST", new URL("https://example.com/"), param1);
-    final var info6 = createIRequestInfo("PATCH", new URL("https://example.com/test"), param4);
-    final var info7 = createIRequestInfo("GET", new URL("https://example.com/"), param5);
-    final var info8 = createIRequestInfo("POST", new URL("https://example.com/1/edit/1"), param4);
-    final var info9 = createIRequestInfo("POST", new URL("https://example.com/101/edit/1"), param4);
-    final var info10 = createIRequestInfo("GET", new URL("https://example.com/test/te"), List.of());
+    final var url1 = new URL("https://example.com/?a=1&b=3&c=2");
+    final var url2 = new URL("https://example.com/?b=1&a=1&c=1");
+    final var url3 = new URL("https://example.com/?a=a&c=2");
+    final var url4 = new URL("https://example.com/test/test?a=3&b=a&c=244");
+    final var url5 = new URL("https://example.com/?a=3&b=a&c=244");
+    final var url6 = new URL("https://example.com/test");
+    final var url7 = new URL("https://example.com/?a=123");
+    final var url8 = new URL("https://example.com/1/edit/1");
+    final var url9 = new URL("https://example.com/101/edit/1");
+    final var url10 = new URL("https://example.com/test/te");
+    final var info1 = createIRequestInfo("GET", url1, param1);
+    final var info2 = createIRequestInfo("GET", url2, param2);
+    final var info3 = createIRequestInfo("GET", url3, param3);
+    final var info4 = createIRequestInfo("GET", url4, param1);
+    final var info5 = createIRequestInfo("POST", url5, param1);
+    final var info6 = createIRequestInfo("PATCH", url6, param4);
+    final var info7 = createIRequestInfo("GET", url7, param5);
+    final var info8 = createIRequestInfo("POST", url8, param4);
+    final var info9 = createIRequestInfo("POST", url9, param4);
+    final var info10 = createIRequestInfo("GET", url10, List.of());
     final var request1 = "1".getBytes(StandardCharsets.UTF_8);
     final var request2 = "2".getBytes(StandardCharsets.UTF_8);
     final var request3 = "3".getBytes(StandardCharsets.UTF_8);
@@ -120,8 +132,8 @@ class CrawlingUtilsTest {
     assertTrue(entry2.isDuplicated());
     assertEquals("No1", entry2.getCheckedMessage());
     final var entry3 = logEntries.get(2);
-    assertFalse(entry3.isDuplicated());
-    assertFalse(entry3.isSimilar());
+    assertTrue(entry3.isSimilar());
+    assertEquals("No1", entry3.getCheckedMessage());
     final var entry7 = logEntries.get(6);
     assertTrue(entry7.isDuplicated());
     assertEquals("No1", entry7.getCheckedMessage());
